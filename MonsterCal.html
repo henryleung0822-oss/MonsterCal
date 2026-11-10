@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>精靈數學 RPG</title>
+<style>
+:root {
+    --bg:#f0f8ff;--primary:#ff6b6b;--secondary:#4ecdc4;--accent:#ffe66d;
+    --dark:#292f36;--hp-good:#2ecc71;--hp-warn:#f1c40f;--hp-crit:#e74c3c;
+}
+* { box-sizing:border-box;margin:0;padding:0;user-select:none; }
+body {
+    background:#2c3e50;display:flex;justify-content:center;align-items:center;
+    min-height:100vh;font-family:'Segoe UI','Microsoft JhengHei',sans-serif;overflow:hidden;
+}
+#game{
+    width:100%;max-width:450px;height:100vh;max-height:800px;
+    background:var(--bg);position:relative;overflow:hidden;display:flex;flex-direction:column;
+}
+@media(min-width:450px){ #game{height:800px;border-radius:20px;box-shadow:0 0 20px #0008;} }
+.screen{
+    position:absolute;inset:0;padding:20px;display:none;flex-direction:column;background:var(--bg);z-index:10;overflow-y:auto;
+}
+.screen.active{display:flex}
+h1,h2,h3{text-align:center;color:var(--dark);margin-bottom:10px}
+h1{color:var(--primary);font-size:24px}
+.btn{
+    padding:12px 16px;border-radius:12px;border:none;font-weight:bold;cursor:pointer;margin:5px 0;
+    background:var(--secondary);color:#fff;box-shadow:0 3px 6px #0002;font-size:14px;
+}
+.btn:active{transform:translateY(2px)}
+.btn-primary{background:var(--primary)}
+.btn-accent{background:var(--accent);color:#000}
+.btn-danger{background:#e74c3c}
+.btn:disabled{background:#bbb;cursor:not-allowed}
+
+#header{
+    display:none;justify-content:space-between;align-items:center;padding:10px 20px;
+    background:#fffc;box-shadow:0 2px 6px #0002;z-index:20;
+}
+#header.active{display:flex}
+.coin{font-weight:bold;color:#f39c12;font-size:18px}
+.pause-btn{
+    background:#333;color:#fff;border:none;border-radius:50%;width:36px;height:36px;font-weight:bold;cursor:pointer;
+}
+
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+.card{
+    background:#fff;padding:10px;border-radius:12px;text-align:center;box-shadow:0 3px 6px #0002;
+    border:3px solid transparent;cursor:pointer;
+}
+.card.sel{border-color:var(--primary)}
+.avatar{
+    width:80px;height:80px;border-radius:50%;display:flex;justify-content:center;align-items:center;
+    font-size:40px;margin:0 auto 8px;color:#fff;
+}
+.partner{
+    display:flex;align-items:center;background:#fff;padding:15px;border-radius:12px;margin-bottom:15px;box-shadow:0 3px 6px #0002;
+}
+.partner .avatar{width:90px;height:90px;font-size:50px;margin:0 15px 0 0}
+.nav{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+.nav-btn{
+    background:#fff;padding:18px 8px;border-radius:12px;text-align:center;font-weight:bold;box-shadow:0 3px 6px #0002;
+    cursor:pointer;border:2px solid transparent;
+}
+.nav-btn:active{border-color:var(--secondary)}
+
+.battle{background:linear-gradient(#87ceeb,#e0f7fa);justify-content:space-between}
+.arena{flex:1;display:flex;flex-direction:column;justify-content:space-around;padding-top:34px}
+.f{display:flex;align-items:center;width:100%}
+.f.enemy{justify-content:flex-end}
+.f.player{justify-content:flex-start}
+.f .avatar{width:90px;height:90px;font-size:50px;border:3px solid #fff;box-shadow:0 3px 6px #0002}
+.f.enemy .avatar{background:#ffcccc;border-color:#ff6b6b}
+.hpbox{width:110px;height:14px;background:#ddd;border-radius:10px;margin:0 10px;position:relative}
+.hp{height:100%;background:var(--hp-good);width:100%;border-radius:10px;transition:width .3s}
+.hptxt{position:absolute;top:-16px;left:0;width:100%;text-align:center;font-size:12px;font-weight:bold;color:#292f36;text-shadow:0 1px 2px #fff}
+.qbox{
+    background:#000a;color:#fff;padding:12px;border-radius:12px;text-align:center;margin:10px 0;
+}
+.qtxt{font-size:22px;font-weight:bold}
+.tbar{height:5px;background:var(--accent);width:100%;margin-top:8px}
+
+.keys{
+    background:#fffa;padding:10px;border-radius:12px;box-shadow:0 -4px 10px #0002;
+}
+.disp{
+    height:48px;background:#ecf0f1;border:2px solid #bbb;border-radius:8px;
+    font-size:24px;font-weight:bold;text-align:right;padding:0 12px;display:flex;align-items:center;justify-content:flex-end;margin-bottom:8px;
+}
+.kp{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(4,1fr) 1.6fr;gap:8px}
+.key{
+    background:#fff;border:1px solid #ddd;border-radius:8px;display:flex;justify-content:center;align-items:center;
+    font-size:20px;font-weight:bold;cursor:pointer;min-height:44px;
+}
+.key:active{background:#eee}
+.key.enter{background:var(--secondary);color:#fff;font-size:24px;grid-column:2}
+.key.del{background:#e74c3c;color:#fff;font-size:14px}
+.key.dot{background:#eee}
+.keys.off{opacity:.45;pointer-events:none}
+.qtxt.idle{font-size:16px;opacity:.85}
+
+.modal{
+    position:absolute;inset:0;background:#000a;display:none;justify-content:center;align-items:center;z-index:100;
+}
+.modal.show{display:flex}
+.mbox{
+    background:#fff;padding:20px;border-radius:16px;width:90%;max-width:340px;text-align:center;box-shadow:0 10px 25px #0004;
+}
+.list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.list-item{
+    background:#fff;padding:12px;border-radius:12px;display:flex;align-items:center;box-shadow:0 3px 6px #0002;
+}
+.list-item .avatar{width:50px;height:50px;font-size:26px;margin-right:12px}
+.list-item-info{flex:1}
+.list-item-info strong{display:block;margin-bottom:2px}
+.list-item-info small{color:#666}
+
+.dmg{
+    position:absolute;font-size:24px;font-weight:bold;pointer-events:none;animation:float 1s forwards;z-index:50;
+}
+@keyframes float{0%{opacity:1}100%{opacity:0;transform:translateY(-50px) scale(1.4)}}
+.shake{animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+:fullscreen #game,:-webkit-full-screen #game{max-width:640px;max-height:100vh;height:100vh;border-radius:0;box-shadow:none}
+</style>
+</head>
+<body>
+
+<div id="game">
+<div id="header">
+    <div class="coin">🪙 <span id="coin">0</span></div>
+    <div style="display:flex;gap:8px;align-items:center">
+        <button class="pause-btn" onclick="toggleFS()" title="全螢幕">⛶</button>
+        <button class="pause-btn" onclick="openPause()" title="暫停">||</button>
+    </div>
+</div>
+
+<!-- 開始畫面 -->
+<div id="start" class="screen active">
+    <h1>🐉 精靈數學 RPG</h1>
+    <p style="text-align:center">選擇你的初始拍檔：</p>
+    <div class="grid3" id="pick"></div>
+    <button class="btn btn-primary" id="go" disabled onclick="startGame()">開始冒險</button>
+</div>
+
+<!-- 主選單 -->
+<div id="main" class="screen">
+    <h2>訓練師面板</h2>
+    <div class="partner" id="pbox"></div>
+    <div class="nav">
+        <div class="nav-btn" onclick="openScreen('train')">⚔️ 訓練場</div>
+        <div class="nav-btn" onclick="openScreen('gym')">🏟️ 道場</div>
+        <div class="nav-btn" onclick="openScreen('dex')">📖 圖鑑</div>
+        <div class="nav-btn" onclick="openScreen('shop')">🛒 商店</div>
+        <div class="nav-btn" onclick="openScreen('items')">🎒 道具</div>
+        <div class="nav-btn" onclick="openScreen('ach')">🏆 成就</div>
+    </div>
+</div>
+
+<!-- 訓練場 -->
+<div id="train" class="screen">
+    <h2>訓練場</h2>
+    <p style="text-align:center;margin-bottom:8px">選擇場地開始對戰</p>
+    <div class="list" id="tlist"></div>
+    <button class="btn" onclick="openScreen('main')">返回</button>
+</div>
+
+<!-- 道場 -->
+<div id="gym" class="screen">
+    <h2>道場挑戰</h2>
+    <p style="text-align:center;margin-bottom:8px">挑戰道場首領！</p>
+    <div class="list" id="glist"></div>
+    <button class="btn" onclick="openScreen('main')">返回</button>
+</div>
+
+<!-- 圖鑑 -->
+<div id="dex" class="screen">
+    <h2>精靈圖鑑</h2>
+    <div class="list" id="dlist"></div>
+    <button class="btn" onclick="openScreen('main')">返回</button>
+</div>
+
+<!-- 道具背包 -->
+<div id="items" class="screen">
+    <h2>🎒 道具背包</h2>
+    <div class="list" id="baglist"></div>
+    <button class="btn" onclick="openScreen('main')">返回</button>
+</div>
+
+<!-- 商店 -->
+<div id="shop" class="screen">
+    <h2>道具商店</h2>
+    <div class="list" id="slist"></div>
+    <button class="btn" onclick="openScreen('main')">返回</button>
+</div>
+
+<!-- 成就 -->
+<div id="ach" class="screen">
+    <h2>成就</h2>
+    <div class="list" id="alist"></div>
+    <button class="btn" onclick="openScreen('main')">返回</button>
+</div>
+
+<!-- 戰鬥 -->
+<div id="battle" class="screen battle">
+    <div class="arena">
+        <div class="f enemy">
+            <div style="font-size:12px;font-weight:bold;text-align:right" id="enemyinfo"></div>
+            <div class="hpbox"><div class="hp" id="ehp"></div><div class="hptxt" id="ehpt"></div></div>
+            <div class="avatar" id="eavt">❓</div>
+        </div>
+        <div class="qbox" id="qbox">
+            <div class="qtxt idle" id="que">選擇你的行動</div>
+            <div class="tbar" id="bar" style="width:0%"></div>
+        </div>
+        <div class="f player">
+            <div class="avatar" id="pavt">🔥</div>
+            <div class="hpbox"><div class="hp" id="php"></div><div class="hptxt" id="phpt"></div></div>
+            <div style="font-size:12px;font-weight:bold" id="pinfo"></div>
+        </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+        <button class="btn btn-primary" id="batk" onclick="doAct('ATK')">攻擊</button>
+        <button class="btn btn-accent" id="bitem" onclick="doAct('ITEM')">道具</button>
+        <button class="btn btn-danger" id="brun" onclick="doAct('RUN')">逃跑</button>
+    </div>
+
+    <div class="keys off" id="keys">
+        <div class="disp" id="inp">0</div>
+        <div class="kp">
+            <div class="key" onclick="key('7')">7</div><div class="key" onclick="key('8')">8</div><div class="key" onclick="key('9')">9</div>
+            <div class="key" onclick="key('4')">4</div><div class="key" onclick="key('5')">5</div><div class="key" onclick="key('6')">6</div>
+            <div class="key" onclick="key('1')">1</div><div class="key" onclick="key('2')">2</div><div class="key" onclick="key('3')">3</div>
+            <div class="key dot" onclick="key('.')">.</div>
+            <div class="key zero" onclick="key('0')">0</div>
+            <div class="key del" onclick="key('DEL')">DEL</div>
+            <div class="key enter" onclick="key('=')">=</div>
+        </div>
+    </div>
+</div>
+
+<!-- 結果彈窗 -->
+<div class="modal" id="modal">
+    <div class="mbox">
+        <h3 id="mtitle"></h3>
+        <p id="mtext" style="white-space:pre-line"></p>
+        <button class="btn btn-primary" onclick="afterModal()">繼續</button>
+    </div>
+</div>
+
+<!-- 暫停彈窗 -->
+<div class="modal" id="pause">
+    <div class="mbox">
+        <h3>遊戲暫停</h3>
+        <p id="pstat"></p>
+        <p>金幣: <span id="pcoin">0</span></p>
+        <button class="btn btn-primary" onclick="saveGame();showToast('已儲存！')">手動儲存</button>
+        <button class="btn" onclick="closeModal('pause')">繼續</button>
+        <button class="btn btn-danger" id="clearBtn" onclick="clearProgress(this)">🗑 清除遊戲進度</button>
+    </div>
+</div>
+
+<!-- 道具選擇 -->
+<div class="modal" id="itemmodal">
+    <div class="mbox">
+        <h3>選擇道具</h3>
+        <div id="ilist"></div>
+        <button class="btn btn-danger" style="padding:6px;font-size:12px" onclick="cancelItem()">取消</button>
+    </div>
+</div>
+
+<!-- 精靈詳情 -->
+<div class="modal" id="monmodal">
+    <div class="mbox">
+        <h3 id="mmTitle"></h3>
+        <div style="text-align:left" id="mmStats"></div>
+        <div id="mmBtns" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:10px"></div>
+    </div>
+</div>
+
+<!-- 捕捉動畫 -->
+<div class="modal" id="catch">
+    <div class="mbox"><h3 id="catchtxt">投擲中...</h3></div>
+</div>
+
+<!-- 輕提示 -->
+<div class="modal" id="toast"><div class="mbox"><p id="toattxt"></p></div></div>
+</div>
+
+<script>
+/* =====================================================================
+   v4 — 依規格重寫數值規則（P0 + P1）
+   變更摘要：
+   * 精靈 ID 改用 monster_01_a 體系；能力值上限 500（clamp）
+   * 回合時限：基本時限×(1+我方速度/500)×(1−敵方速度/1000)，每回合重置
+   * 攻擊傷害：我方攻×(餘時/回合時限)×屬性−rand(0.1~0.5)×敵防，<10 取 10×屬性
+   * 答錯反擊：敵攻×(1−餘時/回合時限)×屬性−rand(0.1~0.5)×我方防，<10 取 10×屬性
+   * 超時未答：固定 10×屬性效果
+   * 屬性環修正：火→克土（原代碼錯成克木）
+   * 捕捉：(餘時/基本時限)×(我方餘血−敵餘血)×卡倍率+我方吸引力 ≥ 敵吸引力；道場禁用卡
+   * 金幣：勝 +floor(10×我方餘血比例)；敗 −floor(10×敵餘血比例)，下限 0；逃跑 −10
+   * 道場：g2 獨立首領數值；場地效果（g1 敵速度+10/回合、g2 我方−10血/回合）；通關次數入檔
+   * 訓練場1出場率 0.4/0.4/0.2；訓練場2 0.3/0.4/0.4
+   * 小數點鍵＋小數答案解析（出題仍為整數，留待訓練場3）
+   * 存檔 schema v4＋v3 自動遷移；每回合/血量歸零/beforeunload 自動存檔；匯出/匯入
+   * 修復：closeModal 未定義導致戰鬥彈窗卡死；回合時限不重置導致後期秒超时
+   ===================================================================== */
+const MAXSTAT=500;
+const clamp=v=>Math.max(0,Math.min(MAXSTAT,Math.round(v*100)/100));
+const ELEM={'火':'#e74c3c','水':'#3498db','木':'#2ecc71','金':'#f1c40f','土':'#8d6e63'};
+
+/* 屬性效果：克制環 金→木→水→火→土→金 為 1.2；被克 0.8；其餘 1 */
+const STRONG={'金':'木','木':'水','水':'火','火':'土','土':'金'};
+function elemEff(a,d){return STRONG[a]===d?1.2:(STRONG[d]===a?0.8:1)}
+
+/* ===== 精靈資料（monster_01_a 體系；進化=舊個體各項+10） ===== */
+const M={
+monster_01_a:{id:'monster_01_a',num:1,tier:'a',name:'小火龍',elem:'火',hp:100,atk:60,def:30,spd:40,cha:20,evo:'monster_01_b',evoReq:70,emoji:'🔥'},
+monster_01_b:{id:'monster_01_b',num:1,tier:'b',name:'火恐龍',elem:'火',hp:110,atk:70,def:40,spd:50,cha:30,evo:'monster_01_c',evoReq:100,emoji:'🔥'},
+monster_01_c:{id:'monster_01_c',num:1,tier:'c',name:'噴火龍',elem:'火',hp:120,atk:80,def:50,spd:60,cha:40,evo:null,evoReq:Infinity,emoji:'🔥'},
+monster_02_a:{id:'monster_02_a',num:2,tier:'a',name:'小海龍',elem:'水',hp:100,atk:40,def:50,spd:30,cha:30,evo:'monster_02_b',evoReq:70,emoji:'💧'},
+monster_02_b:{id:'monster_02_b',num:2,tier:'b',name:'海龍',elem:'水',hp:110,atk:50,def:60,spd:40,cha:40,evo:'monster_02_c',evoReq:100,emoji:'💧'},
+monster_02_c:{id:'monster_02_c',num:2,tier:'c',name:'海嘯龍',elem:'水',hp:120,atk:60,def:70,spd:50,cha:50,evo:null,evoReq:Infinity,emoji:'💧'},
+monster_03_a:{id:'monster_03_a',num:3,tier:'a',name:'小葉龍',elem:'木',hp:100,atk:30,def:70,spd:20,cha:30,evo:'monster_03_b',evoReq:70,emoji:'🌳'},
+monster_03_b:{id:'monster_03_b',num:3,tier:'b',name:'楓葉龍',elem:'木',hp:110,atk:40,def:80,spd:30,cha:40,evo:'monster_03_c',evoReq:100,emoji:'🌳'},
+monster_03_c:{id:'monster_03_c',num:3,tier:'c',name:'落葉龍',elem:'木',hp:120,atk:50,def:90,spd:40,cha:50,evo:null,evoReq:Infinity,emoji:'🌳'},
+monster_04_a:{id:'monster_04_a',num:4,tier:'a',name:'金銀龍',elem:'金',hp:100,atk:80,def:20,spd:30,cha:10,evo:null,evoReq:Infinity,emoji:'🥇'},
+monster_05_a:{id:'monster_05_a',num:5,tier:'a',name:'土匪龍',elem:'土',hp:100,atk:20,def:100,spd:20,cha:10,evo:null,evoReq:Infinity,emoji:'🪨'}
+};
+const STATS=['hp','atk','def','spd','cha'];
+const STAT_LABEL={hp:'最大血量',atk:'攻擊力',def:'防禦力',spd:'速度',cha:'吸引力'};
+function baseStats(id){const m=M[id],o={};STATS.forEach(k=>o[k]=clamp(m[k]));return o}
+function clampStats(o){const r={};STATS.forEach(k=>r[k]=clamp(o[k]||0));return r}
+/* ===== 個體制度：圖鑑中每隻精靈持有獨立能力值，可逐一顯示與出售 ===== */
+function dexInst(id){return S.dex.filter(x=>x.id===id)}
+function addInst(id,st){S.uidn=(S.uidn||0)+1;S.dex.push({u:S.uidn,id:id,st:clampStats(st)});return S.uidn}
+function instSellPrice(id,st){let v=avg(st)*0.8;if(M[id].elem==='金')v*=1.5;return Math.floor(v)}
+/* ===== 道場開放：對應訓練場通關 5 次 + 完成上一道場 ===== */
+function gymReq(gid){const n=+gid.slice(1);return {train:'t'+n,need:5,prev:n>1?'g'+(n-1):null}}
+function gymUnlocked(gid){const r=gymReq(gid);if((S.train[r.train]||0)<r.need)return false;if(r.prev&&!(S.gyms[r.prev]>0))return false;return true}
+function gymLockTxt(gid){const r=gymReq(gid);const p=['需完成 '+VENUES[r.train].name+' 共 '+r.need+' 次（現 '+(S.train[r.train]||0)+' 次）'];if(r.prev)p.push('並成功完成 '+VENUES[r.prev].name);return p.join('，')}
+function avg(o){return (o.hp+o.atk+o.def+o.spd+o.cha)/5}
+
+/* ===== 場地資料 ===== */
+const VENUES={
+t1:{id:'t1',name:'訓練場 1',type:'T',topic:'ADD',base:20,spawns:{'monster_01_a':0.4,'monster_02_a':0.4,'monster_03_a':0.2}},
+t2:{id:'t2',name:'訓練場 2',type:'T',topic:'SUB',base:20,spawns:{'monster_01_a':0.3,'monster_02_a':0.4,'monster_03_a':0.4}},
+t3:{id:'t3',name:'訓練場 3',type:'T',topic:'MIX',base:25,spawns:{'monster_04_a':0.2,'monster_05_a':0.8}},
+g1:{id:'g1',name:'道場 1 (加法)',type:'G',topic:'ADD',base:15,enemy:'monster_04_a',
+    override:{hp:120,atk:100,def:30,spd:40,cha:20},effect:'spdUp',effectTxt:'每回合完結：敵方速度 +10'},
+g2:{id:'g2',name:'道場 2 (減法)',type:'G',topic:'SUB',base:15,enemy:'monster_04_a',
+    override:{hp:120,atk:50,def:80,spd:40,cha:20},effect:'hpDrain',effectTxt:'每回合完結：我方血量 −10'},
+g3:{id:'g3',name:'道場 3 (加減混合)',type:'G',topic:'MIX',base:20,enemy:'monster_05_a',
+    override:{hp:150,atk:80,def:100,spd:50,cha:10},effect:'defUp',effectTxt:'每回合完結：敵方防禦力 +10'}
+};
+const TOPIC_TXT={ADD:'兩位數加法',SUB:'兩位數減法',MIX:'兩位數加減混合'};
+const GYM_CLEAR_BONUS=10; /* 每次成功完成道場的額外金幣獎勵 */
+
+/* ===== 道具資料 ===== */
+const CARDS={
+card_01:{id:'card_01',name:'原始收集卡',m:0.8,price:50,emoji:'🎴'},
+card_02:{id:'card_02',name:'升級收集卡',m:0.9,price:100,emoji:'🃏'},
+card_03:{id:'card_03',name:'皇牌收集卡',m:1.1,price:200,emoji:'👑'},
+card_04:{id:'card_04',name:'究極收集卡',m:1.5,price:500,emoji:'💎'},
+drk_01:{id:'drk_01',name:'能量飲品',m:0,price:10,emoji:'⚡',use:true}
+};
+
+/* ===== 狀態（schema v4） ===== */
+let S={v:5,init:false,coin:0,pid:'monster_01_a',ps:null,php:0,max:100,
+    inv:{card_01:3,card_02:0,card_03:0,card_04:0,drk_01:0},dex:[],uidn:0,
+    gyms:{g1:0,g2:0,g3:0},train:{t1:0,t2:0,t3:0},
+    stats:{win:0,catch:0,correct:0,wrong:0,timeout:0},
+    ach:{}};
+let B={on:false,act:null,venue:null,base:15,limit:15,time:15,timer:null,q:{q:'',a:0},p:null,e:null,card:null};
+
+/* ===== 安全儲存：沙箱/無儲存權限環境自動降級為記憶體儲存，不會報錯卡死 ===== */
+const LS=(function(){
+    let mem={},ok=true;
+    try{localStorage.setItem('__ls_probe','1');localStorage.removeItem('__ls_probe')}catch(e){ok=false}
+    return{
+        get(k){try{if(ok)return localStorage.getItem(k)}catch(e){ok=false}return k in mem?mem[k]:null},
+        set(k,v){try{if(ok){localStorage.setItem(k,v);return}}catch(e){ok=false}mem[k]=v},
+        del(k){try{if(ok)localStorage.removeItem(k)}catch(e){ok=false}delete mem[k]}
+    };
+})();
+
+/* ===== 儲存：載入（含 v3 遷移）與寫入 ===== */
+function migrateOld(o){
+    const mid={a1:'monster_01_a',a2:'monster_01_b',a3:'monster_01_c',b1:'monster_02_a',b2:'monster_02_b',b3:'monster_02_c',c1:'monster_03_a',c2:'monster_03_b',c3:'monster_03_c',d1:'monster_04_a'};
+    const cid={c1:'card_01',c2:'card_02',c3:'card_03',c4:'card_04'};
+    o.pid=mid[o.pid]||'monster_01_a';
+    o.dex=(o.dex||[]).map(k=>mid[k]).filter(Boolean);
+    const ni={card_01:0,card_02:0,card_03:0,card_04:0,drk_01:0};
+    Object.entries(o.inv||{}).forEach(([k,v])=>{if(CARDS[cid[k]||k])ni[cid[k]||k]=v|0});
+    o.inv=ni;
+    o.gyms={g1:0,g2:0,g3:0};
+    o.stats={win:(o.stats&&o.stats.win)||0,catch:(o.stats&&o.stats.catch)||0,correct:0,wrong:0,timeout:0};
+    o.ps=null;o.ach={};o.fuse={};o.v=4;
+    return o;
+}
+function migrateV4(o){ /* v4（id 數組+全域融合）→ v5（個體數據） */
+    const fu=o.fuse||{};o.uidn=0;
+    o.dex=(o.dex||[]).filter(id=>M[id]&&id!==o.pid).map(id=>{
+        const st=baseStats(id),b=fu[id]||0;
+        STATS.forEach(k=>st[k]=clamp(st[k]+b));
+        return {u:++o.uidn,id:id,st:st};
+    });
+    delete o.fuse;o.train={t1:0,t2:0,t3:0};o.v=5;return o;
+}
+function loadGame(){
+    const x=LS.get('mmrpg_v5')||LS.get('mmrpg_v4')||LS.get('mmrpg_v3');
+    if(!x)return false;
+    try{
+        let o=JSON.parse(x);
+        if(o.v!==5){if(o.v!==4)o=migrateOld(o);o=migrateV4(o)}
+        if(!o.pid||!M[o.pid])o.pid='monster_01_a';
+        if(!o.ps||typeof o.ps!=='object')o.ps=baseStats(o.pid);
+        o.ps=clampStats(o.ps);
+        Object.assign(S,o);
+        if(!S.gyms)S.gyms={g1:0,g2:0,g3:0};
+        ['g1','g2','g3'].forEach(k=>{if(typeof S.gyms[k]!=='number')S.gyms[k]=0});
+        if(!S.train)S.train={t1:0,t2:0,t3:0};
+        ['t1','t2','t3'].forEach(k=>{if(typeof S.train[k]!=='number')S.train[k]=0});
+        if(typeof S.uidn!=='number')S.uidn=0;
+        if(!Array.isArray(S.dex))S.dex=[];
+        S.dex=S.dex.filter(x=>x&&M[x.id]&&x.st).map(x=>({u:typeof x.u==='number'?x.u:++S.uidn,id:x.id,st:clampStats(x.st)}));
+        Object.keys(CARDS).forEach(k=>{if(typeof S.inv[k]!=='number')S.inv[k]=0});
+        STATS.forEach(k=>{if(typeof S.ps[k]!=='number')S.ps[k]=clamp(M[S.pid][k]);});
+        S.max=S.ps.hp;
+        if(!(S.php>0)||S.php>S.max)S.php=S.max;
+        return true;
+    }catch(e){return false}
+}
+function saveGame(){try{LS.set('mmrpg_v5',JSON.stringify(S))}catch(e){}}
+window.addEventListener('beforeunload',()=>{if(S.init)saveGame()});
+
+/* ===== 初始化 ===== */
+function initStart(){
+    const g=document.getElementById('pick');g.innerHTML='';
+    ['monster_01_a','monster_02_a','monster_03_a'].forEach(k=>{
+        const m=M[k],d=document.createElement('div');d.className='card';
+        d.innerHTML=`<div class="avatar" style="background:${ELEM[m.elem]};width:56px;height:56px;font-size:30px">${m.emoji}</div><div style="font-weight:bold;font-size:13px">${m.name}</div><div style="font-size:10px;margin:2px 0"><span style="color:#fff;background:${ELEM[m.elem]};padding:1px 8px;border-radius:8px">${m.elem}</span></div><div style="font-size:10px;color:#666;text-align:left;line-height:1.7">${STATS.map(k=>`${STAT_LABEL[k]}：<b style="color:#292f36">${m[k]}</b>`).join('<br>')}</div>`;
+        d.onclick=()=>{g.querySelectorAll('.card').forEach(c=>c.classList.remove('sel'));d.classList.add('sel');S.pid=k;document.getElementById('go').disabled=false};
+        g.appendChild(d);
+    });
+}
+function startGame(){
+    if(!S.pid||!M[S.pid])return;
+    S.ps=baseStats(S.pid);
+    S.max=S.ps.hp;S.php=S.ps.hp;
+    S.init=true;saveGame();
+    document.getElementById('header').classList.add('active');
+    showScreen('main');updMain();
+}
+
+/* ===== 畫面切換 ===== */
+function showScreen(id){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if(id==='main')updMain();
+    if(id==='train')populateVenues('tlist','T');
+    if(id==='gym')populateVenues('glist','G');
+    if(id==='shop')populateShop();
+    if(id==='items')populateBag();
+    if(id==='dex')populateDex();
+    if(id==='ach')populateAch();
+}
+function openScreen(id){saveGame();showScreen(id);}
+
+/* ===== 主選單 ===== */
+function updMain(){
+    const m=M[S.pid],p=S.ps;
+    document.getElementById('pbox').innerHTML=`<div class="avatar" style="background:${ELEM[m.elem]}">${m.emoji}</div><div style="flex:1"><h3>${m.name}</h3><div class="hpbox"><div class="hp" id="dashhp" style="width:${S.php/S.max*100}%"></div></div><small style="display:block;margin-top:4px;line-height:1.6">最大血量 ${S.php}/${S.max}<br>攻擊力 ${p.atk} | 防禦力 ${p.def}<br>速度 ${p.spd} | 吸引力 ${p.cha}</small></div>`;
+    document.getElementById('coin').innerText=S.coin;
+}
+
+/* ===== 場地列表 ===== */
+function populateVenues(listId,type){
+    const el=document.getElementById(listId);el.innerHTML='';
+    Object.values(VENUES).filter(v=>v.type===type).forEach(v=>{
+        const d=document.createElement('div');d.className='list-item';
+        const isGym=type==='G';
+        const open=!isGym||gymUnlocked(v.id);
+        let extra='';
+        if(isGym){
+            extra=`<small>場地效果：${v.effectTxt} | 已通關：${S.gyms[v.id]||0} 次</small>`;
+            if(!open)extra=`<small style="color:#e67e22">🔒 ${gymLockTxt(v.id)}</small>`;
+        }else{
+            extra=`<small>已完成：${S.train[v.id]||0} 次（完成 5 次可解鎖對應道場）</small>`;
+        }
+        d.innerHTML=`<div style="flex:1"><div style="font-weight:bold">${v.name}</div><small>題型: ${TOPIC_TXT[v.topic]} | 基本時限: ${v.base}秒</small><br>${extra}</div><button class="btn ${open?'btn-primary':''}" ${open?'':'disabled'} onclick="startBattle('${v.id}')">${open?'進入':'🔒 未開放'}</button>`;
+        el.appendChild(d);
+    });
+}
+
+/* ===== 商店 ===== */
+function populateShop(){
+    const el=document.getElementById('slist');el.innerHTML='';
+    Object.values(CARDS).forEach(c=>{
+        const d=document.createElement('div');d.className='list-item';
+        const desc=c.use?'拍檔能力值 +2（可選一項）':'捕捉倍率 ×'+c.m;
+        d.innerHTML=`<div style="font-size:30px;margin-right:12px">${c.emoji}</div><div class="list-item-info"><strong>${c.name}</strong><small>${desc}</small></div><div><span style="color:#f39c12;font-weight:bold">🪙${c.price}</span> <button class="btn btn-primary" style="padding:6px 12px;font-size:12px" ${S.coin<c.price?'disabled':''} onclick="buyCard('${c.id}',${c.price})">購買(${S.inv[c.id]||0})</button></div>`;
+        el.appendChild(d);
+    });
+}
+function buyCard(id,p){if(S.coin>=p&&CARDS[id]){S.coin-=p;S.inv[id]=(S.inv[id]||0)+1;saveGame();populateShop();updMain()}}
+
+/* ===== 圖鑑（個體制：每一隻獨立顯示，編號僅內部使用） ===== */
+function populateDex(){
+    const el=document.getElementById('dlist');el.innerHTML='';
+    const list=S.dex.slice().sort((a,b)=>(M[a.id].num-M[b.id].num)||(avg(b.st)-avg(a.st)));
+    if(list.length===0&&!S.ps){el.innerHTML='<p style="text-align:center;color:#666">尚未收集任何精靈</p>';return}
+    if(S.ps&&S.pid){
+        const m=M[S.pid];
+        const d=document.createElement('div');d.className='list-item';d.style.cursor='pointer';
+        d.innerHTML=`<div class="avatar" style="background:${ELEM[m.elem]}">${m.emoji}</div><div class="list-item-info"><strong>No.${m.num} ${m.name}（拍檔）</strong><small>${m.elem} | 平均 ${Math.round(avg(S.ps)*10)/10}</small></div><div style="font-size:20px">›</div>`;
+        d.onclick=openPartnerDetail;
+        el.appendChild(d);
+    }
+    list.forEach(x=>{
+        const m=M[x.id],d=document.createElement('div');d.className='list-item';d.style.cursor='pointer';
+        d.innerHTML=`<div class="avatar" style="background:${ELEM[m.elem]}">${m.emoji}</div><div class="list-item-info"><strong>No.${m.num} ${m.name}</strong><small>${m.elem} | 平均 ${Math.round(avg(x.st)*10)/10} | ${STATS.map(k=>STAT_LABEL[k].slice(0,2)+x.st[k]).join(' ')}</small></div><div style="font-size:20px">›</div>`;
+        d.onclick=()=>openMonDetail(x.u);
+        el.appendChild(d);
+    });
+}
+
+/* ===== 出售 / 融合 / 更換拍檔（個體制，以 u 編號定位） ===== */
+function findInst(u){return S.dex.find(x=>x.u===u)}
+function statRows(es,m){
+    return STATS.map(k=>`<div style="display:flex;justify-content:space-between;padding:2px 8px;font-size:13px"><span>${STAT_LABEL[k]}</span><b>${es[k]}${es[k]!==m[k]?`<small style="color:#f39c12">（基礎${m[k]}）</small>`:''}</b></div>`).join('')+
+        `<div style="display:flex;justify-content:space-between;padding:2px 8px;font-size:13px;color:#888"><span>平均能力值</span><b>${Math.round(avg(es)*10)/10}</b></div>`;
+}
+function openMonDetail(u){
+    const x=findInst(u);if(!x)return;
+    const m=M[x.id],es=x.st;
+    document.getElementById('mmTitle').innerText=`No.${m.num} ${m.name}`;
+    document.getElementById('mmStats').innerHTML=
+        `<div style="text-align:center;margin-bottom:6px"><span class="attr" style="background:${ELEM[m.elem]};padding:2px 8px;border-radius:10px;color:#fff;font-size:11px">${m.elem}</span></div>`+statRows(es,m);
+    const btns=document.getElementById('mmBtns');btns.innerHTML='';
+    const gain=fuseGain(es);
+    const bf=document.createElement('button');bf.className='btn';bf.style.flex='1';bf.style.background='#9b59b6';
+    bf.innerText=`🔗 融合（拍檔任一能力 +${gain}）`;bf.onclick=()=>fusePick(x.u);
+    const bs=document.createElement('button');bs.className='btn btn-accent';bs.style.flex='1';
+    bs.innerText=`出售 +${instSellPrice(x.id,es)}🪙`;bs.onclick=()=>sellMonster(x.u);
+    const bp=document.createElement('button');bp.className='btn btn-primary';bp.style.flex='1';
+    bp.innerText='更換拍檔';bp.onclick=()=>switchPartner(x.u);
+    btns.appendChild(bf);btns.appendChild(bs);btns.appendChild(bp);
+    const bc=document.createElement('button');bc.className='btn';bc.innerText='關閉';bc.onclick=()=>closeModal('monmodal');
+    btns.appendChild(bc);
+    document.getElementById('monmodal').classList.add('show');
+}
+function openPartnerDetail(){
+    if(!S.ps)return;
+    const m=M[S.pid];
+    document.getElementById('mmTitle').innerText=`No.${m.num} ${m.name}（拍檔）`;
+    document.getElementById('mmStats').innerHTML=
+        `<div style="text-align:center;margin-bottom:6px"><span class="attr" style="background:${ELEM[m.elem]};padding:2px 8px;border-radius:10px;color:#fff;font-size:11px">${m.elem}</span></div>`+statRows(S.ps,m);
+    const btns=document.getElementById('mmBtns');btns.innerHTML='';
+    const bc=document.createElement('button');bc.className='btn';bc.innerText='關閉';bc.onclick=()=>closeModal('monmodal');
+    btns.appendChild(bc);
+    document.getElementById('monmodal').classList.add('show');
+}
+function sellMonster(u){
+    const x=findInst(u);if(!x)return;
+    const g=instSellPrice(x.id,x.st);
+    S.dex=S.dex.filter(y=>y.u!==u);
+    S.coin+=g;saveGame();
+    closeModal('monmodal');populateDex();updMain();
+    showToast('出售 '+M[x.id].name+'，+'+g+' 金幣');
+}
+/* ===== 融合：以一只非拍檔精靈為材料，拍檔可選一項能力 +（平均能力×0.2 取整） ===== */
+function fuseGain(st){return Math.floor(avg(st)*0.2)}
+let pendingFuseU=null;
+function fusePick(u){
+    const x=findInst(u);if(!x)return;
+    pendingFuseU=u;
+    const gain=fuseGain(x.st);
+    document.getElementById('mmTitle').innerText=`融合 ${M[x.id].name}：選擇拍檔 +${gain} 的能力`;
+    document.getElementById('mmStats').innerHTML=`<p style="font-size:12px;color:#666;margin-bottom:6px">融合後這隻精靈會消失，拍檔其中一項能力 +${gain}（上限 ${MAXSTAT}）</p>`+STATS.map(k=>
+        `<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 8px;font-size:13px"><span>${STAT_LABEL[k]}　<b>${S.ps[k]}</b>${S.ps[k]>=MAXSTAT?'<small style="color:#e74c3c">（已滿）</small>':''}</span><button class="btn btn-primary" style="padding:4px 14px;font-size:12px" ${S.ps[k]>=MAXSTAT?'disabled':''} onclick="applyFuse('${k}')">+${gain}</button></div>`).join('');
+    const btns=document.getElementById('mmBtns');btns.innerHTML='';
+    const bc=document.createElement('button');bc.className='btn';bc.innerText='取消';bc.onclick=()=>{pendingFuseU=null;closeModal('monmodal');populateDex()};
+    btns.appendChild(bc);
+    document.getElementById('monmodal').classList.add('show');
+}
+function applyFuse(k){
+    if(pendingFuseU===null)return;
+    const x=findInst(pendingFuseU);if(!x)return;
+    if(S.ps[k]>=MAXSTAT){showToast('該能力已達上限！');return}
+    const gain=fuseGain(x.st),name=M[x.id].name;
+    S.dex=S.dex.filter(y=>y.u!==x.u);
+    pendingFuseU=null;
+    S.ps[k]=clamp(S.ps[k]+gain);
+    if(k==='hp'){const d=S.ps.hp-S.max;S.max=S.ps.hp;if(d>0)S.php=Math.min(S.max,S.php+d);}
+    checkEvolve();
+    saveGame();closeModal('monmodal');populateDex();updMain();
+    showToast(`${name} 融入拍檔！${STAT_LABEL[k]} +${gain}`);
+}
+function switchPartner(u){
+    const x=findInst(u);if(!x)return;
+    const oldId=S.pid,oldPs=S.ps;
+    S.pid=x.id;S.ps=clampStats(x.st);S.max=S.ps.hp;S.php=S.ps.hp;
+    S.dex=S.dex.filter(y=>y.u!==u);
+    if(oldId&&oldPs&&oldPs.hp>0)addInst(oldId,oldPs);
+    saveGame();closeModal('monmodal');populateDex();updMain();
+    showToast(M[x.id].name+' 成為了你的新拍檔！');
+}
+
+/* ===== 道具背包：出售 / 使用 ===== */
+function sellItemPrice(id){return Math.floor(CARDS[id].price*0.8)}
+function populateBag(){
+    const el=document.getElementById('baglist');el.innerHTML='';
+    let has=false;
+    Object.values(CARDS).forEach(c=>{
+        const n=S.inv[c.id]||0;if(n<=0)return;
+        has=true;
+        const d=document.createElement('div');d.className='list-item';
+        let btns=`<button class="btn btn-accent" style="padding:6px 12px;font-size:12px;margin-left:6px" onclick="sellItem('${c.id}')">出售(${sellItemPrice(c.id)}🪙)</button>`;
+        if(c.use)btns+=`<button class="btn btn-primary" style="padding:6px 12px;font-size:12px;margin-left:6px" onclick="useItem('${c.id}')">使用</button>`;
+        d.innerHTML=`<div style="font-size:30px;margin-right:12px">${c.emoji}</div><div class="list-item-info"><strong>${c.name}</strong><small>持有 ${n} 個${c.use?' | 使用：拍檔能力 +2':' | 收集卡：限對戰中使用'}</small></div>${btns}`;
+        el.appendChild(d);
+    });
+    if(!has)el.innerHTML='<p style="text-align:center;color:#666;padding:20px">背包空空如也，去商店購買道具吧！</p>';
+}
+function sellItem(id){
+    if(!S.inv[id]||S.inv[id]<=0)return;
+    S.inv[id]--;
+    const g=sellItemPrice(id);S.coin+=g;saveGame();
+    populateBag();updMain();showToast('出售 '+CARDS[id].name+'，+'+g+' 金幣');
+}
+function useItem(id){
+    if(id!=='drk_01')return;
+    if(!S.inv.drk_01||S.inv.drk_01<=0)return;
+    if(S.coin<0)return;
+    if(S.ps.hp>=MAXSTAT&&S.ps.atk>=MAXSTAT&&S.ps.def>=MAXSTAT&&S.ps.spd>=MAXSTAT&&S.ps.cha>=MAXSTAT){showToast('所有能力值已達上限！');return}
+    chooseBoost();
+}
+let boosting=false;
+function chooseBoost(){
+    boosting=true;
+    document.getElementById('mmTitle').innerText='使用能量飲品：選擇 +2 的能力';
+    document.getElementById('mmStats').innerHTML=STATS.map(k=>
+        `<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 8px;font-size:13px"><span>${STAT_LABEL[k]}　<b>${S.ps[k]}</b>${S.ps[k]>=MAXSTAT?'<small style="color:#e74c3c">（已滿）</small>':''}</span><button class="btn btn-primary" style="padding:4px 14px;font-size:12px" ${S.ps[k]>=MAXSTAT?'disabled':''} onclick="applyBoost('${k}')">+2</button></div>`).join('');
+    const btns=document.getElementById('mmBtns');btns.innerHTML='';
+    const bc=document.createElement('button');bc.className='btn';bc.innerText='取消';bc.onclick=()=>{boosting=false;closeModal('monmodal');populateBag()};
+    btns.appendChild(bc);
+    document.getElementById('monmodal').classList.add('show');
+}
+function applyBoost(k){
+    if(!boosting)return;
+    if(S.ps[k]>=MAXSTAT)return;
+    if(!S.inv.drk_01||S.inv.drk_01<=0)return;
+    S.inv.drk_01--;
+    S.ps[k]=clamp(S.ps[k]+2);
+    if(k==='hp'){const d=S.ps.hp-S.max;S.max=S.ps.hp;if(d>0)S.php=Math.min(S.max,S.php+d);}
+    checkEvolve();
+    saveGame();
+    closeModal('monmodal');boosting=false;
+    populateBag();updMain();
+    showToast(STAT_LABEL[k]+' +2！');
+}
+
+/* ===== 成就（解鎖狀態持久化，完成即獲 +10 金幣） ===== */
+const ACH_REWARD=10;
+const ACHS=[{id:'first_win',n:'初出茅廬',d:'擊敗 1 隻精靈',f:()=>S.stats.win>=1},
+{id:'vet',n:'戰鬥高手',d:'擊敗 10 隻精靈',f:()=>S.stats.win>=10},
+{id:'gym1',n:'道場霸主',d:'通關道場 1',f:()=>(S.gyms.g1||0)>=1},
+{id:'gym2',n:'雙冠訓練師',d:'通關道場 2',f:()=>(S.gyms.g2||0)>=1},
+{id:'gym3',n:'三冠王',d:'通關道場 3',f:()=>(S.gyms.g3||0)>=1},
+{id:'dex3',n:'收集新手',d:'累計收服 3 隻精靈',f:()=>S.stats.catch>=3},
+{id:'catch10',n:'捕捉達人',d:'累計收服 10 隻精靈',f:()=>S.stats.catch>=10}
+];
+function checkAch(){
+    const un=[];
+    ACHS.forEach(a=>{
+        if(a.f()&&!S.ach[a.id]){S.ach[a.id]=true;S.coin+=ACH_REWARD;un.push(a.n)}
+    });
+    return un;
+}
+function populateAch(){
+    const el=document.getElementById('alist');el.innerHTML='';
+    ACHS.forEach(a=>{
+        const d=document.createElement('div');d.className='list-item';
+        d.innerHTML=`<div style="font-size:24px;margin-right:12px">${S.ach[a.id]?'🏆':'🔒'}</div><div class="list-item-info"><strong>${a.n}</strong><small>${a.d}</small></div><div style="font-size:11px;color:${S.ach[a.id]?'#2ecc71':'#f39c12'};font-weight:bold;white-space:nowrap">${S.ach[a.id]?'已領取':'獎勵 +'+ACH_REWARD+'🪙'}</div>`;
+        el.appendChild(d);
+    });
+}
+
+/* ===== 戰鬥：開場 ===== */
+function pickRandom(spawns){
+    const arr=Object.entries(spawns);
+    const total=arr.reduce((s,x)=>s+x[1],0);
+    let r=Math.random()*total;
+    for(const [id,rate] of arr){r-=rate;if(r<=0)return id}
+    return arr[0][0];
+}
+function makeMonster(id,override){
+    const m=M[id];
+    const e={id,mId:id,name:m.name,elem:m.elem,emoji:m.emoji,maxHp:clamp((override||m).hp??m.hp)};
+    STATS.forEach(k=>e[k]=clamp((override&&override[k]!==undefined)?override[k]:m[k]));
+    e.chp=e.maxHp;
+    return e;
+}
+function startBattle(vid){
+    const v=VENUES[vid];if(!v)return;
+    if(v.type==='G'&&!gymUnlocked(vid)){showToast('🔒 '+gymLockTxt(vid));return}
+    clearInterval(B.timer);
+    B.on=true;B.act=null;B.card=null;B.venue=vid;B.base=v.base;
+    B.p={mId:S.pid,name:M[S.pid].name,elem:M[S.pid].elem,emoji:M[S.pid].emoji,maxHp:S.max,chp:S.php,...clampStats(S.ps)};
+    B.e=(v.type==='G')?makeMonster(v.enemy,v.override):makeMonster(pickRandom(v.spawns));
+    showScreen('battle');
+    setKeys(false);showIdle();
+    document.getElementById('batk').disabled=false;
+    document.getElementById('bitem').disabled=(v.type==='G'); /* 道場禁用收集卡 */
+    document.getElementById('brun').disabled=false;
+    updBat();
+}
+
+/* ===== 固定佈局輔助：鍵盤只啟用/禁用，不再顯示/隱藏 ===== */
+function setKeys(on){document.getElementById('keys').classList.toggle('off',!on)}
+function showIdle(){
+    const q=document.getElementById('que');
+    q.innerText='選擇你的行動';q.classList.add('idle');
+    document.getElementById('bar').style.width='0%';
+}
+function updBat(){
+    document.getElementById('pavt').innerText=B.p.emoji;document.getElementById('pavt').style.background=ELEM[B.p.elem];
+    document.getElementById('php').style.width=Math.max(0,B.p.chp/B.p.maxHp*100)+'%';
+    document.getElementById('phpt').innerText=Math.max(0,B.p.chp)+'/'+B.p.maxHp;
+    document.getElementById('pinfo').innerText=B.p.name+'（拍檔）';
+    document.getElementById('eavt').innerText=B.e.emoji;document.getElementById('eavt').style.background=ELEM[B.e.elem];
+    document.getElementById('ehp').style.width=Math.max(0,B.e.chp/B.e.maxHp*100)+'%';
+    document.getElementById('ehpt').innerText=Math.max(0,B.e.chp)+'/'+B.e.maxHp;
+    document.getElementById('enemyinfo').innerText=(VENUES[B.venue].type==='G'?'首領 ':'野生 ')+B.e.name;
+}
+
+/* ===== 戰鬥：行動選擇 ===== */
+function doAct(a){
+    if(!B.on||B.act)return;
+    if(a==='ITEM'&&VENUES[B.venue].type==='G')return;
+    B.act=a;
+    document.getElementById('batk').disabled=true;
+    document.getElementById('bitem').disabled=true;
+    document.getElementById('brun').disabled=true;
+    if(a==='RUN'){S.coin=Math.max(0,S.coin-10);saveGame();endBattle(false,'逃跑成功！\n扣除 10 金幣');return}
+    if(a==='ATK'){beginTurn()}
+    if(a==='ITEM'){showItems()}
+}
+function showItems(){
+    const el=document.getElementById('ilist');el.innerHTML='';
+    let has=false;
+    Object.keys(S.inv).forEach(k=>{
+        if(S.inv[k]>0&&CARDS[k]&&!CARDS[k].use){has=true;const c=CARDS[k];
+            const b=document.createElement('button');b.className='btn btn-accent';b.style.fontSize='12px';b.style.padding='6px';
+            b.innerText=c.emoji+' '+c.name+' ('+S.inv[k]+')';
+            b.onclick=()=>{closeModal('itemmodal');B.card=k;beginTurn()};
+            el.appendChild(b);
+        }
+    });
+    if(!has){B.act=null;enableActions();showToast('沒有道具！')}
+    else document.getElementById('itemmodal').classList.add('show');
+}
+function cancelItem(){B.act=null;closeModal('itemmodal');enableActions()}
+function enableActions(){
+    document.getElementById('batk').disabled=false;
+    document.getElementById('bitem').disabled=(VENUES[B.venue].type==='G');
+    document.getElementById('brun').disabled=false;
+}
+
+/* ===== 戰鬥：回合時限（每回合重置） =====
+   時限 = 基本時限 × (1+我方速度/500) × (1−敵方速度/1000) */
+function turnLimit(){
+    return Math.max(3,VENUES[B.venue].base*(1+B.p.spd/500)*(1-B.e.spd/1000));
+}
+function beginTurn(){
+    B.limit=turnLimit();B.time=B.limit;
+    setKeys(true);
+    genQ();startTimer();
+}
+function genQ(){
+    const v=VENUES[B.venue];
+    let n1=Math.floor(Math.random()*90)+10,n2=Math.floor(Math.random()*90)+10,q='',a=0;
+    if(v.topic==='MIX'){
+        // 加減混合：同一道題同時含加法與減法，中間過程與結果均不為負
+        let x,y,z;
+        if(Math.random()<0.5){
+            // 形式：x + y − z
+            do{x=Math.floor(Math.random()*90)+10;y=Math.floor(Math.random()*90)+10;z=Math.floor(Math.random()*90)+10;}while(x+y-z<0);
+            q=x+'+'+y+'-'+z;a=x+y-z;
+        }else{
+            // 形式：x − y + z（先減後加，保證中間不為負）
+            x=Math.floor(Math.random()*90)+10;y=Math.floor(Math.random()*90)+10;z=Math.floor(Math.random()*90)+10;
+            if(x<y){const t=x;x=y;y=t;}
+            q=x+'-'+y+'+'+z;a=x-y+z;
+        }
+    }
+    else if(v.topic==='ADD'){q=n1+'+'+n2;a=n1+n2;}
+    else{q=Math.max(n1,n2)+'-'+Math.min(n1,n2);a=Math.max(n1,n2)-Math.min(n1,n2);}
+    B.q={q,a};
+    const qe=document.getElementById('que');
+    qe.innerText=q+' = ?';qe.classList.remove('idle');
+    document.getElementById('inp').innerText='0';inp='0';
+}
+function startTimer(){
+    clearInterval(B.timer);
+    const bar=document.getElementById('bar');bar.style.width='100%';bar.style.background='var(--accent)';
+    B.timer=setInterval(()=>{
+        if(!B.on||!B.act){clearInterval(B.timer);return}
+        B.time-=0.1;
+        const pct=Math.max(0,B.time/B.limit*100);
+        bar.style.width=pct+'%';
+        if(pct<30)bar.style.background='var(--hp-crit)';else if(pct<60)bar.style.background='var(--hp-warn)';
+        if(B.time<=0){clearInterval(B.timer);handleTimeout();}
+    },100);
+}
+
+/* ===== 數字鍵盤（支援小數點） ===== */
+let inp='0';
+function key(v){
+    if(!B.on||!B.act)return;
+    if(v==='DEL'){inp=inp.slice(0,-1)||'0';}
+    else if(v==='='){submit();return;}
+    else if(v==='.'){
+        if(inp==='0')inp='';
+        if(!inp.includes('.'))inp=(inp===''?'0.':inp+'.');
+    }
+    else{inp=inp==='0'?'':inp;if(inp.length<7)inp+=v;}
+    document.getElementById('inp').innerText=inp;
+}
+document.onkeydown=function(e){
+    if(!B.on||!B.act)return;
+    if(/^[0-9]$/.test(e.key)){key(e.key);e.preventDefault();}
+    else if(e.key==='Backspace'){key('DEL');e.preventDefault();}
+    else if(e.key==='.'||e.key==='。'){key('.');e.preventDefault();}
+    else if(e.key==='Enter'||e.key==='='){key('=');e.preventDefault();}
+};
+function isCorrect(){
+    const val=parseFloat(inp);
+    return inp!==''&&!isNaN(val)&&Math.abs(val-B.q.a)<1e-9;
+}
+
+/* ===== 戰鬥：結算 ===== */
+const rand01_05=()=>0.1+Math.random()*0.4;
+
+function submit(){
+    clearInterval(B.timer);
+    const ok=isCorrect();
+    if(B.act==='ATK'){
+        if(ok){S.stats.correct++;playerAttack();}
+        else{S.stats.wrong++;enemyCounter();}
+    }else if(B.act==='ITEM'){
+        if(ok){S.stats.correct++;tryCatch();}
+        else{S.stats.wrong++;consumeCard();enemyCounter();}
+    }
+}
+function consumeCard(){if(B.card&&S.inv[B.card]>0)S.inv[B.card]--;}
+
+/* 答對：我方攻擊 = 我方攻×(餘時/回合時限)×屬性 − rand(0.1~0.5)×敵防；<10 → 10×屬性 */
+function playerAttack(){
+    const ratio=B.time/B.limit;
+    const eff=elemEff(B.p.elem,B.e.elem);
+    let dmg=B.p.atk*ratio*eff-rand01_05()*B.e.def;
+    if(dmg<10)dmg=10*eff;
+    dmg=Math.round(dmg);
+    B.e.chp-=dmg;
+    updBat();showDmg('e',dmg);
+    resolveRound();
+}
+/* 答錯：敵反擊 = 敵攻×(1−餘時/回合時限)×屬性 − rand(0.1~0.5)×我方防；<10 → 10×屬性 */
+function enemyCounter(){
+    if(!B.on||B.e.chp<=0)return;
+    const ratio=B.time/B.limit;
+    const eff=elemEff(B.e.elem,B.p.elem);
+    let dmg=B.e.atk*(1-ratio)*eff-rand01_05()*B.p.def;
+    if(dmg<10)dmg=10*eff;
+    dmg=Math.round(dmg);
+    B.p.chp-=dmg;
+    updBat();showDmg('p',dmg);
+    resolveRound();
+}
+/* 超時未答：固定 10×屬性效果 */
+function handleTimeout(){
+    if(!B.on||!B.act)return;
+    S.stats.timeout++;
+    if(B.act==='ITEM'){consumeCard();enemyCounter();return;} /* 道具答錯/超時→按答錯規則反擊 */
+    if(B.e.chp>0){
+        const eff=elemEff(B.e.elem,B.p.elem);
+        const dmg=Math.round(10*eff);
+        B.p.chp-=dmg;
+        updBat();showDmg('p',dmg);
+    }
+    resolveRound();
+}
+
+/* 捕捉：(餘時/基本時限)×(我方餘血−敵餘血)×卡倍率 + 我方吸引力 ≥ 敵吸引力 → 成功
+   （我方餘血低於敵方時該項為負 → 自動失敗，符合預設決策#3）
+   答錯/超時卡仍消耗（決策#4） */
+function tryCatch(){
+    consumeCard();
+    const c=CARDS[B.card];
+    const ratio=B.time/B.base;
+    const value=ratio*(B.p.chp-B.e.chp)*c.m+B.p.cha;
+    const success=value>=B.e.cha;
+    document.getElementById('catch').classList.add('show');
+    document.getElementById('catchtxt').innerText=success?'捕捉成功！':'捕捉失敗！';
+    setTimeout(()=>{
+        document.getElementById('catch').classList.remove('show');
+        if(success){
+            addInst(B.e.mId,baseStats(B.e.mId));S.stats.catch++;saveGame();
+            endBattle(true,'成功收服 '+B.e.name+'！\n可在圖鑑中查閱');
+        }else{
+            resolveRound();
+        }
+    },1500);
+}
+
+/* 回合完結 → 場地效果 → 死亡判定 → 下一回合 */
+function resolveRound(){
+    if(!B.on)return;
+    if(B.e.chp<=0)return winBattle();
+    const v=VENUES[B.venue];
+    if(v.effect==='spdUp'){B.e.spd=clamp(B.e.spd+10);}
+    if(v.effect==='defUp'){B.e.def=clamp(B.e.def+10);}
+    if(v.effect==='hpDrain'){B.p.chp-=10;}
+    B.p.chp=Math.max(0,B.p.chp);
+    updBat();
+    if(B.p.chp<=0){S.php=0;saveGame();return loseBattle();} /* 血量歸零自動存檔 */
+    S.php=B.p.chp;saveGame(); /* 每回合自動存檔 */
+    setTimeout(backToAction,800);
+}
+function backToAction(){
+    if(!B.on)return;
+    B.act=null;B.card=null;
+    setKeys(false);showIdle();
+    enableActions();
+}
+
+/* 勝出：金幣 = floor(10×我方餘血/我方總血量) */
+function winBattle(){
+    const coins=Math.floor(10*Math.max(0,B.p.chp)/B.p.maxHp);
+    let extraMsg='';
+    S.coin+=coins;S.stats.win++;
+    const v=VENUES[B.venue];
+    if(v.type==='G'){
+        S.gyms[v.id]=(S.gyms[v.id]||0)+1;
+        S.coin+=GYM_CLEAR_BONUS;
+        extraMsg='\n道場完成獎勵 +'+GYM_CLEAR_BONUS+' 金幣';
+    }else{
+        S.train[v.id]=(S.train[v.id]||0)+1;
+    }
+    checkEvolve();
+    endBattle(true,'擊倒 '+B.e.name+'！\n+'+coins+' 金幣'+extraMsg);
+}
+/* 敗北：扣金币 = floor(10×敵餘血/敵總血量)，下限 0 */
+function loseBattle(){
+    const loss=Math.floor(10*Math.max(0,B.e.chp)/B.e.maxHp);
+    S.coin=Math.max(0,S.coin-loss);
+    endBattle(false,'拍檔戰敗了…\n−'+loss+' 金幣');
+}
+
+/* 進化：平均能力值「大於」門檻 → 各項+10（上限500）。
+   目前無成長來源故暫不會觸發，待引入能力值道具後生效（決策#2）。 */
+function checkEvolve(){
+    let guard=0;
+    while(guard++<5){
+        const m=M[S.pid];
+        if(!m.evo||!(avg(S.ps)>m.evoReq))break;
+        const np={};STATS.forEach(k=>np[k]=clamp(S.ps[k]+10));
+        S.ps=np;S.pid=m.evo;
+        S.max=S.ps.hp;S.php=S.ps.hp;
+    }
+}
+
+function endBattle(win,msg){
+    B.on=false;clearInterval(B.timer);B.act=null;B.card=null;
+    S.php=S.max; /* 戰後血量回滿（決策#5） */
+    const un=checkAch();
+    if(un.length>0)msg+='\n\n🏆 達成成就：'+un.join('、')+'\n獎勵 +'+(un.length*ACH_REWARD)+' 金幣';
+    saveGame();
+    document.getElementById('mtitle').innerText=win?'🎉 勝利！':'💀 戰敗';
+    document.getElementById('mtext').innerText=msg;
+    document.getElementById('modal').classList.add('show');
+}
+
+/* ===== 傷害數字 ===== */
+function showDmg(who,n){
+    const el=document.getElementById(who==='e'?'eavt':'pavt');
+    const rect=el.getBoundingClientRect();
+    const gameRect=document.getElementById('game').getBoundingClientRect();
+    const d=document.createElement('div');
+    d.className='dmg';
+    d.style.color='#e74c3c';d.style.fontSize='28px';d.style.fontWeight='bold';d.style.position='absolute';
+    d.style.left=(rect.left-gameRect.left+rect.width/2-15)+'px';
+    d.style.top=(rect.top-gameRect.top-10)+'px';
+    d.innerText='−'+n;
+    document.getElementById('game').appendChild(d);
+    setTimeout(()=>d.remove(),1000);
+}
+
+/* ===== 彈窗（修復：原代碼缺少 closeModal 定義） ===== */
+function closeModal(id){document.getElementById(id).classList.remove('show')}
+function afterModal(){
+    closeModal('modal');
+    if(!B.on){showScreen('main');updMain()}
+}
+function showToast(t){
+    document.getElementById('toattxt').innerText=t;
+    document.getElementById('toast').classList.add('show');
+    setTimeout(()=>closeModal('toast'),1200);
+}
+
+/* ===== 暫停 ===== */
+function toggleFS(){
+    const de=document.documentElement;
+    const isFS=document.fullscreenElement||document.webkitFullscreenElement;
+    try{
+        if(!isFS){
+            (de.requestFullscreen||de.webkitRequestFullscreen||function(){throw 0}).call(de);
+        }else{
+            (document.exitFullscreen||document.webkitExitFullscreen||function(){}).call(document);
+        }
+    }catch(e){showToast('此瀏覽器環境不支援全螢幕')}
+}
+function openPause(){
+    const m=M[S.pid],p=S.ps;
+    document.getElementById('pstat').innerHTML=`<strong>${m.name}</strong><br>最大血量: ${S.php}/${S.max}<br>攻擊力:${p.atk} 防禦力:${p.def}<br>速度:${p.spd} 吸引力:${p.cha}<br><small>勝場:${S.stats.win} 捕捉:${S.stats.catch} | 道場1:${S.gyms.g1||0}次 道場2:${S.gyms.g2||0}次 道場3:${S.gyms.g3||0}次</small>`;
+    document.getElementById('pcoin').innerText=S.coin;
+    document.getElementById('pause').classList.add('show');
+}
+
+/* ===== 清除遊戲進度（頁內兩段確認，不依賴 confirm/reload） ===== */
+let clearArm=false,clearTimer=null;
+function clearProgress(btn){
+    if(!clearArm){
+        clearArm=true;
+        btn.innerText='⚠️ 再點一次確認清除';
+        clearTimer=setTimeout(()=>{clearArm=false;btn.innerText='🗑 清除遊戲進度'},5000);
+        return;
+    }
+    clearTimeout(clearTimer);clearArm=false;
+    btn.innerText='🗑 清除遊戲進度';
+    LS.del('mmrpg_v5');LS.del('mmrpg_v4');LS.del('mmrpg_v3');
+    closeModal('pause');
+    resetState();
+    boot();
+}
+function resetState(){
+    S={v:5,init:false,coin:0,pid:'monster_01_a',ps:null,php:0,max:100,
+       inv:{card_01:3,card_02:0,card_03:0,card_04:0,drk_01:0},dex:[],uidn:0,
+       gyms:{g1:0,g2:0,g3:0},train:{t1:0,t2:0,t3:0},
+       stats:{win:0,catch:0,correct:0,wrong:0,timeout:0},ach:{}};
+    B.on=false;clearInterval(B.timer);
+}
+
+/* ===== 啟動 ===== */
+function boot(){
+    let ok=false;
+    try{ok=loadGame()&&S.init}catch(e){ok=false}
+    if(ok){
+        document.getElementById('header').classList.add('active');
+        showScreen('main');updMain();
+    }else{
+        S.init=false;
+        document.getElementById('header').classList.remove('active');
+        initStart();showScreen('start');
+    }
+}
+window.onload=boot;
+</script>
+</body>
+</html>
