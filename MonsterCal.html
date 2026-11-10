@@ -277,7 +277,7 @@ h1{color:var(--primary);font-size:24px}
     <div class="mbox">
         <h3 id="mmTitle"></h3>
         <div style="text-align:left" id="mmStats"></div>
-        <div id="mmBtns" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:10px"></div>
+        <div id="mmBtns" style="display:flex;flex-direction:column;gap:6px;margin-top:10px"></div>
     </div>
 </div>
 
@@ -516,7 +516,7 @@ function populateDex(){
     if(S.ps&&S.pid){
         const m=M[S.pid];
         const d=document.createElement('div');d.className='list-item';d.style.cursor='pointer';
-        d.innerHTML=`<div class="avatar" style="background:${ELEM[m.elem]}">${m.emoji}</div><div class="list-item-info"><strong>No.${m.num} ${m.name}（拍檔）</strong><small>${m.elem} | 平均 ${Math.round(avg(S.ps)*10)/10}</small></div><div style="font-size:20px">›</div>`;
+        d.innerHTML=`<div class="avatar" style="background:${ELEM[m.elem]}">${m.emoji}</div><div class="list-item-info"><strong>No.${m.num} ${m.name}（拍檔）</strong><small>${m.elem} | 平均 ${Math.round(avg(S.ps)*10)/10} | ${STATS.map(k=>STAT_LABEL[k].slice(0,2)+S.ps[k]).join(' ')}</small></div><div style="font-size:20px">›</div>`;
         d.onclick=openPartnerDetail;
         el.appendChild(d);
     }
@@ -542,11 +542,11 @@ function openMonDetail(u){
         `<div style="text-align:center;margin-bottom:6px"><span class="attr" style="background:${ELEM[m.elem]};padding:2px 8px;border-radius:10px;color:#fff;font-size:11px">${m.elem}</span></div>`+statRows(es,m);
     const btns=document.getElementById('mmBtns');btns.innerHTML='';
     const gain=fuseGain(es);
-    const bf=document.createElement('button');bf.className='btn';bf.style.flex='1';bf.style.background='#9b59b6';
+    const bf=document.createElement('button');bf.className='btn';bf.style.background='#9b59b6';
     bf.innerText=`🔗 融合（拍檔任一能力 +${gain}）`;bf.onclick=()=>fusePick(x.u);
-    const bs=document.createElement('button');bs.className='btn btn-accent';bs.style.flex='1';
+    const bs=document.createElement('button');bs.className='btn btn-accent';
     bs.innerText=`出售 +${instSellPrice(x.id,es)}🪙`;bs.onclick=()=>sellMonster(x.u);
-    const bp=document.createElement('button');bp.className='btn btn-primary';bp.style.flex='1';
+    const bp=document.createElement('button');bp.className='btn btn-primary';
     bp.innerText='更換拍檔';bp.onclick=()=>switchPartner(x.u);
     btns.appendChild(bf);btns.appendChild(bs);btns.appendChild(bp);
     const bc=document.createElement('button');bc.className='btn';bc.innerText='關閉';bc.onclick=()=>closeModal('monmodal');
