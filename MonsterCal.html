@@ -143,6 +143,7 @@ h1{color:var(--primary);font-size:24px}
     <p style="text-align:center">選擇你的初始拍檔：</p>
     <div class="grid3" id="pick"></div>
     <button class="btn btn-primary" id="go" disabled onclick="startGame()">開始冒險</button>
+    <button class="btn btn-accent" onclick="openHelp()">📖 說明</button>
 </div>
 
 <!-- 主選單 -->
@@ -256,10 +257,31 @@ h1{color:var(--primary);font-size:24px}
     <div class="mbox">
         <h3>遊戲暫停</h3>
         <p id="pstat"></p>
-        <p>金幣: <span id="pcoin">0</span></p>
-        <button class="btn btn-primary" onclick="saveGame();showToast('已儲存！')">手動儲存</button>
-        <button class="btn" onclick="closeModal('pause')">繼續</button>
-        <button class="btn btn-danger" id="clearBtn" onclick="clearProgress(this)">🗑 清除遊戲進度</button>
+        <div style="display:flex;flex-direction:column;gap:4px">
+            <button class="btn btn-primary" onclick="saveGame();showToast('已儲存！')">手動儲存</button>
+            <button class="btn" onclick="closeModal('pause')">繼續</button>
+            <button class="btn btn-accent" onclick="openHelp()">📖 說明</button>
+            <button class="btn btn-danger" id="clearBtn" onclick="clearProgress(this)">🗑 清除遊戲進度</button>
+        </div>
+    </div>
+</div>
+
+<!-- 說明彈窗 -->
+<div class="modal" id="helpmodal">
+    <div class="mbox" style="max-width:360px;max-height:80%;overflow-y:auto;text-align:left">
+        <h3 style="text-align:center">📖 遊戲說明</h3>
+        <p style="font-size:13px;line-height:1.7"><b>玩法：</b>帶領你的拍檔精靈挑戰訓練場與道場。每個回合選擇「攻擊」或「道具」後，限時內答對數學題就能出招；答錯或超時會被對方反擊。答得越快，傷害越高、剩餘時間還能提升捕捉成功率。擊敗野生精靈可收集圖鑑與金幣，成功通關道場有額外獎勵。</p>
+        <p style="font-size:13px;line-height:1.7"><b>能力值用途：</b><br>
+        ・最大血量：歸零即戰敗<br>
+        ・攻擊力：決定你出招的傷害<br>
+        ・防禦力：減低對方反擊的傷害<br>
+        ・速度：提高自己回合的答題時限，對方速度則會壓縮你的時限<br>
+        ・吸引力：影響收集卡捕捉的成功率</p>
+        <p style="font-size:13px;line-height:1.7"><b>屬性相剋（攻擊方 → 剋制方，傷害增加）：</b><br>
+        金 → 木　木 → 水　水 → 火　火 → 土　土 → 金<br>
+        <small>被剋時傷害減少。每項能力上限 500。</small></p>
+        <p style="font-size:13px;line-height:1.7"><b>成長：</b>收服的精靈可在圖鑑中「融合」，把它的能力加到拍檔精靈上；能量飲品也能提升能力。平均能力足夠高時，拍檔會進化，能力大漲！</p>
+        <div style="text-align:center"><button class="btn btn-primary" onclick="closeModal('helpmodal')">返回</button></div>
     </div>
 </div>
 
@@ -328,7 +350,22 @@ monster_03_a:{id:'monster_03_a',num:3,tier:'a',name:'小葉龍',elem:'木',hp:10
 monster_03_b:{id:'monster_03_b',num:3,tier:'b',name:'楓葉龍',elem:'木',hp:110,atk:40,def:80,spd:30,cha:40,evo:'monster_03_c',evoReq:100,emoji:'🌳'},
 monster_03_c:{id:'monster_03_c',num:3,tier:'c',name:'落葉龍',elem:'木',hp:120,atk:50,def:90,spd:40,cha:50,evo:null,evoReq:Infinity,emoji:'🌳'},
 monster_04_a:{id:'monster_04_a',num:4,tier:'a',name:'金銀龍',elem:'金',hp:100,atk:80,def:20,spd:30,cha:10,evo:null,evoReq:Infinity,emoji:'🥇'},
-monster_05_a:{id:'monster_05_a',num:5,tier:'a',name:'土匪龍',elem:'土',hp:100,atk:20,def:100,spd:20,cha:10,evo:null,evoReq:Infinity,emoji:'🪨'}
+monster_05_a:{id:'monster_05_a',num:5,tier:'a',name:'土匪龍',elem:'土',hp:100,atk:20,def:100,spd:20,cha:10,evo:null,evoReq:Infinity,emoji:'🪨'},
+monster_06_a:{id:'monster_06_a',num:6,tier:'a',name:'小赤兔',elem:'火',hp:130,atk:60,def:20,spd:60,cha:30,evo:'monster_06_b',evoReq:70,emoji:'🐰'},
+monster_06_b:{id:'monster_06_b',num:6,tier:'b',name:'赤焰兔',elem:'火',hp:140,atk:70,def:30,spd:70,cha:40,evo:'monster_06_c',evoReq:100,emoji:'🐰'},
+monster_06_c:{id:'monster_06_c',num:6,tier:'c',name:'烈焰兔',elem:'火',hp:150,atk:80,def:40,spd:80,cha:50,evo:null,evoReq:Infinity,emoji:'🐰'},
+monster_07_a:{id:'monster_07_a',num:7,tier:'a',name:'小海龜',elem:'水',hp:120,atk:100,def:20,spd:20,cha:50,evo:'monster_07_b',evoReq:70,emoji:'🐢'},
+monster_07_b:{id:'monster_07_b',num:7,tier:'b',name:'海浪龜',elem:'水',hp:130,atk:110,def:30,spd:30,cha:60,evo:'monster_07_c',evoReq:100,emoji:'🐢'},
+monster_07_c:{id:'monster_07_c',num:7,tier:'c',name:'海神龜',elem:'水',hp:140,atk:120,def:40,spd:40,cha:70,evo:null,evoReq:Infinity,emoji:'🐢'},
+monster_08_a:{id:'monster_08_a',num:8,tier:'a',name:'草根犬',elem:'木',hp:60,atk:100,def:30,spd:90,cha:20,evo:'monster_08_b',evoReq:70,emoji:'🐶'},
+monster_08_b:{id:'monster_08_b',num:8,tier:'b',name:'盛葉犬',elem:'木',hp:70,atk:110,def:40,spd:100,cha:30,evo:'monster_08_c',evoReq:100,emoji:'🐶'},
+monster_08_c:{id:'monster_08_c',num:8,tier:'c',name:'森林犬',elem:'木',hp:80,atk:120,def:50,spd:110,cha:40,evo:null,evoReq:Infinity,emoji:'🐶'},
+monster_09_a:{id:'monster_09_a',num:9,tier:'a',name:'小電鳥',elem:'金',hp:50,atk:70,def:30,spd:80,cha:70,evo:'monster_09_b',evoReq:70,emoji:'🐦'},
+monster_09_b:{id:'monster_09_b',num:9,tier:'b',name:'雷電鳥',elem:'金',hp:60,atk:80,def:40,spd:90,cha:80,evo:'monster_09_c',evoReq:100,emoji:'🐦'},
+monster_09_c:{id:'monster_09_c',num:9,tier:'c',name:'轟雷鳥',elem:'金',hp:70,atk:90,def:50,spd:100,cha:90,evo:null,evoReq:Infinity,emoji:'🐦'},
+monster_10_a:{id:'monster_10_a',num:10,tier:'a',name:'鑽地鼠',elem:'土',hp:60,atk:60,def:60,spd:60,cha:60,evo:'monster_10_b',evoReq:70,emoji:'🐹'},
+monster_10_b:{id:'monster_10_b',num:10,tier:'b',name:'挖土鼠',elem:'土',hp:70,atk:70,def:70,spd:70,cha:70,evo:'monster_10_c',evoReq:100,emoji:'🐹'},
+monster_10_c:{id:'monster_10_c',num:10,tier:'c',name:'震地鼠',elem:'土',hp:80,atk:80,def:80,spd:80,cha:80,evo:null,evoReq:Infinity,emoji:'🐹'}
 };
 const STATS=['hp','atk','def','spd','cha'];
 const STAT_LABEL={hp:'最大血量',atk:'攻擊力',def:'防禦力',spd:'速度',cha:'吸引力'};
@@ -349,14 +386,41 @@ const VENUES={
 t1:{id:'t1',name:'訓練場 1',type:'T',topic:'ADD',base:20,spawns:{'monster_01_a':0.4,'monster_02_a':0.4,'monster_03_a':0.2}},
 t2:{id:'t2',name:'訓練場 2',type:'T',topic:'SUB',base:20,spawns:{'monster_01_a':0.3,'monster_02_a':0.4,'monster_03_a':0.4}},
 t3:{id:'t3',name:'訓練場 3',type:'T',topic:'MIX',base:25,spawns:{'monster_04_a':0.2,'monster_05_a':0.8}},
+t4:{id:'t4',name:'訓練場 4',type:'T',topic:'MUL1',base:20,spawns:{'monster_01_a':0.4,'monster_04_a':0.1,'monster_06_a':0.5}},
+t5:{id:'t5',name:'訓練場 5',type:'T',topic:'MUL2',base:20,spawns:{'monster_02_a':0.4,'monster_04_a':0.1,'monster_07_a':0.3}},
+t6:{id:'t6',name:'訓練場 6',type:'T',topic:'MIXMUL',base:25,spawns:{'monster_03_a':0.4,'monster_04_a':0.1,'monster_08_a':0.5}},
+t7:{id:'t7',name:'訓練場 7',type:'T',topic:'FADD',base:20,spawns:{'monster_06_a':0.3,'monster_07_a':0.3,'monster_08_a':0.3,'monster_09_a':0.1}},
+t8:{id:'t8',name:'訓練場 8',type:'T',topic:'FSUB',base:20,spawns:{'monster_06_a':0.3,'monster_07_a':0.3,'monster_08_a':0.3,'monster_10_a':0.1}},
+t9:{id:'t9',name:'訓練場 9',type:'T',topic:'FMUL',base:25,spawns:{'monster_09_a':0.5,'monster_10_a':0.5}},
+t10:{id:'t10',name:'訓練場 10',type:'T',topic:'FMIX',base:20,spawns:{'monster_01_a':0.7,'monster_06_a':0.2,'monster_09_a':0.1}},
+t11:{id:'t11',name:'訓練場 11',type:'T',topic:'FMULMIX',base:25,spawns:{'monster_02_a':0.7,'monster_07_a':0.2,'monster_09_a':0.1}},
 g1:{id:'g1',name:'道場 1 (加法)',type:'G',topic:'ADD',base:15,enemy:'monster_04_a',
     override:{hp:120,atk:100,def:30,spd:40,cha:20},effect:'spdUp',effectTxt:'每回合完結：敵方速度 +10'},
 g2:{id:'g2',name:'道場 2 (減法)',type:'G',topic:'SUB',base:15,enemy:'monster_04_a',
     override:{hp:120,atk:50,def:80,spd:40,cha:20},effect:'hpDrain',effectTxt:'每回合完結：我方血量 −10'},
 g3:{id:'g3',name:'道場 3 (加減混合)',type:'G',topic:'MIX',base:20,enemy:'monster_05_a',
-    override:{hp:150,atk:80,def:100,spd:50,cha:10},effect:'defUp',effectTxt:'每回合完結：敵方防禦力 +10'}
+    override:{hp:150,atk:80,def:100,spd:50,cha:10},effect:'defUp',effectTxt:'每回合完結：敵方防禦力 +10'},
+g4:{id:'g4',name:'道場 4 (兩位×一位乘法)',type:'G',topic:'MUL1',base:15,enemy:'monster_06_a',
+    override:{hp:150,atk:100,def:80,spd:70,cha:20},effect:'setHp1',effectTxt:'第一回合完結：我方血量降至 1'},
+g5:{id:'g5',name:'道場 5 (兩位×兩位乘法)',type:'G',topic:'MUL2',base:15,enemy:'monster_07_a',
+    override:{hp:150,atk:120,def:80,spd:10,cha:20},effect:'eHeal10',effectTxt:'每回合完結：敵方回復血量 +10'},
+g6:{id:'g6',name:'道場 6 (乘法加減混合)',type:'G',topic:'MIXMUL',base:20,enemy:'monster_08_a',
+    override:{hp:150,atk:120,def:40,spd:100,cha:20},effect:'hpDrain20',effectTxt:'每回合完結：我方血量 −20'},
+g7:{id:'g7',name:'道場 7 (小數加法)',type:'G',topic:'FADD',base:15,enemy:'monster_09_a',
+    override:{hp:140,atk:120,def:100,spd:100,cha:60},effect:'pSpdDown20',effectTxt:'每回合完結：我方速度 −20'},
+g8:{id:'g8',name:'道場 8 (小數減法)',type:'G',topic:'FSUB',base:15,enemy:'monster_10_a',
+    override:{hp:150,atk:120,def:120,spd:120,cha:60},effect:'hpDrain50',effectTxt:'每回合完結：我方血量 −50'},
+g9:{id:'g9',name:'道場 9 (小數乘法)',type:'G',topic:'FMUL',base:20,enemy:'monster_01_b',
+    override:{hp:200,atk:150,def:100,spd:100,cha:60},effect:'eSpdUp50',effectTxt:'每回合完結：敵方速度 +50'},
+g10:{id:'g10',name:'道場 10 (小數加減混合)',type:'G',topic:'FMIX',base:15,enemy:'monster_02_b',
+    override:{hp:220,atk:100,def:150,spd:80,cha:60},effect:'eDefUp50',effectTxt:'每回合完結：敵方防禦力 +50'},
+g11:{id:'g11',name:'道場 11 (小數乘加減混合)',type:'G',topic:'FMULMIX',base:20,enemy:'monster_03_b',
+    override:{hp:280,atk:80,def:160,spd:70,cha:60},effect:'eHpUp30',effectTxt:'每回合完結：敵方血量上限 +30'}
 };
-const TOPIC_TXT={ADD:'兩位數加法',SUB:'兩位數減法',MIX:'兩位數加減混合'};
+const TOPIC_TXT={ADD:'兩位數加法',SUB:'兩位數減法',MIX:'兩位數加減混合',MUL1:'兩位數×一位數',MUL2:'兩位數×兩位數',MIXMUL:'乘法與加減混合',FADD:'一位小數加法',FSUB:'一位小數減法',FMUL:'一位小數乘法',FMIX:'一位小數加減混合',FMULMIX:'小數乘法與加減混合'};
+const GYM_IDS=['g1','g2','g3','g4','g5','g6','g7','g8','g9','g10','g11'];
+const TRAIN_IDS=['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10','t11'];
+const zeroMap=ks=>ks.reduce((o,k)=>(o[k]=0,o),{});
 const GYM_CLEAR_BONUS=10; /* 每次成功完成道場的額外金幣獎勵 */
 
 /* ===== 道具資料 ===== */
@@ -371,10 +435,10 @@ drk_01:{id:'drk_01',name:'能量飲品',m:0,price:10,emoji:'⚡',use:true}
 /* ===== 狀態（schema v4） ===== */
 let S={v:5,init:false,coin:0,pid:'monster_01_a',ps:null,php:0,max:100,
     inv:{card_01:3,card_02:0,card_03:0,card_04:0,drk_01:0},dex:[],uidn:0,
-    gyms:{g1:0,g2:0,g3:0},train:{t1:0,t2:0,t3:0},
+    gyms:zeroMap(GYM_IDS),train:zeroMap(TRAIN_IDS),
     stats:{win:0,catch:0,correct:0,wrong:0,timeout:0},
     ach:{}};
-let B={on:false,act:null,venue:null,base:15,limit:15,time:15,timer:null,q:{q:'',a:0},p:null,e:null,card:null};
+let B={on:false,act:null,venue:null,base:15,limit:15,time:15,timer:null,q:{q:'',a:0},p:null,e:null,card:null,fx1:false};
 
 /* ===== 安全儲存：沙箱/無儲存權限環境自動降級為記憶體儲存，不會報錯卡死 ===== */
 const LS=(function(){
@@ -396,7 +460,7 @@ function migrateOld(o){
     const ni={card_01:0,card_02:0,card_03:0,card_04:0,drk_01:0};
     Object.entries(o.inv||{}).forEach(([k,v])=>{if(CARDS[cid[k]||k])ni[cid[k]||k]=v|0});
     o.inv=ni;
-    o.gyms={g1:0,g2:0,g3:0};
+    o.gyms=zeroMap(GYM_IDS);
     o.stats={win:(o.stats&&o.stats.win)||0,catch:(o.stats&&o.stats.catch)||0,correct:0,wrong:0,timeout:0};
     o.ps=null;o.ach={};o.fuse={};o.v=4;
     return o;
@@ -408,7 +472,7 @@ function migrateV4(o){ /* v4（id 數組+全域融合）→ v5（個體數據）
         STATS.forEach(k=>st[k]=clamp(st[k]+b));
         return {u:++o.uidn,id:id,st:st};
     });
-    delete o.fuse;o.train={t1:0,t2:0,t3:0};o.v=5;return o;
+    delete o.fuse;o.train=zeroMap(TRAIN_IDS);o.v=5;return o;
 }
 function loadGame(){
     const x=LS.get('mmrpg_v5')||LS.get('mmrpg_v4')||LS.get('mmrpg_v3');
@@ -420,10 +484,10 @@ function loadGame(){
         if(!o.ps||typeof o.ps!=='object')o.ps=baseStats(o.pid);
         o.ps=clampStats(o.ps);
         Object.assign(S,o);
-        if(!S.gyms)S.gyms={g1:0,g2:0,g3:0};
-        ['g1','g2','g3'].forEach(k=>{if(typeof S.gyms[k]!=='number')S.gyms[k]=0});
-        if(!S.train)S.train={t1:0,t2:0,t3:0};
-        ['t1','t2','t3'].forEach(k=>{if(typeof S.train[k]!=='number')S.train[k]=0});
+        if(!S.gyms)S.gyms=zeroMap(GYM_IDS);
+        GYM_IDS.forEach(k=>{if(typeof S.gyms[k]!=='number')S.gyms[k]=0});
+        if(!S.train)S.train=zeroMap(TRAIN_IDS);
+        TRAIN_IDS.forEach(k=>{if(typeof S.train[k]!=='number')S.train[k]=0});
         if(typeof S.uidn!=='number')S.uidn=0;
         if(!Array.isArray(S.dex))S.dex=[];
         S.dex=S.dex.filter(x=>x&&M[x.id]&&x.st).map(x=>({u:typeof x.u==='number'?x.u:++S.uidn,id:x.id,st:clampStats(x.st)}));
@@ -671,8 +735,20 @@ const ACHS=[{id:'first_win',n:'初出茅廬',d:'擊敗 1 隻精靈',f:()=>S.stat
 {id:'gym1',n:'道場霸主',d:'通關道場 1',f:()=>(S.gyms.g1||0)>=1},
 {id:'gym2',n:'雙冠訓練師',d:'通關道場 2',f:()=>(S.gyms.g2||0)>=1},
 {id:'gym3',n:'三冠王',d:'通關道場 3',f:()=>(S.gyms.g3||0)>=1},
+{id:'gym4',n:'四大冠軍',d:'通關道場 4',f:()=>(S.gyms.g4||0)>=1},
+{id:'gym5',n:'道場挑戰者',d:'通關道場 5',f:()=>(S.gyms.g5||0)>=1},
+{id:'gym6',n:'高級訓練師',d:'通關道場 6',f:()=>(S.gyms.g6||0)>=1},
+{id:'gym7',n:'道場達人',d:'通關道場 7',f:()=>(S.gyms.g7||0)>=1},
+{id:'gym8',n:'八戰八勝',d:'通關道場 8',f:()=>(S.gyms.g8||0)>=1},
+{id:'gym9',n:'冠軍收集者',d:'通關道場 9',f:()=>(S.gyms.g9||0)>=1},
+{id:'gym10',n:'十冠王者',d:'通關道場 10',f:()=>(S.gyms.g10||0)>=1},
+{id:'gym11',n:'道場終結者',d:'通關道場 11',f:()=>(S.gyms.g11||0)>=1},
 {id:'dex3',n:'收集新手',d:'累計收服 3 隻精靈',f:()=>S.stats.catch>=3},
-{id:'catch10',n:'捕捉達人',d:'累計收服 10 隻精靈',f:()=>S.stats.catch>=10}
+{id:'catch10',n:'捕捉達人',d:'累計收服 10 隻精靈',f:()=>S.stats.catch>=10},
+{id:'catch50',n:'精靈收集者',d:'累計收服 50 隻精靈',f:()=>S.stats.catch>=50},
+{id:'catch100',n:'精靈獵人',d:'累計收服 100 隻精靈',f:()=>S.stats.catch>=100},
+{id:'win50',n:'心算高手',d:'擊敗 50 隻精靈',f:()=>S.stats.win>=50},
+{id:'win100',n:'百勝之王',d:'擊敗 100 隻精靈',f:()=>S.stats.win>=100}
 ];
 function checkAch(){
     const un=[];
@@ -709,7 +785,7 @@ function startBattle(vid){
     const v=VENUES[vid];if(!v)return;
     if(v.type==='G'&&!gymUnlocked(vid)){showToast('🔒 '+gymLockTxt(vid));return}
     clearInterval(B.timer);
-    B.on=true;B.act=null;B.card=null;B.venue=vid;B.base=v.base;
+    B.on=true;B.act=null;B.card=null;B.fx1=false;B.venue=vid;B.base=v.base;
     B.p={mId:S.pid,name:M[S.pid].name,elem:M[S.pid].elem,emoji:M[S.pid].emoji,maxHp:S.max,chp:S.php,...clampStats(S.ps)};
     B.e=(v.type==='G')?makeMonster(v.enemy,v.override):makeMonster(pickRandom(v.spawns));
     showScreen('battle');
@@ -783,27 +859,55 @@ function beginTurn(){
 }
 function genQ(){
     const v=VENUES[B.venue];
-    let n1=Math.floor(Math.random()*90)+10,n2=Math.floor(Math.random()*90)+10,q='',a=0;
-    if(v.topic==='MIX'){
-        // 加減混合：同一道題同時含加法與減法，中間過程與結果均不為負
-        let x,y,z;
-        if(Math.random()<0.5){
-            // 形式：x + y − z
-            do{x=Math.floor(Math.random()*90)+10;y=Math.floor(Math.random()*90)+10;z=Math.floor(Math.random()*90)+10;}while(x+y-z<0);
-            q=x+'+'+y+'-'+z;a=x+y-z;
-        }else{
-            // 形式：x − y + z（先減後加，保證中間不為負）
-            x=Math.floor(Math.random()*90)+10;y=Math.floor(Math.random()*90)+10;z=Math.floor(Math.random()*90)+10;
-            if(x<y){const t=x;x=y;y=t;}
-            q=x+'-'+y+'+'+z;a=x-y+z;
-        }
-    }
-    else if(v.topic==='ADD'){q=n1+'+'+n2;a=n1+n2;}
-    else{q=Math.max(n1,n2)+'-'+Math.min(n1,n2);a=Math.max(n1,n2)-Math.min(n1,n2);}
+    let q='',a=0;
+    if(v.topic[0]==='F'){const r=genQFloat2(v.topic);q=r.q;a=r.a}
+    else{const r=genQInt(v.topic);q=r.q;a=r.a}
     B.q={q,a};
     const qe=document.getElementById('que');
     qe.innerText=q+' = ?';qe.classList.remove('idle');
     document.getElementById('inp').innerText='0';inp='0';
+}
+const ri=(lo,hi)=>Math.floor(Math.random()*(hi-lo+1))+lo;
+const fix=(x,d)=>parseFloat(x.toFixed(d));
+/* 整数题型：加法/减法/加减混合/两位×一位/两位×两位/乘法与加减混合 */
+function genQInt(tp){
+    let x,y,z,q,a;
+    if(tp==='ADD'){x=ri(10,99);y=ri(10,99);q=x+'+'+y;a=x+y}
+    else if(tp==='SUB'){x=ri(10,99);y=ri(10,99);q=Math.max(x,y)+'-'+Math.min(x,y);a=Math.max(x,y)-Math.min(x,y)}
+    else if(tp==='MIX'){
+        if(Math.random()<0.5){x=ri(10,99);y=ri(10,99);z=ri(10,Math.min(99,x+y));q=x+'+'+y+'-'+z;a=x+y-z}
+        else{x=ri(10,99);y=ri(10,99);z=ri(10,99);if(x<y){const t=x;x=y;y=t}q=x+'-'+y+'+'+z;a=x-y+z}
+    }
+    else if(tp==='MUL1'){x=ri(11,99);y=ri(2,9);q=x+'×'+y;a=x*y}
+    else if(tp==='MUL2'){x=ri(11,29);y=ri(11,19);q=x+'×'+y;a=x*y}
+    else{ /* MIXMUL：同一算式含乘法与加、减，先乘后加减，结果不为负 */
+        x=ri(11,25);y=ri(2,9);z=ri(10,80);const w=ri(10,80);const p=x*y;
+        if(Math.random()<0.5){q=x+'×'+y+'+'+z+'-'+w;a=p+z-w;if(a<0){q=x+'×'+y+'+'+w+'-'+z;a=p+w-z}}
+        else{q=z+'+'+x+'×'+y+'-'+w;a=z+p-w;if(a<0){q=w+'+'+x+'×'+y+'-'+z;a=w+p-z}}
+    }
+    return{q,a};
+}
+/* 一位小数题型：加/减/乘/加减混合/乘加减混合。
+   先生成数值并算出答案，再拼接算式，保证结果（及减法中间值）不为负。
+   答案精度：含乘法取两位小数，其余一位小数。 */
+const f1=()=>parseFloat(ri(10,99)/10); /* 1.0 ~ 9.9 */
+const s1=n=>n.toFixed(1);
+function genQFloat2(tp){
+    let x,y,z,w,a,q;
+    if(tp==='FADD'){x=f1();y=f1();a=fix(x+y,1);q=s1(x)+'+'+s1(y)}
+    else if(tp==='FSUB'){x=f1();y=f1();if(x<y){const t=x;x=y;y=t}a=fix(x-y,1);q=s1(x)+'-'+s1(y)}
+    else if(tp==='FMUL'){x=f1();y=f1();a=fix(x*y,2);q=s1(x)+'×'+s1(y)}
+    else if(tp==='FMIX'){ /* 同时含加法与减法 */
+        x=f1();y=f1();z=f1();
+        if(Math.random()<0.5&&fix(x+y-z,1)>=0){a=fix(x+y-z,1);q=s1(x)+'+'+s1(y)+'-'+s1(z)}
+        else{if(x<y){const t=x;x=y;y=t}a=fix(x-y+z,1);q=s1(x)+'-'+s1(y)+'+'+s1(z)}
+    }
+    else{ /* FMULMIX：同时含乘法、加法与减法，先乘后加减 */
+        x=f1();y=f1();z=f1();w=f1();const p=fix(x*y,2);
+        if(fix(p+z-w,2)>=0){a=fix(p+z-w,2);q=s1(x)+'×'+s1(y)+'+'+s1(z)+'-'+s1(w)}
+        else{a=fix(p+w-z,2);q=s1(x)+'×'+s1(y)+'+'+s1(w)+'-'+s1(z)}
+    }
+    return{q,a};
 }
 function startTimer(){
     clearInterval(B.timer);
@@ -926,6 +1030,14 @@ function resolveRound(){
     if(v.effect==='spdUp'){B.e.spd=clamp(B.e.spd+10);}
     if(v.effect==='defUp'){B.e.def=clamp(B.e.def+10);}
     if(v.effect==='hpDrain'){B.p.chp-=10;}
+    if(v.effect==='hpDrain20'){B.p.chp-=20;}
+    if(v.effect==='hpDrain50'){B.p.chp-=50;}
+    if(v.effect==='eHeal10'){B.e.chp=Math.min(B.e.maxHp,B.e.chp+10);}
+    if(v.effect==='eSpdUp50'){B.e.spd=clamp(B.e.spd+50);}
+    if(v.effect==='eDefUp50'){B.e.def=clamp(B.e.def+50);}
+    if(v.effect==='eHpUp30'){B.e.maxHp+=30;B.e.chp+=30;}
+    if(v.effect==='pSpdDown20'){B.p.spd=clamp(B.p.spd-20);}
+    if(v.effect==='setHp1'){if(!B.fx1){B.fx1=true;B.p.chp=Math.min(B.p.chp,1);showToast('道場效果：我方血量降至 1！')}}
     B.p.chp=Math.max(0,B.p.chp);
     updBat();
     if(B.p.chp<=0){S.php=0;saveGame();return loseBattle();} /* 血量歸零自動存檔 */
@@ -1025,10 +1137,9 @@ function toggleFS(){
         }
     }catch(e){showToast('此瀏覽器環境不支援全螢幕')}
 }
+function openHelp(){document.getElementById('helpmodal').classList.add('show')}
 function openPause(){
-    const m=M[S.pid],p=S.ps;
-    document.getElementById('pstat').innerHTML=`<strong>${m.name}</strong><br>最大血量: ${S.php}/${S.max}<br>攻擊力:${p.atk} 防禦力:${p.def}<br>速度:${p.spd} 吸引力:${p.cha}<br><small>勝場:${S.stats.win} 捕捉:${S.stats.catch} | 道場1:${S.gyms.g1||0}次 道場2:${S.gyms.g2||0}次 道場3:${S.gyms.g3||0}次</small>`;
-    document.getElementById('pcoin').innerText=S.coin;
+    document.getElementById('pstat').innerHTML=`勝場:${S.stats.win}　捕捉:${S.stats.catch}<br>金幣: ${S.coin}`;
     document.getElementById('pause').classList.add('show');
 }
 
@@ -1051,7 +1162,7 @@ function clearProgress(btn){
 function resetState(){
     S={v:5,init:false,coin:0,pid:'monster_01_a',ps:null,php:0,max:100,
        inv:{card_01:3,card_02:0,card_03:0,card_04:0,drk_01:0},dex:[],uidn:0,
-       gyms:{g1:0,g2:0,g3:0},train:{t1:0,t2:0,t3:0},
+       gyms:zeroMap(GYM_IDS),train:zeroMap(TRAIN_IDS),
        stats:{win:0,catch:0,correct:0,wrong:0,timeout:0},ach:{}};
     B.on=false;clearInterval(B.timer);
 }
