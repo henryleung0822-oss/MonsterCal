@@ -776,8 +776,10 @@ function pickRandom(spawns){
 }
 function makeMonster(id,override){
     const m=M[id];
-    const e={id,mId:id,name:m.name,elem:m.elem,emoji:m.emoji,maxHp:clamp((override||m).hp??m.hp)};
-    STATS.forEach(k=>e[k]=clamp((override&&override[k]!==undefined)?override[k]:m[k]));
+    /* 训练场野生精灵：每项能力在预设值上随机 -5 ~ +5 波动，增加可玩性；道场指定值不受影响 */
+    const jit=override?v=>v:v=>v+ri(-5,5);
+    const e={id,mId:id,name:m.name,elem:m.elem,emoji:m.emoji,maxHp:clamp(jit((override||m).hp??m.hp))};
+    STATS.forEach(k=>e[k]=clamp(jit((override&&override[k]!==undefined)?override[k]:m[k])));
     e.chp=e.maxHp;
     return e;
 }
@@ -1014,7 +1016,9 @@ function tryCatch(){
     setTimeout(()=>{
         document.getElementById('catch').classList.remove('show');
         if(success){
-            addInst(B.e.mId,baseStats(B.e.mId));S.stats.catch++;saveGame();
+            /* 收服时记录该只个体当时的实际能力值（含训练场随机波动），而非种族预设值 */
+            addInst(B.e.mId,{hp:B.e.maxHp,atk:B.e.atk,def:B.e.def,spd:B.e.spd,cha:B.e.cha});
+            S.stats.catch++;saveGame();
             endBattle(true,'成功收服 '+B.e.name+'！\n可在圖鑑中查閱');
         }else{
             resolveRound();
