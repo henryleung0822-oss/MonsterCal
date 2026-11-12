@@ -519,7 +519,7 @@ function initStart(){
     const g=document.getElementById('pick');g.innerHTML='';
     ['monster_01_a','monster_02_a','monster_03_a'].forEach(k=>{
         const m=M[k],d=document.createElement('div');d.className='card';
-        d.innerHTML=`<div class="avatar" style="background:${ELEM[m.elem]};width:56px;height:56px;font-size:30px">${avatarHTML(k,m.emoji)}</div><div style="font-weight:bold;font-size:13px">${m.name}</div><div style="font-size:10px;margin:2px 0"><span style="color:#fff;background:${ELEM[m.elem]};padding:1px 8px;border-radius:8px">${m.elem}</span></div><div style="font-size:10px;color:#666;text-align:left;line-height:1.7">${STATS.map(k=>`${STAT_LABEL[k]}：<b style="color:#292f36">${m[k]}</b>`).join('<br>')}</div>`;
+        d.innerHTML=`<div class="avatar" style="background:${ELEM_SOFT[m.elem]};width:56px;height:56px;font-size:30px">${avatarHTML(k,m.emoji)}</div><div style="font-weight:bold;font-size:13px">${m.name}</div><div style="font-size:10px;margin:2px 0"><span style="color:#fff;background:${ELEM[m.elem]};padding:1px 8px;border-radius:8px">${m.elem}</span></div><div style="font-size:10px;color:#666;text-align:left;line-height:1.7">${STATS.map(k=>`${STAT_LABEL[k]}：<b style="color:#292f36">${m[k]}</b>`).join('<br>')}</div>`;
         d.onclick=()=>{g.querySelectorAll('.card').forEach(c=>c.classList.remove('sel'));d.classList.add('sel');S.pid=k;document.getElementById('go').disabled=false};
         g.appendChild(d);
     });
@@ -550,7 +550,7 @@ function openScreen(id){saveGame();showScreen(id);}
 /* ===== 主選單 ===== */
 function updMain(){
     const m=M[S.pid],p=S.ps;
-    document.getElementById('pbox').innerHTML=`<div class="avatar" style="background:${ELEM[m.elem]}">${avatarHTML(S.pid,m.emoji)}</div><div style="flex:1"><h3>${m.name}</h3><div class="hpbox"><div class="hp" id="dashhp" style="width:${S.php/S.max*100}%"></div></div><small style="display:block;margin-top:4px;line-height:1.6">最大血量 ${S.php}/${S.max}<br>攻擊力 ${p.atk} | 防禦力 ${p.def}<br>速度 ${p.spd} | 吸引力 ${p.cha}</small></div>`;
+    document.getElementById('pbox').innerHTML=`<div class="avatar" style="background:${ELEM_SOFT[m.elem]}">${avatarHTML(S.pid,m.emoji)}</div><div style="flex:1"><h3>${m.name}</h3><div class="hpbox"><div class="hp" id="dashhp" style="width:${S.php/S.max*100}%"></div></div><small style="display:block;margin-top:4px;line-height:1.6">最大血量 ${S.php}/${S.max}<br>攻擊力 ${p.atk} | 防禦力 ${p.def}<br>速度 ${p.spd} | 吸引力 ${p.cha}</small></div>`;
     document.getElementById('coin').innerText=S.coin;
 }
 
@@ -593,13 +593,13 @@ function populateDex(){
     if(S.ps&&S.pid){
         const m=M[S.pid];
         const d=document.createElement('div');d.className='list-item';d.style.cursor='pointer';
-        d.innerHTML=`<div class="avatar" style="background:${ELEM[m.elem]}">${avatarHTML(S.pid,m.emoji)}</div><div class="list-item-info"><strong>No.${m.num} ${m.name}（拍檔）</strong><small>${m.elem} | 平均 ${Math.round(avg(S.ps)*10)/10} | ${STATS.map(k=>STAT_LABEL[k].slice(0,2)+S.ps[k]).join(' ')}</small></div><div style="font-size:20px">›</div>`;
+        d.innerHTML=`<div class="avatar" style="background:${ELEM_SOFT[m.elem]}">${avatarHTML(S.pid,m.emoji)}</div><div class="list-item-info"><strong>No.${m.num} ${m.name}（拍檔）</strong><small>${m.elem} | 平均 ${Math.round(avg(S.ps)*10)/10} | ${STATS.map(k=>STAT_LABEL[k].slice(0,2)+S.ps[k]).join(' ')}</small></div><div style="font-size:20px">›</div>`;
         d.onclick=openPartnerDetail;
         el.appendChild(d);
     }
     list.forEach(x=>{
         const m=M[x.id],d=document.createElement('div');d.className='list-item';d.style.cursor='pointer';
-        d.innerHTML=`<div class="avatar" style="background:${ELEM[m.elem]}">${avatarHTML(x.id,m.emoji)}</div><div class="list-item-info"><strong>No.${m.num} ${m.name}</strong><small>${m.elem} | 平均 ${Math.round(avg(x.st)*10)/10} | ${STATS.map(k=>STAT_LABEL[k].slice(0,2)+x.st[k]).join(' ')}</small></div><div style="font-size:20px">›</div>`;
+        d.innerHTML=`<div class="avatar" style="background:${ELEM_SOFT[m.elem]}">${avatarHTML(x.id,m.emoji)}</div><div class="list-item-info"><strong>No.${m.num} ${m.name}</strong><small>${m.elem} | 平均 ${Math.round(avg(x.st)*10)/10} | ${STATS.map(k=>STAT_LABEL[k].slice(0,2)+x.st[k]).join(' ')}</small></div><div style="font-size:20px">›</div>`;
         d.onclick=()=>openMonDetail(x.u);
         el.appendChild(d);
     });
@@ -611,12 +611,16 @@ function statRows(es,m){
     return STATS.map(k=>`<div style="display:flex;justify-content:space-between;padding:2px 8px;font-size:13px"><span>${STAT_LABEL[k]}</span><b>${es[k]}${es[k]!==m[k]?`<small style="color:#f39c12">（基礎${m[k]}）</small>`:''}</b></div>`).join('')+
         `<div style="display:flex;justify-content:space-between;padding:2px 8px;font-size:13px;color:#888"><span>平均能力值</span><b>${Math.round(avg(es)*10)/10}</b></div>`;
 }
+/* 詳情窗头部：精灵图片 + 属性标签（淡色背景衬托） */
+function monHeaderHTML(id,m){
+    return `<div class="avatar" style="background:${ELEM_SOFT[m.elem]};width:92px;height:92px;font-size:46px;margin:0 auto 8px">${avatarHTML(id,m.emoji)}</div>`+
+        `<div style="text-align:center;margin-bottom:6px"><span class="attr" style="background:${ELEM[m.elem]};padding:2px 8px;border-radius:10px;color:#fff;font-size:11px">${m.elem}</span></div>`;
+}
 function openMonDetail(u){
     const x=findInst(u);if(!x)return;
     const m=M[x.id],es=x.st;
     document.getElementById('mmTitle').innerText=`No.${m.num} ${m.name}`;
-    document.getElementById('mmStats').innerHTML=
-        `<div style="text-align:center;margin-bottom:6px"><span class="attr" style="background:${ELEM[m.elem]};padding:2px 8px;border-radius:10px;color:#fff;font-size:11px">${m.elem}</span></div>`+statRows(es,m);
+    document.getElementById('mmStats').innerHTML=monHeaderHTML(x.id,m)+statRows(es,m);
     const btns=document.getElementById('mmBtns');btns.innerHTML='';
     const gain=fuseGain(es);
     const bf=document.createElement('button');bf.className='btn';bf.style.background='#9b59b6';
@@ -634,8 +638,7 @@ function openPartnerDetail(){
     if(!S.ps)return;
     const m=M[S.pid];
     document.getElementById('mmTitle').innerText=`No.${m.num} ${m.name}（拍檔）`;
-    document.getElementById('mmStats').innerHTML=
-        `<div style="text-align:center;margin-bottom:6px"><span class="attr" style="background:${ELEM[m.elem]};padding:2px 8px;border-radius:10px;color:#fff;font-size:11px">${m.elem}</span></div>`+statRows(S.ps,m);
+    document.getElementById('mmStats').innerHTML=monHeaderHTML(S.pid,m)+statRows(S.ps,m);
     const btns=document.getElementById('mmBtns');btns.innerHTML='';
     const bc=document.createElement('button');bc.className='btn';bc.innerText='關閉';bc.onclick=()=>closeModal('monmodal');
     btns.appendChild(bc);
