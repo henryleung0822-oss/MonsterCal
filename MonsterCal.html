@@ -322,23 +322,6 @@ h1{color:var(--primary);font-size:24px}
 </div>
 
 <script>
-/* =====================================================================
-   v4 — 依規格重寫數值規則（P0 + P1）
-   變更摘要：
-   * 精靈 ID 改用 monster_01_a 體系；能力值上限 500（clamp）
-   * 回合時限：基本時限×(1+我方速度/500)×(1−敵方速度/1000)，每回合重置
-   * 攻擊傷害：我方攻×(餘時/回合時限)×屬性−rand(0.1~0.5)×敵防，<10 取 10×屬性
-   * 答錯反擊：敵攻×(1−餘時/回合時限)×屬性−rand(0.1~0.5)×我方防，<10 取 10×屬性
-   * 超時未答：固定 10×屬性效果
-   * 屬性環修正：火→克土（原代碼錯成克木）
-   * 捕捉：(餘時/基本時限)×(我方餘血−敵餘血)×卡倍率+我方吸引力 ≥ 敵吸引力；道場禁用卡
-   * 金幣：勝 +floor(10×我方餘血比例)；敗 −floor(10×敵餘血比例)，下限 0；逃跑 −10
-   * 道場：g2 獨立首領數值；場地效果（g1 敵速度+10/回合、g2 我方−10血/回合）；通關次數入檔
-   * 訓練場1出場率 0.4/0.4/0.2；訓練場2 0.3/0.4/0.4
-   * 小數點鍵＋小數答案解析（出題仍為整數，留待訓練場3）
-   * 存檔 schema v4＋v3 自動遷移；每回合/血量歸零/beforeunload 自動存檔；匯出/匯入
-   * 修復：closeModal 未定義導致戰鬥彈窗卡死；回合時限不重置導致後期秒超时
-   ===================================================================== */
 const MAXSTAT=500;
 const clamp=v=>Math.max(0,Math.min(MAXSTAT,Math.round(v*100)/100));
 const ELEM={'火':'#e74c3c','水':'#3498db','木':'#2ecc71','金':'#f1c40f','土':'#8d6e63'};
@@ -400,17 +383,17 @@ function avg(o){return (o.hp+o.atk+o.def+o.spd+o.cha)/5}
 
 /* ===== 場地資料 ===== */
 const VENUES={
-t1:{id:'t1',name:'訓練場 1',type:'T',topic:'ADD',base:20,spawns:{'monster_01_a':0.4,'monster_02_a':0.4,'monster_03_a':0.2}},
-t2:{id:'t2',name:'訓練場 2',type:'T',topic:'SUB',base:20,spawns:{'monster_01_a':0.3,'monster_02_a':0.4,'monster_03_a':0.4}},
-t3:{id:'t3',name:'訓練場 3',type:'T',topic:'MIX',base:25,spawns:{'monster_04_a':0.2,'monster_05_a':0.8}},
-t4:{id:'t4',name:'訓練場 4',type:'T',topic:'MUL1',base:20,spawns:{'monster_01_a':0.4,'monster_04_a':0.1,'monster_06_a':0.5}},
-t5:{id:'t5',name:'訓練場 5',type:'T',topic:'MUL2',base:20,spawns:{'monster_02_a':0.4,'monster_04_a':0.1,'monster_07_a':0.3}},
-t6:{id:'t6',name:'訓練場 6',type:'T',topic:'MIXMUL',base:25,spawns:{'monster_03_a':0.4,'monster_04_a':0.1,'monster_08_a':0.5}},
+t1:{id:'t1',name:'訓練場 1',type:'T',topic:'ADD',base:20,spawns:{'monster_01_a':0.3,'monster_02_a':0.3,'monster_03_a':0.4}},
+t2:{id:'t2',name:'訓練場 2',type:'T',topic:'SUB',base:20,spawns:{'monster_01_a':0.3,'monster_02_a':0.4,'monster_03_a':0.3}},
+t3:{id:'t3',name:'訓練場 3',type:'T',topic:'MIX',base:25,spawns:{'monster_01_a':0.4,'monster_02_a':0.3,'monster_03_a':0.3}},
+t4:{id:'t4',name:'訓練場 4',type:'T',topic:'MUL1',base:20,spawns:{'monster_01_a':0.4,'monster_04_a':0.1,'monster_05_a':0.1,'monster_06_a':0.4}},
+t5:{id:'t5',name:'訓練場 5',type:'T',topic:'MUL2',base:20,spawns:{'monster_02_a':0.4,'monster_04_a':0.1,'monster_05_a':0.1,'monster_07_a':0.4}},
+t6:{id:'t6',name:'訓練場 6',type:'T',topic:'MIXMUL',base:25,spawns:{'monster_03_a':0.4,'monster_04_a':0.1,'monster_05_a':0.1,'monster_08_a':0.4}},
 t7:{id:'t7',name:'訓練場 7',type:'T',topic:'FADD',base:20,spawns:{'monster_06_a':0.3,'monster_07_a':0.3,'monster_08_a':0.3,'monster_09_a':0.1}},
 t8:{id:'t8',name:'訓練場 8',type:'T',topic:'FSUB',base:20,spawns:{'monster_06_a':0.3,'monster_07_a':0.3,'monster_08_a':0.3,'monster_10_a':0.1}},
-t9:{id:'t9',name:'訓練場 9',type:'T',topic:'FMUL',base:25,spawns:{'monster_09_a':0.5,'monster_10_a':0.5}},
-t10:{id:'t10',name:'訓練場 10',type:'T',topic:'FMIX',base:20,spawns:{'monster_01_a':0.7,'monster_06_a':0.2,'monster_09_a':0.1}},
-t11:{id:'t11',name:'訓練場 11',type:'T',topic:'FMULMIX',base:25,spawns:{'monster_02_a':0.7,'monster_07_a':0.2,'monster_09_a':0.1}},
+t9:{id:'t9',name:'訓練場 9',type:'T',topic:'FMUL',base:25,spawns:{'monster_06_a':0.2,'monster_07_a':0.2,'monster_08_a':0.2,'monster_09_a':0.2,'monster_10_a':0.2}},
+t10:{id:'t10',name:'訓練場 10',type:'T',topic:'FMIX',base:20,spawns:{'monster_06_a':0.2,'monster_07_a':0.2,'monster_08_a':0.2,'monster_09_a':0.2,'monster_10_a':0.2}},
+t11:{id:'t11',name:'訓練場 11',type:'T',topic:'FMULMIX',base:25,spawns:{'monster_06_a':0.2,'monster_07_a':0.2,'monster_08_a':0.2,'monster_09_a':0.2,'monster_10_a':0.2}},
 t12:{id:'t12',name:'訓練場 12',type:'T',topic:'FRACADD',base:20,spawns:{'monster_02_a':0.2,'monster_07_a':0.75,'monster_11_a':0.05}},
 g1:{id:'g1',name:'道場 1 (加法)',type:'G',topic:'ADD',base:15,enemy:'monster_04_a',
     override:{hp:120,atk:100,def:30,spd:40,cha:20},effect:'spdUp',effectTxt:'每回合完結：敵方速度 +10'},
@@ -433,7 +416,7 @@ g9:{id:'g9',name:'道場 9 (小數乘法)',type:'G',topic:'FMUL',base:20,enemy:'
 g10:{id:'g10',name:'道場 10 (小數加減混合)',type:'G',topic:'FMIX',base:15,enemy:'monster_02_b',
     override:{hp:220,atk:100,def:150,spd:80,cha:60},effect:'eDefUp50',effectTxt:'每回合完結：敵方防禦力 +50'},
 g11:{id:'g11',name:'道場 11 (小數乘加減混合)',type:'G',topic:'FMULMIX',base:20,enemy:'monster_03_b',
-    override:{hp:280,atk:80,def:160,spd:70,cha:60},effect:'eHpUp30',effectTxt:'每回合完結：敵方血量上限 +30'},
+    override:{hp:280,atk:80,def:160,spd:70,cha:60},effect:'eHeal30',effectTxt:'每回合完結：敵方回復血量 +30'},
 g12:{id:'g12',name:'道場 12 (分數加法)',type:'G',topic:'FRACADD',base:15,enemy:'monster_11_a',
     override:{hp:300,atk:150,def:100,spd:100,cha:100},effect:'eAtkUp50',effectTxt:'每回合完結：敵方攻擊力 +50'}
 };
