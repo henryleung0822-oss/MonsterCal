@@ -390,6 +390,11 @@ function instSellPrice(id,st){let v=avg(st)*0.8;if(M[id].elem==='金')v*=1.5;ret
 /* ===== 道場開放：對應訓練場通關 5 次 + 完成上一道場 ===== */
 function gymReq(gid){const n=+gid.slice(1);return {train:'t'+n,need:5,prev:n>1?'g'+(n-1):null}}
 function gymUnlocked(gid){const r=gymReq(gid);if((S.train[r.train]||0)<r.need)return false;if(r.prev&&!(S.gyms[r.prev]>0))return false;return true}
+/* ===== 訓練場開放：訓練場 N（N≥2）需先成功完成道場 N−1，逐一學習 ===== */
+function trainUnlocked(tid){const n=+tid.slice(1);if(n<=1)return true;return (S.gyms['g'+(n-1)]||0)>=1}
+function trainLockTxt(tid){const n=+tid.slice(1);return '需成功完成 '+VENUES['g'+(n-1)].name}
+function venueUnlocked(vid){return VENUES[vid].type==='G'?gymUnlocked(vid):trainUnlocked(vid)}
+function venueLockTxt(vid){return VENUES[vid].type==='G'?gymLockTxt(vid):trainLockTxt(vid)}
 function gymLockTxt(gid){const r=gymReq(gid);const p=['需完成 '+VENUES[r.train].name+' 共 '+r.need+' 次（現 '+(S.train[r.train]||0)+' 次）'];if(r.prev)p.push('並成功完成 '+VENUES[r.prev].name);return p.join('，')}
 function avg(o){return (o.hp+o.atk+o.def+o.spd+o.cha)/5}
 
@@ -461,7 +466,7 @@ let S={v:5,init:false,coin:0,pid:'monster_01_a',ps:null,php:0,max:100,
     gyms:zeroMap(GYM_IDS),train:zeroMap(TRAIN_IDS),
     stats:{win:0,catch:0,correct:0,wrong:0,timeout:0},
     ach:{}};
-let B={on:false,act:null,venue:null,base:15,limit:15,time:15,timer:null,q:{q:'',a:0},p:null,e:null,card:null,fx1:false};
+let B={on:false,act:null,venue:null,base:15,limit:15,time:15,timer:null,q:{q:'',a:0},p:null,e:null,card:null,fx1:false,tmo:0};
 
 /* ===== 安全儲存：沙箱/無儲存權限環境自動降級為記憶體儲存，不會報錯卡死 ===== */
 const LS=(function(){
@@ -570,13 +575,14 @@ function populateVenues(listId,type){
     Object.values(VENUES).filter(v=>v.type===type).forEach(v=>{
         const d=document.createElement('div');d.className='list-item';
         const isGym=type==='G';
-        const open=!isGym||gymUnlocked(v.id);
+        const open=venueUnlocked(v.id);
         let extra='';
         if(isGym){
             extra=`<small>場地效果：${v.effectTxt} | 已通關：${S.gyms[v.id]||0} 次</small>`;
             if(!open)extra=`<small style="color:#e67e22">🔒 ${gymLockTxt(v.id)}</small>`;
         }else{
             extra=`<small>已完成：${S.train[v.id]||0} 次（完成 5 次可解鎖對應道場）</small>`;
+            if(!open)extra=`<small style="color:#e67e22">🔒 ${trainLockTxt(v.id)}</small>`;
         }
         d.innerHTML=`<div style="flex:1"><div style="font-weight:bold">${v.name}</div><small>題型: ${TOPIC_TXT[v.topic]} | 基本時限: ${v.base}秒</small><br>${extra}</div><button class="btn ${open?'btn-primary':''}" ${open?'':'disabled'} onclick="startBattle('${v.id}')">${open?'進入':'🔒 未開放'}</button>`;
         el.appendChild(d);
@@ -812,9 +818,9 @@ function makeMonster(id,override){
 }
 function startBattle(vid){
     const v=VENUES[vid];if(!v)return;
-    if(v.type==='G'&&!gymUnlocked(vid)){showToast('🔒 '+gymLockTxt(vid));return}
+    if(!venueUnlocked(vid)){showToast('🔒 '+venueLockTxt(vid));return}
     clearInterval(B.timer);
-    B.on=true;B.act=null;B.card=null;B.fx1=false;B.venue=vid;B.base=v.base;
+    B.on=true;B.act=null;B.card=null;B.fx1=false;B.tmo=0;B.venue=vid;B.base=v.base;
     B.p={mId:S.pid,name:M[S.pid].name,elem:M[S.pid].elem,emoji:M[S.pid].emoji,maxHp:S.max,chp:S.php,...clampStats(S.ps)};
     B.e=(v.type==='G')?makeMonster(v.enemy,v.override):makeMonster(pickRandom(v.spawns));
     showScreen('battle');
@@ -877,9 +883,9 @@ function enableActions(){
 }
 
 /* ===== 戰鬥：回合時限（每回合重置） =====
-   時限 = 基本時限 × (1+我方速度/500) × (1−敵方速度/1000) */
+   時限 = 基本時限 × (1 + (我方速度−敵方速度)/500)，倍率鉗位 0.4~2.0，下限保護 3 秒 */
 function turnLimit(){
-    return Math.max(3,VENUES[B.venue].base*(1+B.p.spd/500)*(1-B.e.spd/1000));
+    return Math.max(3,VENUES[B.venue].base*Math.min(2.0,Math.max(0.4,1+(B.p.spd-B.e.spd)/500)));
 }
 function beginTurn(){
     B.limit=turnLimit();B.time=B.limit;
@@ -1053,10 +1059,10 @@ function submit(){
     clearInterval(B.timer);
     const ok=isCorrect();
     if(B.act==='ATK'){
-        if(ok){S.stats.correct++;playerAttack();}
+        if(ok){S.stats.correct++;B.tmo=0;playerAttack();}
         else{S.stats.wrong++;enemyCounter();}
     }else if(B.act==='ITEM'){
-        if(ok){S.stats.correct++;tryCatch();}
+        if(ok){S.stats.correct++;B.tmo=0;tryCatch();}
         else{S.stats.wrong++;consumeCard();enemyCounter();}
     }
 }
@@ -1073,30 +1079,34 @@ function playerAttack(){
     updBat();showDmg('e',dmg);
     resolveRound();
 }
-/* 答錯：敵反擊 = 敵攻×(1−餘時/回合時限)×屬性 − rand(0.1~0.5)×我方防；<10 → 10×屬性 */
-function enemyCounter(){
-    if(!B.on||B.e.chp<=0)return;
-    const ratio=B.time/B.limit;
-    const eff=elemEff(B.e.elem,B.p.elem);
-    let dmg=B.e.atk*(1-ratio)*eff-rand01_05()*B.p.def;
-    if(dmg<10)dmg=10*eff;
-    dmg=Math.round(dmg);
-    B.p.chp-=dmg;
-    updBat();showDmg('p',dmg);
-    resolveRound();
-}
-/* 超時未答：固定 10×屬性效果 */
-function handleTimeout(){
-    if(!B.on||!B.act)return;
-    S.stats.timeout++;
-    if(B.act==='ITEM'){consumeCard();enemyCounter();return;} /* 道具答錯/超時→按答錯規則反擊 */
+/* 敌方反击通用公式：敵攻×k×屬性 − rand(0.1~0.5)×我方防；<10 → 10×屬性 */
+function enemyStrike(k){
+    if(!B.on)return;
     if(B.e.chp>0){
         const eff=elemEff(B.e.elem,B.p.elem);
-        const dmg=Math.round(10*eff);
+        let dmg=B.e.atk*k*eff-rand01_05()*B.p.def;
+        if(dmg<10)dmg=10*eff;
+        dmg=Math.round(dmg);
         B.p.chp-=dmg;
         updBat();showDmg('p',dmg);
     }
     resolveRound();
+}
+/* 答錯：敵反擊 = 敵攻×(1−餘時/回合時限)×屬性 − rand(0.1~0.5)×我方防；<10 → 10×屬性 */
+function enemyCounter(){
+    if(!B.on||B.e.chp<=0)return;
+    enemyStrike(1-B.time/B.limit);
+}
+/* 超時未答：道場＝滿_strength反擊(k=1)；訓練場＝連續不答遞進 k=0.6→0.8→0.9 */
+function handleTimeout(){
+    if(!B.on||!B.act)return;
+    S.stats.timeout++;
+    if(B.act==='ITEM'){consumeCard();enemyCounter();return;} /* 道具答錯/超時→按答錯規則反擊 */
+    if(VENUES[B.venue].type==='G'){enemyStrike(1);return;} /* 道場：拖時間＝最重反擊 */
+    B.tmo++;
+    const k=B.tmo===1?0.6:(B.tmo===2?0.8:0.9); /* 训练场：首次宽、惯犯加重 */
+    enemyStrike(k);
+    if(B.tmo>=2)showToast('⚠️ 連續不答！反擊傷害提升');
 }
 
 /* 捕捉：(餘時/基本時限)×(我方餘血−敵餘血)×卡倍率 + 我方吸引力 ≥ 敵吸引力 → 成功
