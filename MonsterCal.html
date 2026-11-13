@@ -101,6 +101,11 @@ h1{color:var(--primary);font-size:24px}
 .key.enter{background:var(--secondary);color:#fff;font-size:24px;grid-column:2}
 .key.del{background:#e74c3c;color:#fff;font-size:14px}
 .key.dot{background:#eee}
+.key.frac{background:#eee}
+.frf{display:inline-flex;align-items:center;gap:3px;vertical-align:middle;margin:0 3px}
+.frf .fc{display:inline-flex;flex-direction:column;text-align:center;line-height:1.1}
+.frf .fc b{display:block;font-size:.66em;font-weight:bold;border-bottom:2px solid currentColor;padding:0 4px}
+.frf .fc i{display:block;font-size:.66em;font-style:normal;padding:0 4px}
 .keys.off{opacity:.45;pointer-events:none}
 .qtxt.idle{font-size:16px;opacity:.85}
 
@@ -240,8 +245,9 @@ h1{color:var(--primary);font-size:24px}
             <div class="key" onclick="key('1')">1</div><div class="key" onclick="key('2')">2</div><div class="key" onclick="key('3')">3</div>
             <div class="key dot" onclick="key('.')">.</div>
             <div class="key zero" onclick="key('0')">0</div>
-            <div class="key del" onclick="key('DEL')">DEL</div>
+            <div class="key frac" onclick="key('┘')">┘</div>
             <div class="key enter" onclick="key('=')">=</div>
+            <div class="key del" onclick="key('DEL')">DEL</div>
         </div>
     </div>
 </div>
@@ -370,7 +376,8 @@ monster_09_b:{id:'monster_09_b',num:9,tier:'b',name:'雷電鳥',elem:'金',hp:60
 monster_09_c:{id:'monster_09_c',num:9,tier:'c',name:'轟雷鳥',elem:'金',hp:70,atk:90,def:50,spd:100,cha:90,evo:null,evoReq:Infinity,emoji:'🐦'},
 monster_10_a:{id:'monster_10_a',num:10,tier:'a',name:'鑽地鼠',elem:'土',hp:60,atk:60,def:60,spd:60,cha:60,evo:'monster_10_b',evoReq:70,emoji:'🐹'},
 monster_10_b:{id:'monster_10_b',num:10,tier:'b',name:'挖土鼠',elem:'土',hp:70,atk:70,def:70,spd:70,cha:70,evo:'monster_10_c',evoReq:100,emoji:'🐹'},
-monster_10_c:{id:'monster_10_c',num:10,tier:'c',name:'震地鼠',elem:'土',hp:80,atk:80,def:80,spd:80,cha:80,evo:null,evoReq:Infinity,emoji:'🐹'}
+monster_10_c:{id:'monster_10_c',num:10,tier:'c',name:'震地鼠',elem:'土',hp:80,atk:80,def:80,spd:80,cha:80,evo:null,evoReq:Infinity,emoji:'🐹'},
+monster_11_a:{id:'monster_11_a',num:11,tier:'a',name:'格鬥豬',elem:'火',hp:150,atk:120,def:80,spd:80,cha:100,evo:null,evoReq:Infinity,emoji:'🐷'}
 };
 const STATS=['hp','atk','def','spd','cha'];
 const STAT_LABEL={hp:'最大血量',atk:'攻擊力',def:'防禦力',spd:'速度',cha:'吸引力'};
@@ -399,6 +406,7 @@ t8:{id:'t8',name:'訓練場 8',type:'T',topic:'FSUB',base:20,spawns:{'monster_06
 t9:{id:'t9',name:'訓練場 9',type:'T',topic:'FMUL',base:25,spawns:{'monster_09_a':0.5,'monster_10_a':0.5}},
 t10:{id:'t10',name:'訓練場 10',type:'T',topic:'FMIX',base:20,spawns:{'monster_01_a':0.7,'monster_06_a':0.2,'monster_09_a':0.1}},
 t11:{id:'t11',name:'訓練場 11',type:'T',topic:'FMULMIX',base:25,spawns:{'monster_02_a':0.7,'monster_07_a':0.2,'monster_09_a':0.1}},
+t12:{id:'t12',name:'訓練場 12',type:'T',topic:'FRACADD',base:20,spawns:{'monster_02_a':0.2,'monster_07_a':0.75,'monster_11_a':0.05}},
 g1:{id:'g1',name:'道場 1 (加法)',type:'G',topic:'ADD',base:15,enemy:'monster_04_a',
     override:{hp:120,atk:100,def:30,spd:40,cha:20},effect:'spdUp',effectTxt:'每回合完結：敵方速度 +10'},
 g2:{id:'g2',name:'道場 2 (減法)',type:'G',topic:'SUB',base:15,enemy:'monster_04_a',
@@ -420,11 +428,13 @@ g9:{id:'g9',name:'道場 9 (小數乘法)',type:'G',topic:'FMUL',base:20,enemy:'
 g10:{id:'g10',name:'道場 10 (小數加減混合)',type:'G',topic:'FMIX',base:15,enemy:'monster_02_b',
     override:{hp:220,atk:100,def:150,spd:80,cha:60},effect:'eDefUp50',effectTxt:'每回合完結：敵方防禦力 +50'},
 g11:{id:'g11',name:'道場 11 (小數乘加減混合)',type:'G',topic:'FMULMIX',base:20,enemy:'monster_03_b',
-    override:{hp:280,atk:80,def:160,spd:70,cha:60},effect:'eHpUp30',effectTxt:'每回合完結：敵方血量上限 +30'}
+    override:{hp:280,atk:80,def:160,spd:70,cha:60},effect:'eHpUp30',effectTxt:'每回合完結：敵方血量上限 +30'},
+g12:{id:'g12',name:'道場 12 (分數加法)',type:'G',topic:'FRACADD',base:15,enemy:'monster_11_a',
+    override:{hp:300,atk:150,def:100,spd:100,cha:100},effect:'eAtkUp50',effectTxt:'每回合完結：敵方攻擊力 +50'}
 };
-const TOPIC_TXT={ADD:'兩位數加法',SUB:'兩位數減法',MIX:'兩位數加減混合',MUL1:'兩位數×一位數',MUL2:'兩位數×兩位數',MIXMUL:'乘法與加減混合',FADD:'一位小數加法',FSUB:'一位小數減法',FMUL:'一位小數乘法',FMIX:'一位小數加減混合',FMULMIX:'小數乘法與加減混合'};
-const GYM_IDS=['g1','g2','g3','g4','g5','g6','g7','g8','g9','g10','g11'];
-const TRAIN_IDS=['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10','t11'];
+const TOPIC_TXT={ADD:'兩位數加法',SUB:'兩位數減法',MIX:'兩位數加減混合',MUL1:'兩位數×一位數',MUL2:'兩位數×兩位數',MIXMUL:'乘法與加減混合',FADD:'一位小數加法',FSUB:'一位小數減法',FMUL:'一位小數乘法',FMIX:'一位小數加減混合',FMULMIX:'小數乘法與加減混合',FRAC:'分數加減',FRACADD:'分數加法'};
+const GYM_IDS=['g1','g2','g3','g4','g5','g6','g7','g8','g9','g10','g11','g12'];
+const TRAIN_IDS=['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10','t11','t12'];
 const zeroMap=ks=>ks.reduce((o,k)=>(o[k]=0,o),{});
 const GYM_CLEAR_BONUS=10; /* 每次成功完成道場的額外金幣獎勵 */
 
@@ -759,6 +769,7 @@ const ACHS=[{id:'first_win',n:'初出茅廬',d:'擊敗 1 隻精靈',f:()=>S.stat
 {id:'gym9',n:'冠軍收集者',d:'通關道場 9',f:()=>(S.gyms.g9||0)>=1},
 {id:'gym10',n:'十冠王者',d:'通關道場 10',f:()=>(S.gyms.g10||0)>=1},
 {id:'gym11',n:'道場終結者',d:'通關道場 11',f:()=>(S.gyms.g11||0)>=1},
+{id:'gym12',n:'新一代王者',d:'通關道場 12',f:()=>(S.gyms.g12||0)>=1},
 {id:'dex3',n:'收集新手',d:'累計收服 3 隻精靈',f:()=>S.stats.catch>=3},
 {id:'catch10',n:'捕捉達人',d:'累計收服 10 隻精靈',f:()=>S.stats.catch>=10},
 {id:'catch50',n:'精靈收集者',d:'累計收服 50 隻精靈',f:()=>S.stats.catch>=50},
@@ -877,16 +888,52 @@ function beginTurn(){
 }
 function genQ(){
     const v=VENUES[B.venue];
-    let q='',a=0;
-    if(v.topic[0]==='F'){const r=genQFloat2(v.topic);q=r.q;a=r.a}
-    else{const r=genQInt(v.topic);q=r.q;a=r.a}
-    B.q={q,a};
+    const tp=v.topic, isFrac=(tp==='FRAC'||tp==='FRACADD');
+    let qh='',a=0,n=0,d=1;
+    if(isFrac){const r=(tp==='FRAC')?genQFrac():genQFracAdd();qh=r.qh;a=r.a;n=r.n;d=r.d;qh+=' = ?'}
+    else if(tp[0]==='F'){const r=genQFloat2(tp);a=r.a;n=toRat(a).n;d=toRat(a).d;qh=esc(r.q)+' = ?'}
+    else{const r=genQInt(tp);a=r.a;n=toRat(a).n;d=toRat(a).d;qh=esc(r.q)+' = ?'}
+    B.q={a,n,d,frac:isFrac};
     const qe=document.getElementById('que');
-    qe.innerText=q+' = ?';qe.classList.remove('idle');
+    qe.innerHTML=qh;qe.classList.remove('idle');
     document.getElementById('inp').innerText='0';inp='0';
 }
 const ri=(lo,hi)=>Math.floor(Math.random()*(hi-lo+1))+lo;
 const fix=(x,d)=>parseFloat(x.toFixed(d));
+/* ===== 有理数（分数）工具：以整数分子/分母精确比对，避免小数误差 ===== */
+function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){const t=a%b;a=b;b=t}return a||1}
+const lcm=(a,b)=>a/gcd(a,b)*b;
+function rat(n,d){if(d===0)return null;if(d<0){n=-n;d=-d}const g=gcd(n,d);return {n:n/g,d:d/g}}
+/* 把已知最多两位小数的答案精确转成分数 */
+function toRat(x){return rat(Math.round(x*100),100)}
+function rAdd(A,B){return rat(A.n*B.d+B.n*A.d,A.d*B.d)}
+function rSub(A,B){return rat(A.n*B.d-B.n*A.d,A.d*B.d)}
+function rMul(A,B){return rat(A.n*B.n,A.d*B.d)}
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+/* 堆叠分数显示（方案A）：分子在上、横线、分母在下 */
+function fq(n,d){return `<span class="frf"><span class="fc"><b>${n}</b><i>${d}</i></span></span>`}
+/* 分数加法：两个真分数相加，分母为一或两位数，结果仍为真分数（不含假分数） */
+function genQFracAdd(){
+    for(let k=0;k<200;k++){
+        const d1=ri(2,20),d2=ri(2,20);
+        const n1=ri(1,d1-1),n2=ri(1,d2-1);
+        const C=rAdd({n:n1,d:d1},{n:n2,d:d2});
+        if(C&&C.n<C.d&&C.n>0)
+            return {qh:fq(n1,d1)+' + '+fq(n2,d2),a:C.n/C.d,n:C.n,d:C.d};
+    }
+    return {qh:fq(1,2)+' + '+fq(1,3),a:5/6,n:5,d:6};
+}
+/* 分数加减题：同分母或异分母，结果为非负的最简分数（答案可为假分数/带分数） */
+function genQFrac(){
+    let d1=ri(2,9),d2=ri(2,9);
+    if(Math.random()<0.35)d2=d1;
+    const n1=ri(1,d1-1),n2=ri(1,d2-1);
+    const A={n:n1,d:d1},B={n:n2,d:d2};
+    let op,C,hi,lo;
+    if(Math.random()<0.5){op='+';C=rAdd(A,B);hi=A;lo=B}
+    else{op='−';hi=(A.n*B.d>=B.n*A.d)?A:B;lo=(hi===A)?B:A;C=rSub(hi,lo)}
+    return {qh:fq(hi.n,hi.d)+' '+op+' '+fq(lo.n,lo.d),a:C.n/C.d,n:C.n,d:C.d};
+}
 /* 整数题型：加法/减法/加减混合/两位×一位/两位×两位/乘法与加减混合 */
 function genQInt(tp){
     let x,y,z,q,a;
@@ -940,17 +987,25 @@ function startTimer(){
     },100);
 }
 
-/* ===== 數字鍵盤（支援小數點） ===== */
+/* ===== 數字鍵盤（支援小數點與分數┘） ===== */
 let inp='0';
 function key(v){
     if(!B.on||!B.act)return;
     if(v==='DEL'){inp=inp.slice(0,-1)||'0';}
     else if(v==='='){submit();return;}
+    else if(v==='┘'){
+        if(inp==='0')return;                                   /* ┘不能开头 */
+        if(inp.endsWith('┘')||inp.endsWith('.'))return;        /* 不能有连续或结尾分隔符 */
+        if(inp.includes('.'))return;                           /* 分数与小数点不能混用 */
+        if((inp.match(/┘/g)||[]).length>=2)return;             /* 最多两个┘（带分数） */
+        if(inp.length<9)inp+='┘';
+    }
     else if(v==='.'){
+        if(inp.includes('┘'))return;
         if(inp==='0')inp='';
         if(!inp.includes('.'))inp=(inp===''?'0.':inp+'.');
     }
-    else{inp=inp==='0'?'':inp;if(inp.length<7)inp+=v;}
+    else{inp=inp==='0'?'':inp;if(inp.length<9)inp+=v;}
     document.getElementById('inp').innerText=inp;
 }
 document.onkeydown=function(e){
@@ -958,11 +1013,37 @@ document.onkeydown=function(e){
     if(/^[0-9]$/.test(e.key)){key(e.key);e.preventDefault();}
     else if(e.key==='Backspace'){key('DEL');e.preventDefault();}
     else if(e.key==='.'||e.key==='。'){key('.');e.preventDefault();}
+    else if(e.key==='/'){key('┘');e.preventDefault();}
     else if(e.key==='Enter'||e.key==='='){key('=');e.preventDefault();}
 };
+/* 十进制字符串 → 最简有理数（精确，不用浮点比对） */
+function decRat(s){
+    if(!/^(\d+(\.\d+)?|\.\d+)$/.test(s))return null;
+    if(s.includes('.')){const ip=s.split('.')[0],fp=s.split('.')[1];
+        const dn=Math.pow(10,fp.length);
+        return rat((parseInt(ip||'0',10))*dn+parseInt(fp,10),dn);}
+    return rat(parseInt(s,10),1);
+}
+/* 判定规则：值相等；用分数┘/带分数输入时必须是已化简的最简分数（小数0.5可直接输入） */
 function isCorrect(){
-    const val=parseFloat(inp);
-    return inp!==''&&!isNaN(val)&&Math.abs(val-B.q.a)<1e-9;
+    const s=inp;
+    if(!s.includes('┘')){
+        const r=decRat(s);
+        return !!r&&r.n===B.q.n&&r.d===B.q.d;
+    }
+    if(s.includes('.'))return false;
+    const p=s.split('┘');
+    if(p.length===2){ /* 真分数或假分数 a┘b = b分之a */
+        if(!/^\d+$/.test(p[0])||!/^\d+$/.test(p[1]))return false;
+        const a=+p[0],b=+p[1];
+        return b>0&&gcd(a,b)===1&&a===B.q.n&&b===B.q.d;
+    }
+    if(p.length===3){ /* 带分数 a┘b┘c = a又c分之b */
+        if(!/^\d+$/.test(p[0])||!/^\d+$/.test(p[1])||!/^\d+$/.test(p[2]))return false;
+        const w=+p[0],fn=+p[1],fd=+p[2];
+        return fd>0&&fn<fd&&gcd(fn,fd)===1&&w*fd+fn===B.q.n&&fd===B.q.d;
+    }
+    return false;
 }
 
 /* ===== 戰鬥：結算 ===== */
@@ -1048,6 +1129,7 @@ function resolveRound(){
     if(B.e.chp<=0)return winBattle();
     const v=VENUES[B.venue];
     if(v.effect==='spdUp'){B.e.spd=clamp(B.e.spd+10);}
+    if(v.effect==='eAtkUp50'){B.e.atk=clamp(B.e.atk+50);}
     if(v.effect==='defUp'){B.e.def=clamp(B.e.def+10);}
     if(v.effect==='hpDrain'){B.p.chp-=10;}
     if(v.effect==='hpDrain20'){B.p.chp-=20;}
