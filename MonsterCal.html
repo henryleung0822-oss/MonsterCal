@@ -360,7 +360,20 @@ monster_09_c:{id:'monster_09_c',num:9,tier:'c',name:'轟雷鳥',elem:'金',hp:70
 monster_10_a:{id:'monster_10_a',num:10,tier:'a',name:'鑽地鼠',elem:'土',hp:60,atk:60,def:60,spd:60,cha:60,evo:'monster_10_b',evoReq:70,emoji:'🐹'},
 monster_10_b:{id:'monster_10_b',num:10,tier:'b',name:'挖土鼠',elem:'土',hp:70,atk:70,def:70,spd:70,cha:70,evo:'monster_10_c',evoReq:100,emoji:'🐹'},
 monster_10_c:{id:'monster_10_c',num:10,tier:'c',name:'震地鼠',elem:'土',hp:80,atk:80,def:80,spd:80,cha:80,evo:null,evoReq:Infinity,emoji:'🐹'},
-monster_11_a:{id:'monster_11_a',num:11,tier:'a',name:'格鬥豬',elem:'火',hp:150,atk:120,def:80,spd:80,cha:100,evo:null,evoReq:Infinity,emoji:'🐷'}
+monster_11_a:{id:'monster_11_a',num:11,tier:'a',name:'格鬥豬',elem:'火',hp:150,atk:120,def:80,spd:80,cha:100,evo:null,evoReq:Infinity,emoji:'🐷'},
+
+/* ===== 新增精靈 ===== */
+monster_12_a:{id:'monster_12_a',num:12,tier:'a',name:'劇毒章魚',elem:'水',hp:140,atk:80,def:120,spd:90,cha:100,evo:null,evoReq:Infinity,emoji:'🐙'},
+
+monster_13_a:{id:'monster_13_a',num:13,tier:'a',name:'花仙子',elem:'木',hp:150,atk:70,def:130,spd:80,cha:100,evo:null,evoReq:Infinity,emoji:'🧚'},
+
+monster_14_a:{id:'monster_14_a',num:14,tier:'a',name:'求財豬',elem:'金',hp:120,atk:70,def:80,spd:80,cha:100,evo:'monster_14_b',evoReq:120,emoji:'🐷'},
+monster_14_b:{id:'monster_14_b',num:14,tier:'b',name:'富豪豬',elem:'金',hp:130,atk:80,def:90,spd:90,cha:110,evo:'monster_14_c',evoReq:150,emoji:'🐷'},
+monster_14_c:{id:'monster_14_c',num:14,tier:'c',name:'貪婪豬',elem:'金',hp:140,atk:90,def:100,spd:100,cha:120,evo:null,evoReq:Infinity,emoji:'🐷'},
+
+monster_15_a:{id:'monster_15_a',num:15,tier:'a',name:'呆野豬',elem:'土',hp:100,atk:120,def:100,spd:60,cha:120,evo:'monster_15_b',evoReq:120,emoji:'🐗'},
+monster_15_b:{id:'monster_15_b',num:15,tier:'b',name:'野豬土豪',elem:'土',hp:110,atk:130,def:110,spd:70,cha:130,evo:'monster_15_c',evoReq:150,emoji:'🐗'},
+monster_15_c:{id:'monster_15_c',num:15,tier:'c',name:'野豬大王',elem:'土',hp:120,atk:140,def:120,spd:80,cha:140,evo:null,evoReq:Infinity,emoji:'🐗'}
 };
 const STATS=['hp','atk','def','spd','cha'];
 const STAT_LABEL={hp:'最大血量',atk:'攻擊力',def:'防禦力',spd:'速度',cha:'吸引力'};
@@ -394,7 +407,12 @@ t8:{id:'t8',name:'訓練場 8',type:'T',topic:'FSUB',base:20,spawns:{'monster_06
 t9:{id:'t9',name:'訓練場 9',type:'T',topic:'FMUL',base:25,spawns:{'monster_06_a':0.2,'monster_07_a':0.2,'monster_08_a':0.2,'monster_09_a':0.2,'monster_10_a':0.2}},
 t10:{id:'t10',name:'訓練場 10',type:'T',topic:'FMIX',base:20,spawns:{'monster_06_a':0.2,'monster_07_a':0.2,'monster_08_a':0.2,'monster_09_a':0.2,'monster_10_a':0.2}},
 t11:{id:'t11',name:'訓練場 11',type:'T',topic:'FMULMIX',base:25,spawns:{'monster_06_a':0.2,'monster_07_a':0.2,'monster_08_a':0.2,'monster_09_a':0.2,'monster_10_a':0.2}},
-t12:{id:'t12',name:'訓練場 12',type:'T',topic:'FRACADD',base:20,spawns:{'monster_02_a':0.2,'monster_07_a':0.75,'monster_11_a':0.05}},
+t12:{id:'t12',name:'訓練場 12',type:'T',topic:'FRACADD',base:20,spawns:{'monster_02_a':0.2,'monster_07_a':0.7,'monster_12_a':0.05,'monster_11_a':0.05}},
+t13:{id:'t13',name:'訓練場 13',type:'T',topic:'FRACSUB',base:20,spawns:{'monster_03_a':0.2,'monster_08_a':0.7,'monster_13_a':0.05,'monster_12_a':0.05}},
+t14:{id:'t14',name:'訓練場 14',type:'T',topic:'FRACMUL',base:25,spawns:{'monster_04_a':0.2,'monster_09_a':0.7,'monster_14_a':0.05,'monster_13_a':0.05}},
+t15:{id:'t15',name:'訓練場 15',type:'T',topic:'FRACMIX',base:25,spawns:{'monster_05_a':0.2,'monster_10_a':0.7,'monster_15_a':0.05,'monster_14_a':0.05}},
+t16:{id:'t16',name:'訓練場 16',type:'T',topic:'FRACMULMIX',base:25,spawns:{'monster_01_a':0.2,'monster_06_a':0.7,'monster_11_a':0.05,'monster_15_a':0.05}},
+
 g1:{id:'g1',name:'道場 1 (加法)',type:'G',topic:'ADD',base:15,enemy:'monster_04_a',
     override:{hp:120,atk:100,def:30,spd:40,cha:20},effect:'spdUp',effectTxt:'每回合完結：敵方速度 +10'},
 g2:{id:'g2',name:'道場 2 (減法)',type:'G',topic:'SUB',base:15,enemy:'monster_04_a',
@@ -418,11 +436,20 @@ g10:{id:'g10',name:'道場 10 (小數加減混合)',type:'G',topic:'FMIX',base:1
 g11:{id:'g11',name:'道場 11 (小數乘加減混合)',type:'G',topic:'FMULMIX',base:20,enemy:'monster_03_b',
     override:{hp:280,atk:80,def:160,spd:70,cha:60},effect:'eHeal30',effectTxt:'每回合完結：敵方回復血量 +30'},
 g12:{id:'g12',name:'道場 12 (分數加法)',type:'G',topic:'FRACADD',base:15,enemy:'monster_11_a',
-    override:{hp:300,atk:150,def:100,spd:100,cha:100},effect:'eAtkUp50',effectTxt:'每回合完結：敵方攻擊力 +50'}
+    override:{hp:300,atk:150,def:100,spd:100,cha:100},effect:'eAtkUp50',effectTxt:'每回合完結：敵方攻擊力 +50'},
+g13:{id:'g13',name:'道場 13 (分數加法)',type:'G',topic:'FRACADD',base:15,enemy:'monster_12_a',
+    override:{hp:280,atk:120,def:130,spd:120,cha:100},effect:'hpDrain50b',effectTxt:'每回合完結：我方血量 −50'},
+g14:{id:'g14',name:'道場 14 (分數乘法)',type:'G',topic:'FRACMUL',base:20,enemy:'monster_13_a',
+    override:{hp:320,atk:70,def:140,spd:120,cha:100},effect:'eHeal50',effectTxt:'每回合完結：敵方回復血量 +50'},
+g15:{id:'g15',name:'道場 15 (分數加減混算)',type:'G',topic:'FRACMIX',base:20,enemy:'monster_14_c',
+    override:{hp:320,atk:140,def:70,spd:120,cha:100},effect:'eDefUp50',effectTxt:'每回合完結：敵方防禦力 +50'},
+g16:{id:'g16',name:'道場 16 (分數乘除混算)',type:'G',topic:'FRACMULMIX',base:20,enemy:'monster_15_c',
+    override:{hp:300,atk:150,def:160,spd:60,cha:100},effect:'eSpdUp50',effectTxt:'每回合完結：敵方速度 +50'}
 };
-const TOPIC_TXT={ADD:'兩位數加法',SUB:'兩位數減法',MIX:'兩位數加減混合',MUL1:'兩位數×一位數',MUL2:'兩位數×兩位數',MIXMUL:'乘法與加減混合',FADD:'一位小數加法',FSUB:'一位小數減法',FMUL:'一位小數乘法',FMIX:'一位小數加減混合',FMULMIX:'小數乘法與加減混合',FRAC:'分數加減',FRACADD:'分數加法'};
-const GYM_IDS=['g1','g2','g3','g4','g5','g6','g7','g8','g9','g10','g11','g12'];
-const TRAIN_IDS=['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10','t11','t12'];
+const TOPIC_TXT={ADD:'兩位數加法',SUB:'兩位數減法',MIX:'兩位數加減混合',MUL1:'兩位數×一位數',MUL2:'兩位數×兩位數',MIXMUL:'乘法與加減混合',FADD:'一位小數加法',FSUB:'一位小數減法',FMUL:'一位小數乘法',FMIX:'一位小數加減混合',FMULMIX:'小數乘法與加減混合',
+FRACADD:'分數加法',FRACSUB:'分數減法',FRACMUL:'分數乘法',FRACMIX:'分數加減混算',FRACMULMIX:'分數乘除混算'};
+const GYM_IDS=['g1','g2','g3','g4','g5','g6','g7','g8','g9','g10','g11','g12','g13','g14','g15','g16'];
+const TRAIN_IDS=['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10','t11','t12','t13','t14','t15','t16'];
 const zeroMap=ks=>ks.reduce((o,k)=>(o[k]=0,o),{});
 const GYM_CLEAR_BONUS=10; /* 每次成功完成道場的額外金幣獎勵 */
 
@@ -443,7 +470,7 @@ card_04:{id:'card_04',name:'究極收集卡',m:1.5,price:500,emoji:'💎'},
 drk_01:{id:'drk_01',name:'能量飲品',m:0,price:10,emoji:'⚡',use:true}
 };
 
-/* ===== 狀態（schema v4） ===== */
+/* ===== 狀態（schema v5） ===== */
 let S={v:5,init:false,coin:0,pid:'monster_01_a',ps:null,php:0,max:100,
     inv:{card_01:3,card_02:0,card_03:0,card_04:0,drk_01:0},dex:[],uidn:0,
     gyms:zeroMap(GYM_IDS),train:zeroMap(TRAIN_IDS),
@@ -747,6 +774,8 @@ function applyBoost(k){
 const ACH_REWARD=10;
 const ACHS=[{id:'first_win',n:'初出茅廬',d:'擊敗 1 隻精靈',f:()=>S.stats.win>=1},
 {id:'vet',n:'戰鬥高手',d:'擊敗 10 隻精靈',f:()=>S.stats.win>=10},
+{id:'win50',n:'心算高手',d:'擊敗 50 隻精靈',f:()=>S.stats.win>=50},
+{id:'win100',n:'百勝之王',d:'擊敗 100 隻精靈',f:()=>S.stats.win>=100},
 {id:'gym1',n:'道場霸主',d:'通關道場 1',f:()=>(S.gyms.g1||0)>=1},
 {id:'gym2',n:'雙冠訓練師',d:'通關道場 2',f:()=>(S.gyms.g2||0)>=1},
 {id:'gym3',n:'三冠王',d:'通關道場 3',f:()=>(S.gyms.g3||0)>=1},
@@ -759,12 +788,14 @@ const ACHS=[{id:'first_win',n:'初出茅廬',d:'擊敗 1 隻精靈',f:()=>S.stat
 {id:'gym10',n:'十冠王者',d:'通關道場 10',f:()=>(S.gyms.g10||0)>=1},
 {id:'gym11',n:'道場終結者',d:'通關道場 11',f:()=>(S.gyms.g11||0)>=1},
 {id:'gym12',n:'新一代王者',d:'通關道場 12',f:()=>(S.gyms.g12||0)>=1},
+{id:'gym13',n:'速算之王',d:'通過道場 13',f:()=>(S.gyms.g13||0)>=1},
+{id:'gym14',n:'冠軍就是你',d:'通過道場 14',f:()=>(S.gyms.g14||0)>=1},
+{id:'gym15',n:'神算之王',d:'通過道場 15',f:()=>(S.gyms.g15||0)>=1},
+{id:'gym16',n:'小學畢業',d:'通過道場 16',f:()=>(S.gyms.g16||0)>=1},
 {id:'dex3',n:'收集新手',d:'累計收服 3 隻精靈',f:()=>S.stats.catch>=3},
 {id:'catch10',n:'捕捉達人',d:'累計收服 10 隻精靈',f:()=>S.stats.catch>=10},
 {id:'catch50',n:'精靈收集者',d:'累計收服 50 隻精靈',f:()=>S.stats.catch>=50},
-{id:'catch100',n:'精靈獵人',d:'累計收服 100 隻精靈',f:()=>S.stats.catch>=100},
-{id:'win50',n:'心算高手',d:'擊敗 50 隻精靈',f:()=>S.stats.win>=50},
-{id:'win100',n:'百勝之王',d:'擊敗 100 隻精靈',f:()=>S.stats.win>=100}
+{id:'catch100',n:'精靈獵人',d:'累計收服 100 隻精靈',f:()=>S.stats.catch>=100}
 ];
 function checkAch(){
     const un=[];
@@ -877,9 +908,9 @@ function beginTurn(){
 }
 function genQ(){
     const v=VENUES[B.venue];
-    const tp=v.topic, isFrac=(tp==='FRAC'||tp==='FRACADD');
+    const tp=v.topic, isFrac=(tp==='FRAC'||tp==='FRACADD'||tp==='FRACSUB'||tp==='FRACMUL'||tp==='FRACMIX'||tp==='FRACMULMIX');
     let qh='',a=0,n=0,d=1;
-    if(isFrac){const r=(tp==='FRAC')?genQFrac():genQFracAdd();qh=r.qh;a=r.a;n=r.n;d=r.d;qh+=' = ?'}
+    if(isFrac){const r=genQFracTopic(tp);qh=r.qh;a=r.a;n=r.n;d=r.d;qh+=' = ?'}
     else if(tp[0]==='F'){const r=genQFloat2(tp);a=r.a;n=toRat(a).n;d=toRat(a).d;qh=esc(r.q)+' = ?'}
     else{const r=genQInt(tp);a=r.a;n=toRat(a).n;d=toRat(a).d;qh=esc(r.q)+' = ?'}
     B.q={a,n,d,frac:isFrac};
@@ -901,6 +932,16 @@ function rMul(A,B){return rat(A.n*B.n,A.d*B.d)}
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 /* 堆叠分数显示（方案A）：分子在上、横线、分母在下 */
 function fq(n,d){return `<span class="frf"><span class="fc"><b>${n}</b><i>${d}</i></span></span>`}
+
+/* ===== 分数题统一入口 ===== */
+function genQFracTopic(tp){
+    if(tp==='FRAC'||tp==='FRACADD')return genQFracAdd();
+    if(tp==='FRACSUB')return genQFracSub();
+    if(tp==='FRACMUL')return genQFracMul();
+    if(tp==='FRACMIX')return genQFracMix();
+    if(tp==='FRACMULMIX')return genQFracMulMix();
+    return genQFracAdd();
+}
 /* 分数加法：两个真分数相加，分母为一或两位数，结果仍为真分数（不含假分数） */
 function genQFracAdd(){
     for(let k=0;k<200;k++){
@@ -912,7 +953,83 @@ function genQFracAdd(){
     }
     return {qh:fq(1,2)+' + '+fq(1,3),a:5/6,n:5,d:6};
 }
-/* 分数加减题：同分母或异分母，结果为非负的最简分数（答案可为假分数/带分数） */
+/* 分数减法：两个真分数相减，分母 2–20，答案不为负 */
+function genQFracSub(){
+    for(let k=0;k<200;k++){
+        const d1=ri(2,20),d2=ri(2,20);
+        const n1=ri(1,d1-1),n2=ri(1,d2-1);
+        const A={n:n1,d:d1},B={n:n2,d:d2};
+        /* 保证被减数 ≥ 减数 */
+        let hi=A,lo=B;
+        if(A.n*B.d < B.n*A.d){hi=B;lo=A}
+        const C=rSub(hi,lo);
+        if(C&&C.n>=0&&C.d<=20&&C.n<C.d)
+            return {qh:fq(hi.n,hi.d)+' − '+fq(lo.n,lo.d),a:C.n/C.d,n:C.n,d:C.d};
+    }
+    return {qh:fq(3,4)+' − '+fq(1,4),a:0.5,n:1,d:2};
+}
+/* 分数乘法：两个真分数相乘，分母 2–20，结果仍为真分数（不含假分数） */
+function genQFracMul(){
+    for(let k=0;k<300;k++){
+        const d1=ri(2,20),d2=ri(2,20);
+        const n1=ri(1,d1-1),n2=ri(1,d2-1);
+        const C=rMul({n:n1,d:d1},{n:n2,d:d2});
+        if(C&&C.n<C.d&&C.n>0)
+            return {qh:fq(n1,d1)+' × '+fq(n2,d2),a:C.n/C.d,n:C.n,d:C.d};
+    }
+    return {qh:fq(1,2)+' × '+fq(2,3),a:1/3,n:1,d:3};
+}
+/* 分数加减混算：真分数之间加或减，分母 2–20，答案不为负且不超过 1（真分数） */
+function genQFracMix(){
+    for(let k=0;k<200;k++){
+        const d1=ri(2,20),d2=ri(2,20);
+        const n1=ri(1,d1-1),n2=ri(1,d2-1);
+        const A={n:n1,d:d1},B={n:n2,d:d2};
+        if(Math.random()<0.5){
+            const C=rAdd(A,B);
+            if(C&&C.n<C.d)return {qh:fq(n1,d1)+' + '+fq(n2,d2),a:C.n/C.d,n:C.n,d:C.d};
+        }else{
+            let hi=A,lo=B;
+            if(A.n*B.d < B.n*A.d){hi=B;lo=A}
+            const C=rSub(hi,lo);
+            if(C&&C.n>=0&&C.d<=20)
+                return {qh:fq(hi.n,hi.d)+' − '+fq(lo.n,lo.d),a:C.n/C.d,n:C.n,d:C.d};
+        }
+    }
+    return {qh:fq(1,2)+' + '+fq(1,2),a:1,n:1,d:1};
+}
+/* 分数乘除混算：题目为真分数，分母 2–20，答案最简分數（可為假分数/带分数） */
+function genQFracMulMix(){
+    /* 以「乘除混合」生成：先乘後除，或先除後乘，用整數分子/分母精確運算 */
+    for(let k=0;k<500;k++){
+        const d1=ri(2,20),d2=ri(2,20),d3=ri(2,20);
+        const n1=ri(1,d1-1),n2=ri(1,d2-1),n3=ri(1,d3-1);
+        const A={n:n1,d:d1},B={n:n2,d:d2},C={n:n3,d:d3};
+        const op1=Math.random()<0.5?'×':'÷';
+        const op2=Math.random()<0.5?'×':'÷';
+        let cur=A,qh=fq(A.n,A.d);
+        qh+=' '+op1+' '+fq(B.n,B.d);
+        if(op1==='×')cur=rMul(cur,B);
+        else{
+            if(B.n===0||cur===null)continue;
+            cur=rat(cur.n*B.d,cur.d*B.n);
+        }
+        if(!cur||cur.n===0)continue;
+        qh+=' '+op2+' '+fq(C.n,C.d);
+        if(op2==='×')cur=rMul(cur,C);
+        else{
+            if(C.n===0)continue;
+            cur=rat(cur.n*C.d,cur.d*C.n);
+        }
+        if(!cur||cur.n===0)continue;
+        /* 答案以最简分數存放，答題時需輸入化簡分數 */
+        const Crat=rat(cur.n,cur.d);
+        if(!Crat)continue;
+        return {qh:qh,a:Crat.n/Crat.d,n:Crat.n,d:Crat.d};
+    }
+    return {qh:fq(1,2)+' × '+fq(2,3)+' ÷ '+fq(1,4),a:4/3,n:4,d:3};
+}
+/* 分数加减题（保留舊名，兼容） */
 function genQFrac(){
     let d1=ri(2,9),d2=ri(2,9);
     if(Math.random()<0.35)d2=d1;
@@ -1127,7 +1244,9 @@ function resolveRound(){
     if(v.effect==='hpDrain'){B.p.chp-=10;}
     if(v.effect==='hpDrain20'){B.p.chp-=20;}
     if(v.effect==='hpDrain50'){B.p.chp-=50;}
+    if(v.effect==='hpDrain50b'){B.p.chp-=50;}
     if(v.effect==='eHeal10'){B.e.chp=Math.min(B.e.maxHp,B.e.chp+10);}
+    if(v.effect==='eHeal50'){B.e.chp=Math.min(B.e.maxHp,B.e.chp+50);}
     if(v.effect==='eSpdUp50'){B.e.spd=clamp(B.e.spd+50);}
     if(v.effect==='eDefUp50'){B.e.def=clamp(B.e.def+50);}
     if(v.effect==='eHpUp30'){B.e.maxHp+=30;B.e.chp+=30;}
