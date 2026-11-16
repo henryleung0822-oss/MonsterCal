@@ -433,7 +433,7 @@ g11:{id:'g11',name:'道場 11 (小數乘加減混合)',type:'G',topic:'FMULMIX',
 g12:{id:'g12',name:'道場 12 (分數加法)',type:'G',topic:'FRACADD',base:15,enemy:'monster_11_a',
     override:{hp:300,atk:150,def:100,spd:100,cha:100},effect:'eAtkUp50',effectTxt:'每回合完結：敵方攻擊力 +50'},
 g13:{id:'g13',name:'道場 13 (分數加法)',type:'G',topic:'FRACADD',base:15,enemy:'monster_12_a',
-    override:{hp:280,atk:120,def:130,spd:120,cha:100},effect:'hpDrain50b',effectTxt:'每回合完結：我方血量 −50'},
+    override:{hp:280,atk:120,def:130,spd:120,cha:100},effect:'hpDrain50',effectTxt:'每回合完結：我方血量 −50'},
 g14:{id:'g14',name:'道場 14 (分數乘法)',type:'G',topic:'FRACMUL',base:20,enemy:'monster_13_a',
     override:{hp:320,atk:70,def:140,spd:120,cha:100},effect:'eHeal50',effectTxt:'每回合完結：敵方回復血量 +50'},
 g15:{id:'g15',name:'道場 15 (分數加減混算)',type:'G',topic:'FRACMIX',base:20,enemy:'monster_14_c',
@@ -570,7 +570,7 @@ function openScreen(id){saveGame();showScreen(id);}
 /* ===== 主選單 ===== */
 function updMain(){
     const m=M[S.pid],p=S.ps;
-    document.getElementById('pbox').innerHTML=`<div class="avatar" style="background:${ELEM_SOFT[m.elem]}">${avatarHTML(S.pid,m.emoji)}</div><div style="flex:1"><h3>${m.name}</h3><div class="hpbox"><div class="hp" id="dashhp" style="width:${S.php/S.max*100}%"></div></div><small style="display:block;margin-top:4px;line-height:1.6">最大血量 ${S.php}/${S.max}<br>攻擊力 ${p.atk} | 防禦力 ${p.def}<br>速度 ${p.spd} | 吸引力 ${p.cha}</small></div>`;
+    document.getElementById('pbox').innerHTML=`<div class="avatar" style="background:${ELEM_SOFT[m.elem]}">${avatarHTML(S.pid,m.emoji)}</div><div style="flex:1"><h3>${m.name}</h3><div class="hpbox"><div class="hp" id="dashhp" style="width:${S.php/S.max*100}%"></div></div><small style="display:block;margin-top:4px;line-height:1.6">最大血量 ${S.php}<br>攻擊力 ${p.atk} | 防禦力 ${p.def}<br>速度 ${p.spd} | 吸引力 ${p.cha}</small></div>`;
     document.getElementById('coin').innerText=S.coin;
 }
 
@@ -1239,12 +1239,11 @@ function resolveRound(){
     if(v.effect==='hpDrain'){B.p.chp-=10;}
     if(v.effect==='hpDrain20'){B.p.chp-=20;}
     if(v.effect==='hpDrain50'){B.p.chp-=50;}
-    if(v.effect==='hpDrain50b'){B.p.chp-=50;}
     if(v.effect==='eHeal10'){B.e.chp=Math.min(B.e.maxHp,B.e.chp+10);}
+    if(v.effect==='eHeal30'){B.e.chp=Math.min(B.e.maxHp,B.e.chp+30);}
     if(v.effect==='eHeal50'){B.e.chp=Math.min(B.e.maxHp,B.e.chp+50);}
     if(v.effect==='eSpdUp50'){B.e.spd=clamp(B.e.spd+50);}
     if(v.effect==='eDefUp50'){B.e.def=clamp(B.e.def+50);}
-    if(v.effect==='eHpUp30'){B.e.maxHp+=30;B.e.chp+=30;}
     if(v.effect==='pSpdDown20'){B.p.spd=clamp(B.p.spd-20);}
     if(v.effect==='setHp1'){if(!B.fx1){B.fx1=true;B.p.chp=Math.min(B.p.chp,1);showToast('道場效果：我方血量降至 1！')}}
     B.p.chp=Math.max(0,B.p.chp);
