@@ -401,12 +401,12 @@ t7:{id:'t7',name:'訓練場 7',type:'T',topic:'FADD',base:20,spawns:{'monster_06
 t8:{id:'t8',name:'訓練場 8',type:'T',topic:'FSUB',base:20,spawns:{'monster_06_a':0.3,'monster_07_a':0.3,'monster_08_a':0.3,'monster_10_a':0.1}},
 t9:{id:'t9',name:'訓練場 9',type:'T',topic:'FMUL',base:30,spawns:{'monster_06_a':0.2,'monster_07_a':0.2,'monster_08_a':0.2,'monster_09_a':0.2,'monster_10_a':0.2}},
 t10:{id:'t10',name:'訓練場 10',type:'T',topic:'FMIX',base:20,spawns:{'monster_06_a':0.2,'monster_07_a':0.2,'monster_08_a':0.2,'monster_09_a':0.2,'monster_10_a':0.2}},
-t11:{id:'t11',name:'訓練場 11',type:'T',topic:'FMULMIX',base:35,spawns:{'monster_06_a':0.2,'monster_07_a':0.2,'monster_08_a':0.2,'monster_09_a':0.2,'monster_10_a':0.2}},
-t12:{id:'t12',name:'訓練場 12',type:'T',topic:'FRACADD',base:20,spawns:{'monster_02_a':0.2,'monster_07_a':0.7,'monster_12_a':0.05,'monster_11_a':0.05}},
-t13:{id:'t13',name:'訓練場 13',type:'T',topic:'FRACSUB',base:20,spawns:{'monster_03_a':0.2,'monster_08_a':0.7,'monster_13_a':0.05,'monster_12_a':0.05}},
-t14:{id:'t14',name:'訓練場 14',type:'T',topic:'FRACMUL',base:25,spawns:{'monster_04_a':0.2,'monster_09_a':0.7,'monster_14_a':0.05,'monster_13_a':0.05}},
-t15:{id:'t15',name:'訓練場 15',type:'T',topic:'FRACMIX',base:25,spawns:{'monster_05_a':0.2,'monster_10_a':0.7,'monster_15_a':0.05,'monster_14_a':0.05}},
-t16:{id:'t16',name:'訓練場 16',type:'T',topic:'FRACMULMIX',base:30,spawns:{'monster_01_a':0.2,'monster_06_a':0.7,'monster_11_a':0.05,'monster_15_a':0.05}},
+t11:{id:'t11',name:'訓練場 11',type:'T',topic:'FMULMIX',base:40,spawns:{'monster_06_a':0.2,'monster_07_a':0.2,'monster_08_a':0.2,'monster_09_a':0.2,'monster_10_a':0.2}},
+t12:{id:'t12',name:'訓練場 12',type:'T',topic:'FRACADD',base:35,spawns:{'monster_02_a':0.2,'monster_07_a':0.7,'monster_12_a':0.05,'monster_11_a':0.05}},
+t13:{id:'t13',name:'訓練場 13',type:'T',topic:'FRACSUB',base:35,spawns:{'monster_03_a':0.2,'monster_08_a':0.7,'monster_13_a':0.05,'monster_12_a':0.05}},
+t14:{id:'t14',name:'訓練場 14',type:'T',topic:'FRACMUL',base:40,spawns:{'monster_04_a':0.2,'monster_09_a':0.7,'monster_14_a':0.05,'monster_13_a':0.05}},
+t15:{id:'t15',name:'訓練場 15',type:'T',topic:'FRACMIX',base:40,spawns:{'monster_05_a':0.2,'monster_10_a':0.7,'monster_15_a':0.05,'monster_14_a':0.05}},
+t16:{id:'t16',name:'訓練場 16',type:'T',topic:'FRACMULMIX',base:45,spawns:{'monster_01_a':0.2,'monster_06_a':0.7,'monster_11_a':0.05,'monster_15_a':0.05}},
 
 g1:{id:'g1',name:'道場 1 (加法)',type:'G',topic:'ADD',base:15,enemy:'monster_04_a',
     override:{hp:120,atk:100,def:30,spd:40,cha:20},effect:'spdUp',effectTxt:'每回合完結：敵方速度 +10'},
@@ -423,22 +423,22 @@ g6:{id:'g6',name:'道場 6 (乘法加減混合)',type:'G',topic:'MIXMUL',base:25
 g7:{id:'g7',name:'道場 7 (小數加法)',type:'G',topic:'FADD',base:15,enemy:'monster_09_a',
     override:{hp:140,atk:120,def:100,spd:100,cha:60},effect:'pSpdDown20',effectTxt:'每回合完結：我方速度 −20'},
 g8:{id:'g8',name:'道場 8 (小數減法)',type:'G',topic:'FSUB',base:15,enemy:'monster_10_a',
-    override:{hp:150,atk:120,def:120,spd:120,cha:60},effect:'hpDrain50',effectTxt:'每回合完結：我方血量 −50'},
+    override:{hp:150,atk:120,def:120,spd:120,cha:60},effect:'eHeal20',effectTxt:'每回合完結：敵方回復血量 +20'},
 g9:{id:'g9',name:'道場 9 (小數乘法)',type:'G',topic:'FMUL',base:25,enemy:'monster_01_b',
-    override:{hp:200,atk:150,def:100,spd:100,cha:60},effect:'eSpdUp50',effectTxt:'每回合完結：敵方速度 +50'},
+    override:{hp:200,atk:150,def:100,spd:100,cha:60},effect:'eSpdUp30',effectTxt:'每回合完結：敵方速度 +30'},
 g10:{id:'g10',name:'道場 10 (小數加減混合)',type:'G',topic:'FMIX',base:15,enemy:'monster_02_b',
     override:{hp:220,atk:100,def:150,spd:80,cha:60},effect:'eDefUp50',effectTxt:'每回合完結：敵方防禦力 +50'},
-g11:{id:'g11',name:'道場 11 (小數乘加減混合)',type:'G',topic:'FMULMIX',base:30,enemy:'monster_03_b',
+g11:{id:'g11',name:'道場 11 (小數乘加減混合)',type:'G',topic:'FMULMIX',base:35,enemy:'monster_03_b',
     override:{hp:280,atk:80,def:160,spd:70,cha:60},effect:'eHeal30',effectTxt:'每回合完結：敵方回復血量 +30'},
-g12:{id:'g12',name:'道場 12 (分數加法)',type:'G',topic:'FRACADD',base:15,enemy:'monster_11_a',
+g12:{id:'g12',name:'道場 12 (分數加法)',type:'G',topic:'FRACADD',base:30,enemy:'monster_11_a',
     override:{hp:300,atk:150,def:100,spd:100,cha:100},effect:'eAtkUp50',effectTxt:'每回合完結：敵方攻擊力 +50'},
-g13:{id:'g13',name:'道場 13 (分數加法)',type:'G',topic:'FRACADD',base:15,enemy:'monster_12_a',
+g13:{id:'g13',name:'道場 13 (分數加法)',type:'G',topic:'FRACADD',base:30,enemy:'monster_12_a',
     override:{hp:280,atk:120,def:130,spd:120,cha:100},effect:'hpDrain50',effectTxt:'每回合完結：我方血量 −50'},
-g14:{id:'g14',name:'道場 14 (分數乘法)',type:'G',topic:'FRACMUL',base:20,enemy:'monster_13_a',
+g14:{id:'g14',name:'道場 14 (分數乘法)',type:'G',topic:'FRACMUL',base:35,enemy:'monster_13_a',
     override:{hp:320,atk:70,def:140,spd:120,cha:100},effect:'eHeal50',effectTxt:'每回合完結：敵方回復血量 +50'},
-g15:{id:'g15',name:'道場 15 (分數加減混算)',type:'G',topic:'FRACMIX',base:20,enemy:'monster_14_c',
+g15:{id:'g15',name:'道場 15 (分數加減混算)',type:'G',topic:'FRACMIX',base:35,enemy:'monster_14_c',
     override:{hp:320,atk:140,def:70,spd:120,cha:100},effect:'eDefUp50',effectTxt:'每回合完結：敵方防禦力 +50'},
-g16:{id:'g16',name:'道場 16 (分數乘除混算)',type:'G',topic:'FRACMULMIX',base:25,enemy:'monster_15_c',
+g16:{id:'g16',name:'道場 16 (分數乘除混算)',type:'G',topic:'FRACMULMIX',base:40,enemy:'monster_15_c',
     override:{hp:300,atk:150,def:160,spd:60,cha:100},effect:'eSpdUp50',effectTxt:'每回合完結：敵方速度 +50'}
 };
 const TOPIC_TXT={ADD:'兩位數加法',SUB:'兩位數減法',MIX:'兩位數加減混合',MUL1:'兩位數×一位數',MUL2:'兩位數×兩位數',MIXMUL:'乘法與加減混合',FADD:'一位小數加法',FSUB:'一位小數減法',FMUL:'一位小數乘法',FMIX:'一位小數加減混合',FMULMIX:'小數乘法與加減混合',
@@ -1240,8 +1240,10 @@ function resolveRound(){
     if(v.effect==='hpDrain20'){B.p.chp-=20;}
     if(v.effect==='hpDrain50'){B.p.chp-=50;}
     if(v.effect==='eHeal10'){B.e.chp=Math.min(B.e.maxHp,B.e.chp+10);}
+    if(v.effect==='eHeal20'){B.e.chp=Math.min(B.e.maxHp,B.e.chp+20);}
     if(v.effect==='eHeal30'){B.e.chp=Math.min(B.e.maxHp,B.e.chp+30);}
     if(v.effect==='eHeal50'){B.e.chp=Math.min(B.e.maxHp,B.e.chp+50);}
+    if(v.effect==='eSpdUp30'){B.e.spd=clamp(B.e.spd+30);}
     if(v.effect==='eSpdUp50'){B.e.spd=clamp(B.e.spd+50);}
     if(v.effect==='eDefUp50'){B.e.def=clamp(B.e.def+50);}
     if(v.effect==='pSpdDown20'){B.p.spd=clamp(B.p.spd-20);}
