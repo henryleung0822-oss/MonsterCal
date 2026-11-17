@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>精靈數學 RPG</title>
+<!-- QR 生成與掃描：CDN 載入，不依賴後端 -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 <style>
 :root {
     --bg:#f0f8ff;--primary:#ff6b6b;--secondary:#4ecdc4;--accent:#ffe66d;
@@ -133,6 +136,12 @@ h1{color:var(--primary);font-size:24px}
 .shake{animation:shake .3s}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 :fullscreen #game,:-webkit-full-screen #game{max-width:640px;max-height:100vh;height:100vh;border-radius:0;box-shadow:none}
+
+/* ===== 朋友頁面專用 ===== */
+#friends .friend-card{
+    background:#fff;padding:12px;border-radius:12px;box-shadow:0 3px 6px #0002;margin-bottom:10px;
+}
+#qrImg svg,#qrImg img{max-width:100%;height:auto}
 </style>
 </head>
 <body>
@@ -162,11 +171,12 @@ h1{color:var(--primary);font-size:24px}
     <div class="nav">
         <div class="nav-btn" onclick="openScreen('train')">⚔️ 訓練場</div>
         <div class="nav-btn" onclick="openScreen('gym')">🏟️ 道場</div>
-        <div class="nav-btn" onclick="openScreen('dex')">📖 收集盒</div>
+        <div class="nav-btn" onclick="openScreen('dex')">📖 圖鑑</div>
         <div class="nav-btn" onclick="openScreen('shop')">🛒 商店</div>
         <div class="nav-btn" onclick="openScreen('items')">🎒 道具</div>
         <div class="nav-btn" onclick="openScreen('ach')">🏆 成就</div>
-        <div class="nav-btn" onclick="openScreen('guide')">📘 圖鑑</div>
+        <div class="nav-btn" onclick="openScreen('guide')">📘 攻略</div>
+        <div class="nav-btn" onclick="openScreen('friends')">👥 朋友</div>
         <div class="nav-btn" onclick="openSettings()">⚙️ 設定</div>
     </div>
 </div>
@@ -187,9 +197,9 @@ h1{color:var(--primary);font-size:24px}
     <button class="btn" onclick="openScreen('main')">返回</button>
 </div>
 
-<!-- 收集盒 -->
+<!-- 圖鑑 -->
 <div id="dex" class="screen">
-    <h2>精靈收集盒</h2>
+    <h2>精靈圖鑑</h2>
     <div class="list" id="dlist"></div>
     <button class="btn" onclick="openScreen('main')">返回</button>
 </div>
@@ -215,12 +225,28 @@ h1{color:var(--primary);font-size:24px}
     <button class="btn" onclick="openScreen('main')">返回</button>
 </div>
 
-<!-- 圖鑑 -->
+<!-- 攻略 -->
 <div id="guide" class="screen">
-    <h2>📘 精靈圖鑑</h2>
+    <h2>📘 精靈攻略</h2>
     <p style="text-align:center;font-size:12px;color:#666;margin-bottom:6px">曾收集的精靈顯示樣貌，未收集的以「？」表示</p>
     <div class="list" id="guidelist"></div>
     <button class="btn" onclick="openScreen('main')">返回</button>
+</div>
+
+<!-- 朋友 -->
+<div id="friends" class="screen">
+    <h2>👥 朋友</h2>
+    <div id="friendSelf"></div>
+    <div style="display:flex;gap:8px;margin:10px 0">
+        <button class="btn btn-primary" style="flex:1" onclick="showMyQR()">📱 顯示 QR Code</button>
+        <button class="btn btn-accent" style="flex:1" onclick="copyShareCode()">📋 複製分享碼</button>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+        <h3 style="margin:0;text-align:left;font-size:16px">朋友列表（<span id="friendCount">0</span>）</h3>
+        <button class="btn btn-primary" style="padding:6px 12px;font-size:12px;margin:0" onclick="showAddFriend()">＋ 新增</button>
+    </div>
+    <div class="list" id="friendList" style="margin-top:8px"></div>
+    <button class="btn" style="margin-top:10px" onclick="openScreen('main')">返回</button>
 </div>
 
 <!-- 戰鬥 -->
@@ -291,7 +317,7 @@ h1{color:var(--primary);font-size:24px}
 <div class="modal" id="helpmodal">
     <div class="mbox" style="max-width:360px;max-height:80%;overflow-y:auto;text-align:left">
         <h3 style="text-align:center">📖 遊戲說明</h3>
-        <p style="font-size:13px;line-height:1.7"><b>玩法：</b>帶領你的拍檔精靈挑戰訓練場與道場。每個回合選擇「攻擊」或「道具」後，限時內答對數學題就能出招；答錯或超時會被對方反擊。答得越快，傷害越高、剩餘時間還能提升捕捉成功率。擊敗野生精靈可收集收集盒與金幣，成功通關道場有額外獎勵。</p>
+        <p style="font-size:13px;line-height:1.7"><b>玩法：</b>帶領你的拍檔精靈挑戰訓練場與道場。每個回合選擇「攻擊」或「道具」後，限時內答對數學題就能出招；答錯或超時會被對方反擊。答得越快，傷害越高、剩餘時間還能提升捕捉成功率。擊敗野生精靈可收集圖鑑與金幣，成功通關道場有額外獎勵。</p>
         <p style="font-size:13px;line-height:1.7"><b>能力值用途：</b><br>
         ・最大血量：歸零即戰敗<br>
         ・攻擊力：決定你出招的傷害<br>
@@ -301,7 +327,7 @@ h1{color:var(--primary);font-size:24px}
         <p style="font-size:13px;line-height:1.7"><b>屬性相剋（攻擊方 → 剋制方，傷害增加）：</b><br>
         金 → 木　木 → 水　水 → 火　火 → 土　土 → 金<br>
         <small>被剋時傷害減少。每項能力上限 500。</small></p>
-        <p style="font-size:13px;line-height:1.7"><b>成長：</b>收服的精靈可在收集盒中「融合」，把它的能力加到拍檔精靈上；能量飲品也能提升能力。平均能力足夠高時，拍檔會進化，能力大漲！</p>
+        <p style="font-size:13px;line-height:1.7"><b>成長：</b>收服的精靈可在圖鑑中「融合」，把它的能力加到拍檔精靈上；能量飲品也能提升能力。平均能力足夠高時，拍檔會進化，能力大漲！</p>
         <div style="text-align:center"><button class="btn btn-primary" onclick="closeModal('helpmodal')">返回</button></div>
     </div>
 </div>
@@ -323,6 +349,56 @@ h1{color:var(--primary);font-size:24px}
         <div style="text-align:center;margin-top:8px">
             <button class="btn btn-primary" onclick="closeModal('settingsmodal')">返回</button>
         </div>
+    </div>
+</div>
+
+<!-- 我的 QR Code -->
+<div class="modal" id="qrmodal">
+    <div class="mbox">
+        <h3>我的分享 QR Code</h3>
+        <div id="qrImg" style="text-align:center;margin:10px 0"></div>
+        <p style="font-size:11px;color:#666;word-break:break-all;margin:6px 0" id="qrData"></p>
+        <button class="btn btn-primary" onclick="closeQR()">關閉</button>
+    </div>
+</div>
+
+<!-- 新增朋友 -->
+<div class="modal" id="addfriendmodal">
+    <div class="mbox">
+        <h3>新增朋友</h3>
+        <button class="btn btn-primary" onclick="startScan()">📷 掃描 QR Code</button>
+        <button class="btn btn-accent" onclick="showPaste()">📋 貼上分享碼</button>
+        <button class="btn" onclick="closeModal('addfriendmodal')">取消</button>
+    </div>
+</div>
+
+<!-- 掃描 QR Code -->
+<div class="modal" id="scanmodal">
+    <div class="mbox">
+        <h3>掃描朋友 QR Code</h3>
+        <video id="scanVideo" playsinline muted style="width:100%;border-radius:8px;background:#000"></video>
+        <canvas id="scanCanvas" style="display:none"></canvas>
+        <p id="scanStatus" style="font-size:12px;color:#666;margin:8px 0">正在開啟相機…</p>
+        <button class="btn btn-danger" onclick="closeScan()">取消</button>
+    </div>
+</div>
+
+<!-- 貼上分享碼 -->
+<div class="modal" id="pastemodal">
+    <div class="mbox">
+        <h3>貼上朋友分享碼</h3>
+        <textarea id="pasteInput" style="width:100%;height:100px;border:1px solid #ddd;border-radius:6px;padding:8px;font-size:12px;user-select:text" placeholder="在此貼上朋友提供的分享碼"></textarea>
+        <button class="btn btn-primary" onclick="confirmPaste()">確定</button>
+        <button class="btn" onclick="closeModal('pastemodal')">取消</button>
+    </div>
+</div>
+
+<!-- 朋友詳情 -->
+<div class="modal" id="friendoptmodal">
+    <div class="mbox">
+        <h3 id="foTitle"></h3>
+        <div id="foStats"></div>
+        <div id="foBtns" style="display:flex;flex-direction:column;gap:6px;margin-top:10px"></div>
     </div>
 </div>
 
@@ -406,7 +482,7 @@ const STATS=['hp','atk','def','spd','cha'];
 const STAT_LABEL={hp:'最大血量',atk:'攻擊力',def:'防禦力',spd:'速度',cha:'吸引力'};
 function baseStats(id){const m=M[id],o={};STATS.forEach(k=>o[k]=clamp(m[k]));return o}
 function clampStats(o){const r={};STATS.forEach(k=>r[k]=clamp(o[k]||0));return r}
-/* ===== 個體制度：收集盒中每隻精靈持有獨立能力值，可逐一顯示與出售 ===== */
+/* ===== 個體制度：圖鑑中每隻精靈持有獨立能力值，可逐一顯示與出售 ===== */
 function dexInst(id){return S.dex.filter(x=>x.id===id)}
 function addInst(id,st){S.uidn=(S.uidn||0)+1;S.dex.push({u:S.uidn,id:id,st:clampStats(st)});S.seen[id]=true;return S.uidn}
 function instSellPrice(id,st){let v=avg(st)*0.8;if(M[id].elem==='金')v*=1.5;return Math.floor(v)}
@@ -502,7 +578,8 @@ let S={v:5,init:false,coin:0,pid:'monster_01_a',ps:null,php:0,max:100,
     inv:{card_01:3,card_02:0,card_03:0,card_04:0,drk_01:0},dex:[],uidn:0,
     gyms:zeroMap(GYM_IDS),train:zeroMap(TRAIN_IDS),
     stats:{win:0,catch:0,correct:0,wrong:0,timeout:0},
-    ach:{},seen:{},settings:{keypadOrder:'opt1'}};
+    ach:{},seen:{},settings:{keypadOrder:'opt1'},
+    playerName:'',friends:[]};
 let B={on:false,act:null,venue:null,base:15,limit:15,time:15,timer:null,q:{q:'',a:0},p:null,e:null,card:null,fx1:false,tmo:0};
 
 /* ===== 安全儲存：沙箱/無儲存權限環境自動降級為記憶體儲存，不會報錯卡死 ===== */
@@ -558,13 +635,23 @@ function loadGame(){
         S.dex=S.dex.filter(x=>x&&M[x.id]&&x.st).map(x=>({u:typeof x.u==='number'?x.u:++S.uidn,id:x.id,st:clampStats(x.st)}));
         Object.keys(CARDS).forEach(k=>{if(typeof S.inv[k]!=='number')S.inv[k]=0});
         STATS.forEach(k=>{if(typeof S.ps[k]!=='number')S.ps[k]=clamp(M[S.pid][k]);});
-        /* 圖鑑用：重建曾收集集合 */
+        /* 攻略用：重建曾收集集合 */
         if(!S.seen||typeof S.seen!=='object')S.seen={};
         S.dex.forEach(x=>{if(x&&x.id)S.seen[x.id]=true});
         if(S.pid)S.seen[S.pid]=true;
         /* 設定相容 */
         if(!S.settings||typeof S.settings!=='object')S.settings={keypadOrder:'opt1'};
         if(S.settings.keypadOrder!=='opt1'&&S.settings.keypadOrder!=='opt2')S.settings.keypadOrder='opt1';
+        /* 朋友相容 */
+        if(typeof S.playerName!=='string')S.playerName='';
+        if(!Array.isArray(S.friends))S.friends=[];
+        S.friends=S.friends.filter(f=>f&&typeof f.name==='string'&&M[f.pid]&&f.stats).map(f=>({
+            id:typeof f.id==='string'?f.id:('f'+Date.now()+Math.random().toString(36).slice(2,6)),
+            name:String(f.name).slice(0,12),
+            pid:f.pid,
+            stats:clampStats(f.stats),
+            addedAt:typeof f.addedAt==='number'?f.addedAt:Date.now()
+        }));
         S.max=S.ps.hp;
         if(!(S.php>0)||S.php>S.max)S.php=S.max;
         return true;
@@ -605,6 +692,7 @@ function showScreen(id){
     if(id==='dex')populateDex();
     if(id==='ach')populateAch();
     if(id==='guide')populateGuide();
+    if(id==='friends')renderFriends();
 }
 function openScreen(id){saveGame();showScreen(id);}
 
@@ -647,7 +735,7 @@ function populateShop(){
 }
 function buyCard(id,p){if(S.coin>=p&&CARDS[id]){S.coin-=p;S.inv[id]=(S.inv[id]||0)+1;saveGame();populateShop();updMain()}}
 
-/* ===== 收集盒（個體制：每一隻獨立顯示，編號僅內部使用） ===== */
+/* ===== 圖鑑（個體制：每一隻獨立顯示，編號僅內部使用） ===== */
 function populateDex(){
     const el=document.getElementById('dlist');el.innerHTML='';
     const list=S.dex.slice().sort((a,b)=>(M[a.id].num-M[b.id].num)||(avg(b.st)-avg(a.st)));
@@ -667,7 +755,7 @@ function populateDex(){
     });
 }
 
-/* ===== 圖鑑：依 num 分組，每條進化鏈一列 ===== */
+/* ===== 攻略：依 num 分組，每條進化鏈一列 ===== */
 function guideOwned(id){
     return !!S.seen[id]||S.pid===id||S.dex.some(x=>x.id===id);
 }
@@ -932,6 +1020,296 @@ function applyKeypadOrder(){
     }
 }
 
+/* ===== 朋友（A+B+C+D） ===== */
+/* 分享碼 v2：帶簽名校驗的獨特碼
+   格式：M2-<base64url(緊湊payload)>-<8位十六進制簽名>
+   - 緊湊 payload：2~名字~精靈縮寫~hp,atk,def,spd,cha
+   - 簽名：djb2 + 固定鹽，對 base64 字串計算
+   - 手改內容 → 簽名不符 → 解碼失敗（純前端無法 100% 防作弊，但大幅提高門檻） */
+const SHARE_VER='2';
+const SHARE_SALT='MCal~v2~sig~2024';
+function _shareSig(s){
+    let h=5381;
+    const t=SHARE_SALT+s+SHARE_SALT;
+    for(let i=0;i<t.length;i++){h=((h<<5)+h+t.charCodeAt(i))|0;}
+    return (h>>>0).toString(16).padStart(8,'0');
+}
+function _b64urlEncode(str){
+    const bytes=new TextEncoder().encode(str);
+    let bin='';
+    for(let i=0;i<bytes.length;i++)bin+=String.fromCharCode(bytes[i]);
+    return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function _b64urlDecode(s){
+    s=s.replace(/-/g,'+').replace(/_/g,'/');
+    while(s.length%4)s+='=';
+    const bin=atob(s);
+    const bytes=new Uint8Array(bin.length);
+    for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+}
+function pidToShort(pid){
+    const m=/^monster_(\d{2})_([abc])$/.exec(pid);
+    return m?(m[1]+m[2]):null;
+}
+function shortToPid(s){
+    const m=/^(\d{2})([abc])$/.exec(s||'');
+    if(!m)return null;
+    const pid=`monster_${m[1]}_${m[2]}`;
+    return M[pid]?pid:null;
+}
+function getDisplayName(){return (S.playerName||'').trim()||'訓練師';}
+function makeSharePayload(){
+    const short=pidToShort(S.pid);
+    if(!short)throw new Error('invalid pid');
+    const name=encodeURIComponent(getDisplayName());
+    const st=[S.ps.hp,S.ps.atk,S.ps.def,S.ps.spd,S.ps.cha].join(',');
+    return `${SHARE_VER}~${name}~${short}~${st}`;
+}
+function encodeShare(){
+    const body=_b64urlEncode(makeSharePayload());
+    const sig=_shareSig(body);
+    return `M2.${body}.${sig}`;
+}
+function decodeShare(str){
+    try{
+        const s=String(str||'').trim();
+        if(!s)return null;
+        const parts=s.split('.');
+        if(parts.length!==3||parts[0]!=='M2')return null;
+        const body=parts[1],sig=parts[2];
+        if(_shareSig(body)!==sig)return null;
+        let payload;
+        try{payload=_b64urlDecode(body);}catch(e){return null;}
+        const f=payload.split('~');
+        if(f.length!==4||f[0]!==SHARE_VER)return null;
+        let name;
+        try{name=decodeURIComponent(f[1]||'').trim().slice(0,12);}catch(e){return null;}
+        if(!name)return null;
+        const pid=shortToPid(f[2]);
+        if(!pid)return null;
+        const nums=f[3].split(',').map(Number);
+        if(nums.length!==5)return null;
+        const stats={},keys=['hp','atk','def','spd','cha'];
+        for(let i=0;i<5;i++){
+            const v=nums[i];
+            if(!isFinite(v)||v<0||v>MAXSTAT)return null;
+            stats[keys[i]]=Math.round(v*100)/100;
+        }
+        return {name,pid,stats};
+    }catch(e){return null;}
+}
+function onPlayerNameInput(v){
+    S.playerName=String(v||'').slice(0,12);
+    saveGame();
+}
+function renderFriends(){
+    const self=document.getElementById('friendSelf');
+    if(S.ps&&S.pid){
+        const m=M[S.pid];
+        self.innerHTML=`<div class="friend-card" style="display:flex;align-items:center;gap:10px">
+            <div class="avatar" style="background:${ELEM_SOFT[m.elem]};width:64px;height:64px;font-size:32px;margin:0">${avatarHTML(S.pid,m.emoji)}</div>
+            <div style="flex:1;text-align:left">
+                <div style="font-size:11px;color:#666;margin-bottom:2px">我的名字（可修改，最多 12 字）</div>
+                <input type="text" id="playerNameInput" maxlength="12" value="${esc(S.playerName||'')}" placeholder="訓練師"
+                    style="font-size:14px;font-weight:bold;border:1px solid #ddd;border-radius:6px;padding:4px 8px;width:100%;box-sizing:border-box;user-select:text"
+                    oninput="onPlayerNameInput(this.value)">
+                <div style="font-size:11px;color:#666;margin-top:6px">拍檔：${m.name}（${m.elem}）</div>
+                <div style="font-size:11px;color:#333">最大血量 ${S.ps.hp} · 攻擊力 ${S.ps.atk} · 防禦力 ${S.ps.def} · 速度 ${S.ps.spd} · 吸引力 ${S.ps.cha}</div>
+            </div>
+        </div>`;
+    }else{
+        self.innerHTML='<p style="text-align:center;color:#666">尚未開始遊戲</p>';
+    }
+    const list=document.getElementById('friendList');
+    const cnt=document.getElementById('friendCount');
+    const arr=Array.isArray(S.friends)?S.friends:[];
+    cnt.textContent=arr.length;
+    if(!arr.length){
+        list.innerHTML='<p style="text-align:center;color:#666;padding:20px">還沒有朋友，點「＋ 新增」加入吧！</p>';
+        return;
+    }
+    list.innerHTML='';
+    arr.slice().sort((a,b)=>b.addedAt-a.addedAt).forEach(f=>{
+        const fm=M[f.pid];
+        const d=document.createElement('div');
+        d.className='list-item';
+        d.style.cursor='pointer';
+        d.innerHTML=`<div class="avatar" style="background:${ELEM_SOFT[fm.elem]}">${avatarHTML(f.pid,fm.emoji)}</div>
+            <div class="list-item-info"><strong>${esc(f.name)}</strong>
+                <small>${fm.name}</small></div>
+            <div style="font-size:20px">›</div>`;
+        d.onclick=()=>openFriendOptions(f.id);
+        list.appendChild(d);
+    });
+}
+function showMyQR(){
+    if(!S.ps||!S.pid){showToast('請先開始遊戲');return;}
+    if(typeof qrcode==='undefined'){showToast('QR 元件未載入，請稍後再試');return;}
+    let data;
+    try{data=encodeShare();}catch(e){showToast('分享碼生成失敗');return;}
+    try{
+        const qr=qrcode(0,'M');
+        qr.addData(data);
+        qr.make();
+        let html;
+        try{html=qr.createSvgTag(4,8);}catch(e){html=qr.createImgTag(4,8);}
+        document.getElementById('qrImg').innerHTML=html;
+        document.getElementById('qrData').textContent=data;
+        document.getElementById('qrmodal').classList.add('show');
+    }catch(e){
+        showToast('QR 生成失敗：'+e.message);
+    }
+}
+function closeQR(){
+    document.getElementById('qrmodal').classList.remove('show');
+    document.getElementById('qrImg').innerHTML='';
+    document.getElementById('qrData').textContent='';
+}
+async function copyShareCode(){
+    if(!S.ps||!S.pid){showToast('請先開始遊戲');return;}
+    let code;
+    try{code=encodeShare();}catch(e){showToast('分享碼生成失敗');return;}
+    try{
+        if(navigator.clipboard&&navigator.clipboard.writeText){
+            await navigator.clipboard.writeText(code);
+            showToast('分享碼已複製');
+            return;
+        }
+        throw 0;
+    }catch(e){
+        try{
+            const ta=document.createElement('textarea');
+            ta.value=code;
+            ta.style.position='fixed';ta.style.opacity='0';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            ta.remove();
+            showToast('分享碼已複製');
+        }catch(_){
+            showToast('複製失敗，請手動複製：'+code);
+        }
+    }
+}
+function showAddFriend(){
+    document.getElementById('addfriendmodal').classList.add('show');
+}
+/* QR 掃描（jsQR + getUserMedia） */
+let scanStream=null,scanRAF=null;
+async function startScan(){
+    closeModal('addfriendmodal');
+    if(typeof jsQR==='undefined'){showToast('QR 掃描元件未載入');return;}
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+        showToast('此裝置不支援相機，請改用「貼上分享碼」');
+        return;
+    }
+    const modal=document.getElementById('scanmodal');
+    modal.classList.add('show');
+    document.getElementById('scanStatus').textContent='正在開啟相機…';
+    try{
+        scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
+        const video=document.getElementById('scanVideo');
+        video.srcObject=scanStream;
+        await video.play();
+        document.getElementById('scanStatus').textContent='請將朋友的 QR Code 對準相機';
+        scanRAF=requestAnimationFrame(scanTick);
+    }catch(e){
+        document.getElementById('scanStatus').textContent='無法開啟相機：'+(e.message||'權限被拒')+'（可改用「貼上分享碼」）';
+    }
+}
+function scanTick(){
+    const video=document.getElementById('scanVideo');
+    const canvas=document.getElementById('scanCanvas');
+    if(video.readyState===video.HAVE_ENOUGH_DATA&&typeof jsQR!=='undefined'){
+        canvas.width=video.videoWidth;
+        canvas.height=video.videoHeight;
+        const ctx=canvas.getContext('2d');
+        ctx.drawImage(video,0,0,canvas.width,canvas.height);
+        const img=ctx.getImageData(0,0,canvas.width,canvas.height);
+        const code=jsQR(img.data,img.width,img.height);
+        if(code&&code.data){
+            const raw=code.data;
+            closeScan();
+            handleShareString(raw);
+            return;
+        }
+    }
+    if(scanStream)scanRAF=requestAnimationFrame(scanTick);
+}
+function closeScan(){
+    if(scanRAF){cancelAnimationFrame(scanRAF);scanRAF=null;}
+    if(scanStream){scanStream.getTracks().forEach(t=>{try{t.stop();}catch(e){}});scanStream=null;}
+    const v=document.getElementById('scanVideo');
+    if(v){try{v.srcObject=null;}catch(e){}}
+    document.getElementById('scanmodal').classList.remove('show');
+}
+function showPaste(){
+    closeModal('addfriendmodal');
+    document.getElementById('pasteInput').value='';
+    document.getElementById('pastemodal').classList.add('show');
+}
+function confirmPaste(){
+    const v=document.getElementById('pasteInput').value.trim();
+    if(!v){showToast('請貼上分享碼');return;}
+    const ok=handleShareString(v);
+    if(ok)closeModal('pastemodal');
+}
+function handleShareString(raw){
+    const f=decodeShare(raw);
+    if(!f){showToast('分享碼或 QR 格式錯誤');return false;}
+    addFriend(f);
+    renderFriends();
+    showToast('已新增朋友：'+f.name);
+    return true;
+}
+function addFriend(f){
+    if(!Array.isArray(S.friends))S.friends=[];
+    const key=f.name+'::'+f.pid;
+    const idx=S.friends.findIndex(x=>x.name+'::'+x.pid===key);
+    const record={
+        id:idx>=0?S.friends[idx].id:('f'+Date.now()+Math.random().toString(36).slice(2,6)),
+        name:f.name,
+        pid:f.pid,
+        stats:f.stats,
+        addedAt:Date.now()
+    };
+    if(idx>=0)S.friends[idx]=record;
+    else S.friends.push(record);
+    saveGame();
+}
+function openFriendOptions(id){
+    const f=(S.friends||[]).find(x=>x.id===id);
+    if(!f)return;
+    const fm=M[f.pid];
+    /* 與收集盒統一：monHeaderHTML（頭像+屬性底色） + statRows（五項數值+基礎對比+平均） */
+    document.getElementById('foTitle').innerText=`No.${fm.num} ${fm.name}`;
+    document.getElementById('foStats').innerHTML=
+        monHeaderHTML(f.pid,fm)+
+        statRows(f.stats,fm)+
+        `<div style="text-align:center;font-size:11px;color:#888;margin-top:6px">朋友：${esc(f.name)}　·　新增於 ${new Date(f.addedAt).toLocaleString()}</div>`;
+    const btns=document.getElementById('foBtns');btns.innerHTML='';
+    const b1=document.createElement('button');b1.className='btn btn-primary';
+    b1.textContent='⚔️ 對戰（即將推出）';
+    b1.onclick=()=>showToast('對戰功能即將推出');
+    const b2=document.createElement('button');b2.className='btn btn-danger';
+    b2.textContent='🗑 刪除朋友';
+    b2.onclick=()=>deleteFriend(f.id);
+    const b3=document.createElement('button');b3.className='btn';
+    b3.textContent='關閉';
+    b3.onclick=()=>closeModal('friendoptmodal');
+    btns.appendChild(b1);btns.appendChild(b2);btns.appendChild(b3);
+    document.getElementById('friendoptmodal').classList.add('show');
+}
+function deleteFriend(id){
+    if(!Array.isArray(S.friends))return;
+    S.friends=S.friends.filter(x=>x.id!==id);
+    saveGame();
+    closeModal('friendoptmodal');
+    renderFriends();
+    showToast('已刪除朋友');
+}
+
 /* ===== 戰鬥：開場 ===== */
 function pickRandom(spawns){
     const arr=Object.entries(spawns);
@@ -956,7 +1334,6 @@ function startBattle(vid){
     B.on=true;B.act=null;B.card=null;B.fx1=false;B.tmo=0;B.venue=vid;B.base=v.base;
     B.p={mId:S.pid,name:M[S.pid].name,elem:M[S.pid].elem,emoji:M[S.pid].emoji,maxHp:S.max,chp:S.php,...clampStats(S.ps)};
     B.e=(v.type==='G')?makeMonster(v.enemy,v.override):makeMonster(pickRandom(v.spawns));
-    /* 套用目前設定（若玩家中途於別處改動亦生效） */
     applyKeypadOrder();
     showScreen('battle');
     setKeys(false);showIdle();
@@ -1352,7 +1729,7 @@ function tryCatch(){
             /* 收服时记录该只个体当时的实际能力值（含训练场随机波动），而非种族预设值 */
             addInst(B.e.mId,{hp:B.e.maxHp,atk:B.e.atk,def:B.e.def,spd:B.e.spd,cha:B.e.cha});
             S.stats.catch++;saveGame();
-            endBattle(true,'成功收服 '+B.e.name+'！\n可在收集盒中查閱');
+            endBattle(true,'成功收服 '+B.e.name+'！\n可在圖鑑中查閱');
         }else{
             resolveRound();
         }
@@ -1494,6 +1871,7 @@ function clearProgress(btn){
     }
     clearTimeout(clearTimer);clearArm=false;
     btn.innerText='🗑 清除遊戲進度';
+    closeScan();
     LS.del('mmrpg_v5');LS.del('mmrpg_v4');LS.del('mmrpg_v3');
     closeModal('pause');
     resetState();
@@ -1504,7 +1882,8 @@ function resetState(){
     S={v:5,init:false,coin:0,pid:'monster_01_a',ps:null,php:0,max:100,
        inv:{card_01:3,card_02:0,card_03:0,card_04:0,drk_01:0},dex:[],uidn:0,
        gyms:zeroMap(GYM_IDS),train:zeroMap(TRAIN_IDS),
-       stats:{win:0,catch:0,correct:0,wrong:0,timeout:0},ach:{},seen:{},settings:{keypadOrder:'opt1'}};
+       stats:{win:0,catch:0,correct:0,wrong:0,timeout:0},ach:{},seen:{},
+       settings:{keypadOrder:'opt1'},playerName:'',friends:[]};
     B.on=false;clearInterval(B.timer);
 }
 
