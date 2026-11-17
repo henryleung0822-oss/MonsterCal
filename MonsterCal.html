@@ -43,6 +43,8 @@ h1{color:var(--primary);font-size:24px}
     background:#fffc;box-shadow:0 2px 6px #0002;z-index:20;
 }
 #header.active{display:flex}
+/* PVP 對戰時隱藏金幣／全螢幕／暫停頂欄 */
+body.pvp-mode #header{display:none!important}
 .coin{font-weight:bold;color:#f39c12;font-size:18px}
 .pause-btn{
     background:#333;color:#fff;border:none;border-radius:50%;width:36px;height:36px;font-weight:bold;cursor:pointer;
@@ -59,7 +61,7 @@ h1{color:var(--primary);font-size:24px}
     font-size:40px;margin:0 auto 8px;color:#fff;position:relative;overflow:hidden;
 }
 .avatar .fb{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
-.avatar img{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover}
+.avatar img{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:contain}
 .f.enemy .avatar img{transform:scaleX(-1)}
 .partner{
     display:flex;align-items:center;background:#fff;padding:15px;border-radius:12px;margin-bottom:15px;box-shadow:0 3px 6px #0002;
@@ -106,6 +108,39 @@ h1{color:var(--primary);font-size:24px}
 .key.dot{background:#eee}
 .key.sign{background:#eee}
 .key.frac{background:#eee}
+/* ===== PVP 雙打 ===== */
+#pvp{gap:5px;padding:10px;touch-action:manipulation}
+.pv-player{display:flex;flex-direction:column;gap:4px;min-height:0;flex:1}
+.pv-player.p2{justify-content:flex-start}
+.pv-player.p2 .pvq{transform:rotate(180deg)}
+/* P2 頭像、名稱及整組 HP 一併倒轉，方便對面玩家閱讀 */
+.pv-player.p2 .pv-avatar-hp{transform:rotate(180deg)}
+.pv-player.p1{justify-content:flex-end}
+.pv-divider{border:0;border-top:2px dashed #8aa0ad;margin:2px 0}
+.pv-avatar-hp{display:flex;align-items:center;gap:9px;min-height:48px}
+.pv-avatar{width:44px;height:44px;flex:0 0 44px;border:2px solid #fff;border-radius:50%;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;font-size:25px;box-shadow:0 2px 5px #0002}
+.pv-avatar .fb{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.pv-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.pv-player-meta{flex:1;min-width:0;font-size:12px;font-weight:bold}
+.pv-name{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:3px}
+.pv-player-meta .pvhpb{height:10px}
+.pvq{background:#000a;color:#fff;border-radius:10px;padding:6px;min-height:48px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:bold;overflow:hidden}
+.pvbarwrap{height:6px;background:#3333;border-radius:3px;overflow:hidden}
+.pvbar{height:100%;background:var(--accent);width:100%}
+.pvhpb{height:12px;background:#ddd;border-radius:8px;overflow:hidden}
+.pvhp{height:100%;background:var(--hp-good);width:100%;transition:width .25s}
+.pvin{background:#ecf0f1;border:2px solid #bbb;border-radius:8px;height:28px;font-size:14px;font-weight:bold;text-align:right;padding:0 8px;display:flex;align-items:center;justify-content:flex-end;overflow:hidden;margin-bottom:4px}
+.pvkeyboard{display:flex;flex-direction:column;min-height:0}
+.pvkeyboard.p2{transform:rotate(180deg)}
+.pvkp{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.pvkey{background:#fff;border:1px solid #ddd;border-radius:8px;height:36px;display:flex;justify-content:center;align-items:center;font-size:15px;font-weight:bold;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:none}
+.pvkey.on{background:#ffe66d}
+.pvkey.enter{background:var(--secondary);color:#fff}
+.pvkey.del{background:#e74c3c;color:#fff;font-size:11px}
+.pvkey.dot,.pvkey.frac,.pvkey.sign{background:#eee}
+.pvkey.sign{font-size:11px}
+.pvpfx{position:absolute;font-size:18px;font-weight:bold;color:#e74c3c;pointer-events:none;animation:float .9s forwards;z-index:60}
+.pvhead{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:bold}
 .frf{display:inline-flex;align-items:center;gap:3px;vertical-align:middle;margin:0 3px}
 .frf .fc{display:inline-flex;flex-direction:column;text-align:center;line-height:1.1}
 .frf .fc b{display:block;font-size:.66em;font-weight:bold;border-bottom:2px solid currentColor;padding:0 4px}
@@ -352,6 +387,72 @@ h1{color:var(--primary);font-size:24px}
     </div>
 </div>
 
+<!-- PVP 雙打對戰 -->
+<div id="pvp" class="screen">
+    <div class="pvhead" style="justify-content:center">
+        <span id="pvTopicLab" style="color:#666;font-weight:normal;font-size:11px"></span>
+    </div>
+
+    <!-- P2：上半部，整組鍵盤及題目旋轉 180 度 -->
+    <section class="pv-player p2">
+        <div class="pvkeyboard p2" data-who="p2">
+            <div class="pvin" id="pvIn2">0</div>
+            <div class="pvkp" id="pvKeys2"></div>
+        </div>
+        <div class="pv-avatar-hp">
+            <div class="pv-avatar" id="pvAvatar2">❓</div>
+            <div class="pv-player-meta">
+                <span class="pv-name" id="pvName2">P2</span>
+                <div class="pvhpb"><div class="pvhp" id="pvHp2"></div></div>
+                <small id="pvHpT2"></small>
+            </div>
+        </div>
+        <div class="pvbarwrap"><div class="pvbar" id="pvBar2"></div></div>
+        <div class="pvq" id="pvQ2">—</div>
+    </section>
+
+    <hr class="pv-divider">
+
+    <!-- P1：下半部，維持正常方向 -->
+    <section class="pv-player p1">
+        <div class="pvq" id="pvQ1">—</div>
+        <div class="pvbarwrap"><div class="pvbar" id="pvBar1"></div></div>
+        <div class="pv-avatar-hp">
+            <div class="pv-avatar" id="pvAvatar1">🔥</div>
+            <div class="pv-player-meta">
+                <span class="pv-name" id="pvName1">P1</span>
+                <div class="pvhpb"><div class="pvhp" id="pvHp1"></div></div>
+                <small id="pvHpT1"></small>
+            </div>
+        </div>
+        <div class="pvkeyboard p1" data-who="p1">
+            <div class="pvin" id="pvIn1">0</div>
+            <div class="pvkp" id="pvKeys1"></div>
+        </div>
+    </section>
+
+    <button class="btn btn-danger" style="padding:8px;font-size:13px;margin:2px 0 0" onclick="pvSurrender()">🏳 投降（我方為 P1）</button>
+</div>
+
+<!-- PVP 題型選擇 -->
+<div class="modal" id="pvtopicmodal">
+    <div class="mbox" style="max-height:80%;overflow-y:auto">
+        <h3>選擇對戰題型</h3>
+        <div id="pvTopicList" style="display:flex;flex-direction:column;gap:6px;margin-top:8px"></div>
+        <button class="btn" style="margin-top:8px" onclick="closeModal('pvtopicmodal')">取消</button>
+    </div>
+</div>
+
+<!-- PVP 結果 -->
+<div class="modal" id="pvresult">
+    <div class="mbox">
+        <h3 id="pvResTitle">🎉 勝負已分</h3>
+        <p id="pvResText" style="white-space:pre-line"></p>
+        <button class="btn btn-accent" onclick="pvRematch()">⚔️ 再戰一場</button>
+        <button class="btn btn-primary" onclick="pvExit()">返回</button>
+    </div>
+</div>
+
 <!-- 我的 QR Code -->
 <div class="modal" id="qrmodal">
     <div class="mbox">
@@ -561,9 +662,26 @@ const GYM_CLEAR_BONUS=10; /* 每次成功完成道場的額外金幣獎勵 */
    玩家圖以精靈 ID 命名（monster_01_a.png）；載入成功隱藏 emoji 備用底，
    失敗（無圖/斷網）則自動保留原本 emoji + 屬性底色，遊戲仍可正常進行。 */
 const IMG_BASE='https://raw.githubusercontent.com/henryleung0822-oss/MonsterCal/main/';
+/* 圖片路徑兼容：先試根目錄，再試常見素材資料夾；只有成功載入才隱藏 emoji 備用圖 */
 function avatarHTML(id,emoji){
-    return `<span class="fb">${emoji}</span>`+
-        `<img src="${IMG_BASE}${id}.png" alt="${id}" loading="lazy" onload="this.parentNode.querySelector('.fb').style.display='none'" onerror="this.remove()">`;
+    const safeId=String(id||'monster_01_a').replace(/[^a-zA-Z0-9_-]/g,'');
+    const folders=['','images/','img/','assets/','assets/monsters/','monsters/'];
+    const candidates=[];
+    folders.forEach(folder=>['png','webp','jpg'].forEach(ext=>candidates.push(IMG_BASE+folder+safeId+'.'+ext)));
+    return `<span class="fb">${emoji||'❓'}</span>`+
+        `<img src="${candidates[0]}" data-candidates="${encodeURIComponent(JSON.stringify(candidates.slice(1)))}" alt="${safeId}" loading="eager" decoding="async" onload="avatarImageLoaded(this)" onerror="avatarImageFallback(this)">`;
+}
+function avatarImageLoaded(img){
+    const fallback=img.parentNode&&img.parentNode.querySelector('.fb');
+    if(fallback)fallback.style.display='none';
+    img.style.display='block';
+}
+function avatarImageFallback(img){
+    let candidates=[];
+    try{candidates=JSON.parse(decodeURIComponent(img.dataset.candidates||'[]'))}catch(_){candidates=[]}
+    const next=candidates.shift();
+    if(next){img.dataset.candidates=encodeURIComponent(JSON.stringify(candidates));img.src=next;return}
+    img.remove();
 }
 const CARDS={
 card_01:{id:'card_01',name:'原始收集卡',m:0.8,price:50,emoji:'🎴'},
@@ -650,6 +768,8 @@ function loadGame(){
             name:String(f.name).slice(0,12),
             pid:f.pid,
             stats:clampStats(f.stats),
+            w:typeof f.w==='number'?f.w:0,
+            l:typeof f.l==='number'?f.l:0,
             addedAt:typeof f.addedAt==='number'?f.addedAt:Date.now()
         }));
         S.max=S.ps.hp;
@@ -1272,6 +1392,8 @@ function addFriend(f){
         name:f.name,
         pid:f.pid,
         stats:f.stats,
+        w:idx>=0?(S.friends[idx].w||0):0,
+        l:idx>=0?(S.friends[idx].l||0):0,
         addedAt:Date.now()
     };
     if(idx>=0)S.friends[idx]=record;
@@ -1290,8 +1412,8 @@ function openFriendOptions(id){
         `<div style="text-align:center;font-size:11px;color:#888;margin-top:6px">朋友：${esc(f.name)}　·　新增於 ${new Date(f.addedAt).toLocaleString()}</div>`;
     const btns=document.getElementById('foBtns');btns.innerHTML='';
     const b1=document.createElement('button');b1.className='btn btn-primary';
-    b1.textContent='⚔️ 對戰（即將推出）';
-    b1.onclick=()=>showToast('對戰功能即將推出');
+    b1.textContent='⚔️ 對戰';
+    b1.onclick=()=>{closeModal('friendoptmodal');pvOpenTopic(f.id)};
     const b2=document.createElement('button');b2.className='btn btn-danger';
     b2.textContent='🗑 刪除朋友';
     b2.onclick=()=>deleteFriend(f.id);
@@ -1308,6 +1430,193 @@ function deleteFriend(id){
     closeModal('friendoptmodal');
     renderFriends();
     showToast('已刪除朋友');
+}
+
+/* ===== PVP 雙打對戰（同裝置、雙鍵盤、獨立題目流） ===== */
+const PV={on:false,topic:null,friendId:null,winner:null,raf:null,
+    p1:null,p2:null,base:20};
+const PV_KEYS=[['7','8','9'],['4','5','6'],['1','2','3'],['.','0','┘'],['+/-','=','DEL']];
+const PV_BASE={ADD:20,SUB:20,MIX:25,MUL1:20,MUL2:20,MIXMUL:25,FADD:20,FSUB:20,FMUL:25,FMIX:20,FMULMIX:25,
+FRAC:30,FRACADD:30,FRACSUB:30,FRACMUL:35,FRACMIX:35,FRACMULMIX:40};
+function pvOpenTopic(fid){
+    const f=(S.friends||[]).find(x=>x.id===fid);
+    if(!f){showToast('朋友不存在');return}
+    const el=document.getElementById('pvTopicList');el.innerHTML='';
+    Object.keys(PV_BASE).forEach(tp=>{
+        const b=document.createElement('button');b.className='btn btn-accent';b.style.fontSize='13px';
+        b.textContent=TOPIC_TXT[tp];
+        b.onclick=()=>{closeModal('pvtopicmodal');startPVP(fid,tp)};
+        el.appendChild(b);
+    });
+    document.getElementById('pvtopicmodal').classList.add('show');
+}
+function pvSide(pid,stats,name){
+    const m=M[pid];
+    return {pid,name,elem:m.elem,emoji:m.emoji,st:clampStats(stats),chp:clamp(stats.hp||m.hp),
+        inp:'0',q:null,due:0,limit:PV.base,busy:false,ptr:null};
+}
+function startPVP(fid,topic){
+    document.body.classList.add('pvp-mode');
+    const f=(S.friends||[]).find(x=>x.id===fid);
+    if(!f||!M[f.pid]||!S.ps||!M[S.pid]){showToast('資料不足，無法對戰');return}
+    PV.on=true;PV.winner=null;PV.topic=topic;PV.friendId=fid;PV.base=PV_BASE[topic]||20;
+    PV.p1=pvSide(S.pid,S.ps,getDisplayName()+'（P1）');
+    PV.p2=pvSide(f.pid,f.stats,esc(f.name)+'（P2）');
+    PV.p1.limit=PV.p2.limit=pvCalcLimit(PV.p1,PV.p2);
+    PV.p2.limit=pvCalcLimit(PV.p2,PV.p1);
+    document.getElementById('pvName1').textContent=PV.p1.name;
+    document.getElementById('pvName2').textContent=PV.p2.name;
+    document.getElementById('pvTopicLab').textContent=TOPIC_TXT[topic];
+    pvBuildKeys();
+    pvNewQ('p1');pvNewQ('p2');
+    pvRender();
+    showScreen('pvp');
+    cancelAnimationFrame(PV.raf);PV.raf=requestAnimationFrame(pvTick);
+}
+function pvCalcLimit(a,b){
+    return Math.max(3,PV.base*Math.min(2.0,Math.max(0.4,1+(a.st.spd-b.st.spd)/500)));
+}
+function pvBuildKeys(){
+    ['p1','p2'].forEach(who=>{
+        const kp=document.getElementById(who==='p1'?'pvKeys1':'pvKeys2');
+        kp.innerHTML='';
+        PV_KEYS.forEach(row=>row.forEach(v=>{
+            const k=document.createElement('div');
+            k.className='pvkey'+(v==='='?' enter':v==='DEL'?' del':(v==='.'||v==='┘'||v==='+/-')?' dot':'');
+            k.textContent=v;k.dataset.who=who;k.dataset.v=v;
+            kp.appendChild(k);
+        }));
+    });
+}
+/* 多指綁定：每側同一時間只認一個 pointerId，防止串鍵 */
+(function(){
+    const root=document.getElementById('pvp');
+    root.addEventListener('pointerdown',e=>{
+        const k=e.target.closest('.pvkey');if(!k||!PV.on||PV.winner)return;
+        e.preventDefault();
+        const who=k.dataset.who,p=PV[who];
+        if(p.ptr!==null&&p.ptr!==e.pointerId)return;   /* 该侧已被另一手指占用 */
+        p.ptr=e.pointerId;k.classList.add('on');
+        try{k.setPointerCapture(e.pointerId)}catch(_){}
+        pvHit(who,k.dataset.v);
+    });
+    const up=e=>{
+        ['p1','p2'].forEach(who=>{
+            const p=PV[who];if(!p)return;
+            if(p.ptr===e.pointerId){p.ptr=null;
+                const el=document.querySelector('.pvkey.on');document.querySelectorAll('.pvkey.on').forEach(x=>x.classList.remove('on'));
+            }
+        });
+    };
+    root.addEventListener('pointerup',up);
+    root.addEventListener('pointercancel',up);
+    root.addEventListener('contextmenu',e=>e.preventDefault());
+})();
+function pvHit(who,v){
+    const p=PV[who];
+    if(!p||p.busy)return;                 /* busy＝答完锁题，直至新题出现 */
+    if(v==='='){pvSubmit(who);return;}
+    p.inp=keyApply(p.inp,v);
+    document.getElementById(who==='p1'?'pvIn1':'pvIn2').innerText=p.inp||'0';
+}
+function pvNewQ(who){
+    const p=PV[who];
+    p.q=makeQuestion(PV.topic);
+    p.inp='0';p.busy=false;
+    p.due=performance.now()+p.limit*1000;
+    document.getElementById(who==='p1'?'pvQ1':'pvQ2').innerHTML=p.q.qh;
+    document.getElementById(who==='p1'?'pvIn1':'pvIn2').innerText='0';
+}
+function pvTimeRatio(p){return Math.max(0,Math.min(1,(p.due-performance.now())/1000/p.limit))}
+function pvDamage(me,foe,r,attack){
+    const eff=attack?elemEff(me.elem,foe.elem):elemEff(foe.elem,me.elem);
+    let dmg;
+    if(attack)dmg=me.st.atk*r*eff-rand01_05()*foe.st.def;
+    else dmg=foe.st.atk*(1-r)*eff-rand01_05()*me.st.def;
+    if(dmg<10)dmg=10*eff;
+    return Math.round(Math.max(0,dmg));
+}
+function pvSubmit(who){
+    const p=PV[who],foeSide=who==='p1'?'p2':'p1',foe=PV[foeSide];
+    p.busy=true;
+    const r=pvTimeRatio(p),ok=checkAnswer(p.inp,p.q);
+    if(ok){
+        const dmg=pvDamage(p,foe,r,true);
+        foe.chp=Math.max(0,foe.chp-dmg);
+        pvFx(foeSide,'-'+dmg);
+    }else{
+        const dmg=pvDamage(p,foe,r,false);
+        p.chp=Math.max(0,p.chp-dmg);
+        pvFx(who,'-'+dmg);
+    }
+    pvRender();
+    if(foe.chp<=0)return pvEnd(who);
+    if(p.chp<=0)return pvEnd(foeSide);
+    pvNewQ(who);   /* 本侧立即出新题，另一侧不受影响 */
+}
+function pvTimeout(who){
+    const p=PV[who],foeSide=who==='p1'?'p2':'p1',foe=PV[foeSide];
+    p.busy=true;
+    const dmg=pvDamage(p,foe,0,false);   /* 超时＝余时为0的答错处理 */
+    p.chp=Math.max(0,p.chp-dmg);
+    pvFx(who,'-'+dmg);
+    pvRender();
+    if(p.chp<=0)return pvEnd(foeSide);
+    pvNewQ(who);
+}
+let pvFxSeq=0;
+function pvFx(who,txt){
+    const col=document.querySelector('.pvkeyboard[data-who="'+who+'"]');
+    const hp=document.querySelector(who==='p1'?'#pvQ1':'#pvQ2').parentElement;
+    const s=document.createElement('div');s.className='pvpfx';s.textContent=txt;
+    s.style.left='40%';s.style.top='-4px';
+    (hp||col).appendChild(s);
+    setTimeout(()=>s.remove(),900);
+}
+function pvRender(){
+    ['p1','p2'].forEach((who,i)=>{
+        const p=PV[who];if(!p)return;
+        const pct=Math.max(0,p.chp)/Math.max(1,p.st.hp)*100;
+        document.getElementById(who==='p1'?'pvHp1':'pvHp2').style.width=pct+'%';
+        document.getElementById(who==='p1'?'pvHpT1':'pvHpT2').innerText=Math.max(0,Math.round(p.chp))+'/'+p.st.hp;
+        const avatar=document.getElementById(who==='p1'?'pvAvatar1':'pvAvatar2');
+        avatar.innerHTML=avatarHTML(p.pid,p.emoji);
+        avatar.style.background=ELEM_SOFT[p.elem];
+    });
+}
+function pvTick(t){
+    if(!PV.on){return}
+    ['p1','p2'].forEach(who=>{
+        const p=PV[who];if(!p||p.busy)return;
+        const r=pvTimeRatio(p);
+        const bar=document.getElementById(who==='p1'?'pvBar1':'pvBar2');
+        bar.style.width=r*100+'%';
+        bar.style.background=r<0.3?'var(--hp-crit)':r<0.6?'var(--hp-warn)':'var(--accent)';
+        if(t>=p.due)pvTimeout(who);
+    });
+    if(PV.on&&!PV.winner)PV.raf=requestAnimationFrame(pvTick);
+}
+function pvSurrender(){
+    if(!PV.on||PV.winner)return;
+    pvEnd('p2','（P1 投降）');
+}
+function pvEnd(win,extra){
+    PV.winner=win||'p2';
+    cancelAnimationFrame(PV.raf);
+    const f=(S.friends||[]).find(x=>x.id===PV.friendId);
+    if(f){f.w=(f.w||0)+(win==='p1'?1:0);f.l=(f.l||0)+(win==='p2'?1:0);saveGame()}
+    document.getElementById('pvResTitle').innerText=win==='p1'?'🎉 P1 獲勝！':win==='p2'?'😢 P2 獲勝！':'⚔️ 對戰結束';
+    document.getElementById('pvResText').innerText=
+        `勝方：${win==='p1'?PV.p1.name:PV.p2.name}${extra||''}\n戰績（你 vs ${PV.p2?PV.p2.name:''}）：${f?(f.w||0) : 0} 勝 ${f?(f.l||0):0} 負`;
+    document.getElementById('pvresult').classList.add('show');
+}
+function pvRematch(){closeModal('pvresult');startPVP(PV.friendId,PV.topic)}
+function pvExit(){
+    document.body.classList.remove('pvp-mode');
+    closeModal('pvresult');
+    PV.on=false;cancelAnimationFrame(PV.raf);
+    PV.p1=PV.p2=null;
+    showScreen('friends');
 }
 
 /* ===== 戰鬥：開場 ===== */
@@ -1406,15 +1715,20 @@ function beginTurn(){
 }
 function genQ(){
     const v=VENUES[B.venue];
-    const tp=v.topic, isFrac=(tp==='FRAC'||tp==='FRACADD'||tp==='FRACSUB'||tp==='FRACMUL'||tp==='FRACMIX'||tp==='FRACMULMIX');
+    const r=makeQuestion(v.topic);
+    B.q={a:r.a,n:r.n,d:r.d,frac:r.frac};
+    const qe=document.getElementById('que');
+    qe.innerHTML=r.qh;qe.classList.remove('idle');
+    document.getElementById('inp').innerText='0';inp='0';
+}
+/* 出题核心：按题型生成一题，返回 {qh(含 = ?), a, n, d, frac}。无状态，可被 PVP 多次调用 */
+function makeQuestion(tp){
+    const isFrac=(tp==='FRAC'||tp==='FRACADD'||tp==='FRACSUB'||tp==='FRACMUL'||tp==='FRACMIX'||tp==='FRACMULMIX');
     let qh='',a=0,n=0,d=1;
     if(isFrac){const r=genQFracTopic(tp);qh=r.qh;a=r.a;n=r.n;d=r.d;qh+=' = ?'}
     else if(tp[0]==='F'){const r=genQFloat2(tp);a=r.a;n=toRat(a).n;d=toRat(a).d;qh=esc(r.q)+' = ?'}
     else{const r=genQInt(tp);a=r.a;n=toRat(a).n;d=toRat(a).d;qh=esc(r.q)+' = ?'}
-    B.q={a,n,d,frac:isFrac};
-    const qe=document.getElementById('que');
-    qe.innerHTML=qh;qe.classList.remove('idle');
-    document.getElementById('inp').innerText='0';inp='0';
+    return {qh,a,n,d,frac:isFrac};
 }
 const ri=(lo,hi)=>Math.floor(Math.random()*(hi-lo+1))+lo;
 const fix=(x,d)=>parseFloat(x.toFixed(d));
@@ -1592,32 +1906,38 @@ function startTimer(){
 }
 
 /* ===== 數字鍵盤（支援小數點、分數┘、正負號+/-） ===== */
+/* 按键规则（单人/PVP共用）：返回新输入串 */
+function keyApply(s,v){
+    if(v==='DEL')return s.slice(0,-1)||'0';
+    if(v==='+/-'){
+        if(s===''||s==='0'||s==='-')return s;
+        return s.startsWith('-')?s.slice(1):'-'+s;
+    }
+    if(v==='┘'){
+        if(s==='0')return s;
+        if(s.endsWith('┘')||s.endsWith('.'))return s;
+        if(s.includes('.'))return s;
+        if((s.match(/┘/g)||[]).length>=2)return s;
+        return s.length<9?s+'┘':s;
+    }
+    if(v==='.'){
+        if(s.includes('┘'))return s;
+        if(s==='0')s='';
+        if(!s.includes('.'))s=(s===''?'0.':s+'.');
+        return s;
+    }
+    s=(s==='0'?'':s);
+    return s.length<9?s+v:s;
+}
 let inp='0';
 function key(v){
     if(!B.on||!B.act)return;
-    if(v==='DEL'){inp=inp.slice(0,-1)||'0';}
-    else if(v==='='){submit();return;}
-    else if(v==='+/-'){
-        if(inp===''||inp==='0'||inp==='-')return;
-        if(inp.startsWith('-'))inp=inp.slice(1);
-        else inp='-'+inp;
-    }
-    else if(v==='┘'){
-        if(inp==='0')return;                                   /* ┘不能开头 */
-        if(inp.endsWith('┘')||inp.endsWith('.'))return;        /* 不能有连续或结尾分隔符 */
-        if(inp.includes('.'))return;                           /* 分数与小数点不能混用 */
-        if((inp.match(/┘/g)||[]).length>=2)return;             /* 最多两个┘（带分数） */
-        if(inp.length<9)inp+='┘';
-    }
-    else if(v==='.'){
-        if(inp.includes('┘'))return;
-        if(inp==='0')inp='';
-        if(!inp.includes('.'))inp=(inp===''?'0.':inp+'.');
-    }
-    else{inp=inp==='0'?'':inp;if(inp.length<9)inp+=v;}
+    if(v==='='){submit();return;}
+    inp=keyApply(inp,v);
     document.getElementById('inp').innerText=inp;
 }
 document.onkeydown=function(e){
+    if(PV.on)return; /* PVP 进行中：实体键盘停用，双人各自触屏作答 */
     if(!B.on||!B.act)return;
     if(/^[0-9]$/.test(e.key)){key(e.key);e.preventDefault();}
     else if(e.key==='Backspace'){key('DEL');e.preventDefault();}
@@ -1634,26 +1954,26 @@ function decRat(s){
     return rat(parseInt(s,10),1);
 }
 /* 判定规则：值相等；用分数┘/带分数输入时必须是已化简的最简分数（小数0.5可直接输入） */
-function isCorrect(){
-    const s=inp;
+function checkAnswer(s,q){
     if(!s.includes('┘')){
         const r=decRat(s);
-        return !!r&&r.n===B.q.n&&r.d===B.q.d;
+        return !!r&&r.n===q.n&&r.d===q.d;
     }
     if(s.includes('.'))return false;
     const p=s.split('┘');
     if(p.length===2){ /* 真分数或假分数 a┘b = b分之a */
         if(!/^\d+$/.test(p[0])||!/^\d+$/.test(p[1]))return false;
         const a=+p[0],b=+p[1];
-        return b>0&&gcd(a,b)===1&&a===B.q.n&&b===B.q.d;
+        return b>0&&gcd(a,b)===1&&a===q.n&&b===q.d;
     }
     if(p.length===3){ /* 带分数 a┘b┘c = a又c分之b */
         if(!/^\d+$/.test(p[0])||!/^\d+$/.test(p[1])||!/^\d+$/.test(p[2]))return false;
         const w=+p[0],fn=+p[1],fd=+p[2];
-        return fd>0&&fn<fd&&gcd(fn,fd)===1&&w*fd+fn===B.q.n&&fd===B.q.d;
+        return fd>0&&fn<fd&&gcd(fn,fd)===1&&w*fd+fn===q.n&&fd===q.d;
     }
     return false;
 }
+function isCorrect(){return checkAnswer(inp,B.q)}
 
 /* ===== 戰鬥：結算 ===== */
 const rand01_05=()=>0.1+Math.random()*0.4;
