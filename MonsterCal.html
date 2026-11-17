@@ -171,11 +171,11 @@ h1{color:var(--primary);font-size:24px}
     <div class="nav">
         <div class="nav-btn" onclick="openScreen('train')">⚔️ 訓練場</div>
         <div class="nav-btn" onclick="openScreen('gym')">🏟️ 道場</div>
-        <div class="nav-btn" onclick="openScreen('dex')">📖 圖鑑</div>
+        <div class="nav-btn" onclick="openScreen('dex')">📖 收集盒</div>
         <div class="nav-btn" onclick="openScreen('shop')">🛒 商店</div>
         <div class="nav-btn" onclick="openScreen('items')">🎒 道具</div>
         <div class="nav-btn" onclick="openScreen('ach')">🏆 成就</div>
-        <div class="nav-btn" onclick="openScreen('guide')">📘 攻略</div>
+        <div class="nav-btn" onclick="openScreen('guide')">📘 圖鑑</div>
         <div class="nav-btn" onclick="openScreen('friends')">👥 朋友</div>
         <div class="nav-btn" onclick="openSettings()">⚙️ 設定</div>
     </div>
@@ -197,9 +197,9 @@ h1{color:var(--primary);font-size:24px}
     <button class="btn" onclick="openScreen('main')">返回</button>
 </div>
 
-<!-- 圖鑑 -->
+<!-- 收集盒 -->
 <div id="dex" class="screen">
-    <h2>精靈圖鑑</h2>
+    <h2>精靈收集盒</h2>
     <div class="list" id="dlist"></div>
     <button class="btn" onclick="openScreen('main')">返回</button>
 </div>
@@ -225,9 +225,9 @@ h1{color:var(--primary);font-size:24px}
     <button class="btn" onclick="openScreen('main')">返回</button>
 </div>
 
-<!-- 攻略 -->
+<!-- 圖鑑 -->
 <div id="guide" class="screen">
-    <h2>📘 精靈攻略</h2>
+    <h2>📘 精靈圖鑑</h2>
     <p style="text-align:center;font-size:12px;color:#666;margin-bottom:6px">曾收集的精靈顯示樣貌，未收集的以「？」表示</p>
     <div class="list" id="guidelist"></div>
     <button class="btn" onclick="openScreen('main')">返回</button>
@@ -317,7 +317,7 @@ h1{color:var(--primary);font-size:24px}
 <div class="modal" id="helpmodal">
     <div class="mbox" style="max-width:360px;max-height:80%;overflow-y:auto;text-align:left">
         <h3 style="text-align:center">📖 遊戲說明</h3>
-        <p style="font-size:13px;line-height:1.7"><b>玩法：</b>帶領你的拍檔精靈挑戰訓練場與道場。每個回合選擇「攻擊」或「道具」後，限時內答對數學題就能出招；答錯或超時會被對方反擊。答得越快，傷害越高、剩餘時間還能提升捕捉成功率。擊敗野生精靈可收集圖鑑與金幣，成功通關道場有額外獎勵。</p>
+        <p style="font-size:13px;line-height:1.7"><b>玩法：</b>帶領你的拍檔精靈挑戰訓練場與道場。每個回合選擇「攻擊」或「道具」後，限時內答對數學題就能出招；答錯或超時會被對方反擊。答得越快，傷害越高、剩餘時間還能提升捕捉成功率。擊敗野生精靈可收集收集盒與金幣，成功通關道場有額外獎勵。</p>
         <p style="font-size:13px;line-height:1.7"><b>能力值用途：</b><br>
         ・最大血量：歸零即戰敗<br>
         ・攻擊力：決定你出招的傷害<br>
@@ -327,7 +327,7 @@ h1{color:var(--primary);font-size:24px}
         <p style="font-size:13px;line-height:1.7"><b>屬性相剋（攻擊方 → 剋制方，傷害增加）：</b><br>
         金 → 木　木 → 水　水 → 火　火 → 土　土 → 金<br>
         <small>被剋時傷害減少。每項能力上限 500。</small></p>
-        <p style="font-size:13px;line-height:1.7"><b>成長：</b>收服的精靈可在圖鑑中「融合」，把它的能力加到拍檔精靈上；能量飲品也能提升能力。平均能力足夠高時，拍檔會進化，能力大漲！</p>
+        <p style="font-size:13px;line-height:1.7"><b>成長：</b>收服的精靈可在收集盒中「融合」，把它的能力加到拍檔精靈上；能量飲品也能提升能力。平均能力足夠高時，拍檔會進化，能力大漲！</p>
         <div style="text-align:center"><button class="btn btn-primary" onclick="closeModal('helpmodal')">返回</button></div>
     </div>
 </div>
@@ -482,7 +482,7 @@ const STATS=['hp','atk','def','spd','cha'];
 const STAT_LABEL={hp:'最大血量',atk:'攻擊力',def:'防禦力',spd:'速度',cha:'吸引力'};
 function baseStats(id){const m=M[id],o={};STATS.forEach(k=>o[k]=clamp(m[k]));return o}
 function clampStats(o){const r={};STATS.forEach(k=>r[k]=clamp(o[k]||0));return r}
-/* ===== 個體制度：圖鑑中每隻精靈持有獨立能力值，可逐一顯示與出售 ===== */
+/* ===== 個體制度：收集盒中每隻精靈持有獨立能力值，可逐一顯示與出售 ===== */
 function dexInst(id){return S.dex.filter(x=>x.id===id)}
 function addInst(id,st){S.uidn=(S.uidn||0)+1;S.dex.push({u:S.uidn,id:id,st:clampStats(st)});S.seen[id]=true;return S.uidn}
 function instSellPrice(id,st){let v=avg(st)*0.8;if(M[id].elem==='金')v*=1.5;return Math.floor(v)}
@@ -635,7 +635,7 @@ function loadGame(){
         S.dex=S.dex.filter(x=>x&&M[x.id]&&x.st).map(x=>({u:typeof x.u==='number'?x.u:++S.uidn,id:x.id,st:clampStats(x.st)}));
         Object.keys(CARDS).forEach(k=>{if(typeof S.inv[k]!=='number')S.inv[k]=0});
         STATS.forEach(k=>{if(typeof S.ps[k]!=='number')S.ps[k]=clamp(M[S.pid][k]);});
-        /* 攻略用：重建曾收集集合 */
+        /* 圖鑑用：重建曾收集集合 */
         if(!S.seen||typeof S.seen!=='object')S.seen={};
         S.dex.forEach(x=>{if(x&&x.id)S.seen[x.id]=true});
         if(S.pid)S.seen[S.pid]=true;
@@ -735,7 +735,7 @@ function populateShop(){
 }
 function buyCard(id,p){if(S.coin>=p&&CARDS[id]){S.coin-=p;S.inv[id]=(S.inv[id]||0)+1;saveGame();populateShop();updMain()}}
 
-/* ===== 圖鑑（個體制：每一隻獨立顯示，編號僅內部使用） ===== */
+/* ===== 收集盒（個體制：每一隻獨立顯示，編號僅內部使用） ===== */
 function populateDex(){
     const el=document.getElementById('dlist');el.innerHTML='';
     const list=S.dex.slice().sort((a,b)=>(M[a.id].num-M[b.id].num)||(avg(b.st)-avg(a.st)));
@@ -755,7 +755,7 @@ function populateDex(){
     });
 }
 
-/* ===== 攻略：依 num 分組，每條進化鏈一列 ===== */
+/* ===== 圖鑑：依 num 分組，每條進化鏈一列 ===== */
 function guideOwned(id){
     return !!S.seen[id]||S.pid===id||S.dex.some(x=>x.id===id);
 }
@@ -1729,7 +1729,7 @@ function tryCatch(){
             /* 收服时记录该只个体当时的实际能力值（含训练场随机波动），而非种族预设值 */
             addInst(B.e.mId,{hp:B.e.maxHp,atk:B.e.atk,def:B.e.def,spd:B.e.spd,cha:B.e.cha});
             S.stats.catch++;saveGame();
-            endBattle(true,'成功收服 '+B.e.name+'！\n可在圖鑑中查閱');
+            endBattle(true,'成功收服 '+B.e.name+'！\n可在收集盒中查閱');
         }else{
             resolveRound();
         }
