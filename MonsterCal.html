@@ -211,6 +211,11 @@ body.pvp-mode #header{display:none!important}
     /* 點擊當下的顏色 */
     a:active {
       color: #000000;
+    /* 精靈對戰計算機：按下時變黃 */
+    #keys .key.pressed {
+        background:#ffe66d !important;
+        color:#000 !important;
+        transform:scale(0.96);
     }
 </style>
 </head>
@@ -2127,6 +2132,24 @@ function key(v){
     inp=keyApply(inp,v);
     document.getElementById('inp').innerText=inp;
 }
+// 精靈對戰計算機：支援滑鼠及觸控按下效果
+const battleKeys = document.getElementById('keys');
+
+battleKeys.addEventListener('pointerdown', function(e) {
+    const btn = e.target.closest('.key');
+    if (btn) {
+        btn.classList.add('pressed');
+    }
+});
+
+function releaseBattleKey() {
+    document.querySelectorAll('#keys .key.pressed').forEach(function(btn) {
+        btn.classList.remove('pressed');
+    });
+}
+
+document.addEventListener('pointerup', releaseBattleKey);
+document.addEventListener('pointercancel', releaseBattleKey);
 document.onkeydown=function(e){
     if(PV.on)return; /* PVP 进行中：实体键盘停用，双人各自触屏作答 */
     if(!B.on||!B.act)return;
