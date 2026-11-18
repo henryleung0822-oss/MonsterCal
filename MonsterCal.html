@@ -102,12 +102,23 @@ body.pvp-mode #header{display:none!important}
     background:#fff;border:1px solid #ddd;border-radius:8px;display:flex;justify-content:center;align-items:center;
     font-size:20px;font-weight:bold;cursor:pointer;min-height:44px;
 }
+/* 精靈對戰計算機：按下按鈕時顯示黃色 */
 .key:active{background:#eee}
 .key.enter{background:var(--secondary);color:#fff;font-size:24px}
 .key.del{background:#e74c3c;color:#fff;font-size:14px}
 .key.dot{background:#eee}
 .key.sign{background:#eee}
 .key.frac{background:#eee}
+.key:active,
+.key.dot:active,
+.key.sign:active,
+.key.frac:active,
+.key.zero:active,
+.key.enter:active {
+    background:#ffe66d !important;
+    color:#000 !important;
+    transform:scale(0.96);
+}
 /* ===== PVP 雙打 ===== */
 #pvp{gap:5px;padding:10px;touch-action:manipulation}
 .pv-player{display:flex;flex-direction:column;gap:4px;min-height:0;flex:1}
@@ -134,7 +145,10 @@ body.pvp-mode #header{display:none!important}
 .pvkeyboard.p2{transform:rotate(180deg)}
 .pvkp{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
 .pvkey{background:#fff;border:1px solid #ddd;border-radius:8px;height:38px;display:flex;justify-content:center;align-items:center;font-size:15px;font-weight:bold;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:none}
-.pvkey.on{background:#ffe66d}
+.pvkey.on{
+    background:#ffe66d !important;
+    color:#000 !important;
+}
 .pvkey.enter{background:var(--secondary);color:#fff}
 .pvkey.del{background:#e74c3c;color:#fff;font-size:11px}
 .pvkey.dot,.pvkey.frac,.pvkey.sign{background:#eee}
@@ -466,8 +480,10 @@ body.pvp-mode #header{display:none!important}
 <div class="modal" id="announcementmodal">
     <div class="mbox">
         <h3>📢 公告</h3>
-        <p style="font-size:15px;line-height:1.8;text-align:left;white-space:pre-line">iPhone 玩家：
-可在 Safari 瀏覽器點擊底部分享，然後選擇「加入至主畫面」，有更好的體驗。</p>
+        <p style="font-size:15px;line-height:1.8;text-align:left;white-space:pre-line"><strong>iPhone 玩家</strong>
+可在 Safari 瀏覽器點擊底部分享，然後選擇「加入至主畫面」，有更好的體驗。</p><br></br>
+        <p style="font-size:15px;line-height:1.8;text-align:left;white-space:pre-line"><strong>新增了單機雙玩家對戰</strong>
+在「朋友」，加其他玩家成為朋友。朋友的數據就會紀錄下來，再選擇對戰課題，即可對戰。</p>
         <button class="btn btn-primary" onclick="closeModal('announcementmodal')">知道了</button>
     </div>
 </div>
