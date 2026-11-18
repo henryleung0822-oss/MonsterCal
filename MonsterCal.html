@@ -211,6 +211,7 @@ body.pvp-mode #header{display:none!important}
     /* 點擊當下的顏色 */
     a:active {
       color: #000000;
+    }
     /* 精靈對戰計算機：按下時變黃 */
     #keys .key.pressed {
         background:#ffe66d !important;
@@ -1694,18 +1695,27 @@ function pvBuildKeys(){
         e.preventDefault();
         const who=k.dataset.who,p=PV[who];
         if(p.ptr!==null&&p.ptr!==e.pointerId)return;   /* 该侧已被另一手指占用 */
-        p.ptr=e.pointerId;k.classList.add('on');
+           p.ptr=e.pointerId;
+           p.keyEl=k;
+           k.classList.add('on');
         try{k.setPointerCapture(e.pointerId)}catch(_){}
         pvHit(who,k.dataset.v);
     });
-    const up=e=>{
-        ['p1','p2'].forEach(who=>{
-            const p=PV[who];if(!p)return;
-            if(p.ptr===e.pointerId){p.ptr=null;
-                const el=document.querySelector('.pvkey.on');document.querySelectorAll('.pvkey.on').forEach(x=>x.classList.remove('on'));
+   const up=e=>{
+                 ['p1','p2'].forEach(who=>{
+                const p=PV[who];
+        if(!p)return;
+
+        if(p.ptr===e.pointerId){
+            p.ptr=null;
+
+            if(p.keyEl){
+                p.keyEl.classList.remove('on');
+                p.keyEl=null;
             }
-        });
-    };
+        }
+    });
+};
     root.addEventListener('pointerup',up);
     root.addEventListener('pointercancel',up);
     root.addEventListener('contextmenu',e=>e.preventDefault());
