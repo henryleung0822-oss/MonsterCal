@@ -117,7 +117,7 @@ body.pvp-mode #header{display:none!important}
 .pv-player.p2 .pv-avatar-hp{transform:rotate(180deg)}
 .pv-player.p1{justify-content:flex-end}
 .pv-divider{border:0;border-top:2px dashed #8aa0ad;margin:2px 0}
-.pv-avatar-hp{display:flex;align-items:center;gap:9px;min-height:48px}
+.pv-avatar-hp{display:flex;align-items:center;gap:9px;min-height:48px;position:relative}
 .pv-avatar{width:44px;height:44px;flex:0 0 44px;border:2px solid #fff;border-radius:50%;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;font-size:25px;box-shadow:0 2px 5px #0002}
 .pv-avatar .fb{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
 .pv-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
@@ -133,13 +133,15 @@ body.pvp-mode #header{display:none!important}
 .pvkeyboard{display:flex;flex-direction:column;min-height:0}
 .pvkeyboard.p2{transform:rotate(180deg)}
 .pvkp{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
-.pvkey{background:#fff;border:1px solid #ddd;border-radius:8px;height:36px;display:flex;justify-content:center;align-items:center;font-size:15px;font-weight:bold;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:none}
+.pvkey{background:#fff;border:1px solid #ddd;border-radius:8px;height:38px;display:flex;justify-content:center;align-items:center;font-size:15px;font-weight:bold;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:none}
 .pvkey.on{background:#ffe66d}
 .pvkey.enter{background:var(--secondary);color:#fff}
 .pvkey.del{background:#e74c3c;color:#fff;font-size:11px}
 .pvkey.dot,.pvkey.frac,.pvkey.sign{background:#eee}
 .pvkey.sign{font-size:11px}
-.pvpfx{position:absolute;font-size:18px;font-weight:bold;color:#e74c3c;pointer-events:none;animation:float .9s forwards;z-index:60}
+.pvpfx{position:absolute;left:18px;top:-10px;font-size:20px;font-weight:900;color:#e74c3c;text-shadow:0 1px 2px #fff,0 0 4px #fff;pointer-events:none;animation:float .9s forwards;z-index:60;white-space:nowrap}
+#pvResTitle.p2-win{transform:rotate(180deg)}
+@media(max-height:700px){.pvkey{height:32px}.pvin{height:25px}}
 .pvhead{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:bold}
 .frf{display:inline-flex;align-items:center;gap:3px;vertical-align:middle;margin:0 3px}
 .frf .fc{display:inline-flex;flex-direction:column;text-align:center;line-height:1.1}
@@ -177,6 +179,25 @@ body.pvp-mode #header{display:none!important}
     background:#fff;padding:12px;border-radius:12px;box-shadow:0 3px 6px #0002;margin-bottom:10px;
 }
 #qrImg svg,#qrImg img{max-width:100%;height:auto}
+/* ===== 超連結 ===== */
+ /* 尚未點擊的顏色 */
+    a:link {
+      color: #000000;
+      text-decoration: none; /* 移除底線（可自行決定是否保留） */
+    }
+    /* 已點擊過的顏色 */
+    a:visited {
+      color: #000000;
+    }
+    /* 滑鼠懸停時的顏色 */
+    a:hover {
+      color: #000000;
+      text-decoration: underline;
+    }
+    /* 點擊當下的顏色 */
+    a:active {
+      color: #000000;
+    }
 </style>
 </head>
 <body>
@@ -196,7 +217,8 @@ body.pvp-mode #header{display:none!important}
     <p style="text-align:center">選擇你的初始拍檔：</p>
     <div class="grid3" id="pick"></div>
     <button class="btn btn-primary" id="go" disabled onclick="startGame()">開始冒險</button>
-    <button class="btn btn-accent" onclick="openHelp()">📖 說明</button>
+    <button class="btn btn-accent" onclick="openDataImport()">📥 輸入資料碼</button>
+    <button class="btn" onclick="openHelp()">📖 說明</button>
 </div>
 
 <!-- 主選單 -->
@@ -213,6 +235,7 @@ body.pvp-mode #header{display:none!important}
         <div class="nav-btn" onclick="openScreen('guide')">📘 圖鑑</div>
         <div class="nav-btn" onclick="openScreen('friends')">👥 朋友</div>
         <div class="nav-btn" onclick="openSettings()">⚙️ 設定</div>
+        <div class="nav-btn" onclick="openAnnouncement()">📢 公告</div>
     </div>
 </div>
 
@@ -363,6 +386,7 @@ body.pvp-mode #header{display:none!important}
         金 → 木　木 → 水　水 → 火　火 → 土　土 → 金<br>
         <small>被剋時傷害減少。每項能力上限 500。</small></p>
         <p style="font-size:13px;line-height:1.7"><b>成長：</b>收服的精靈可在收集盒中「融合」，把它的能力加到拍檔精靈上；能量飲品也能提升能力。平均能力足夠高時，拍檔會進化，能力大漲！</p>
+        <p style="font-size:13px;line-height:1.7;text-align:center"><b><a href="https://topmathshk.com" target="_blank">由 Henry Leung @ TopMathsHK 設計</a></b></p>
         <div style="text-align:center"><button class="btn btn-primary" onclick="closeModal('helpmodal')">返回</button></div>
     </div>
 </div>
@@ -381,6 +405,11 @@ body.pvp-mode #header{display:none!important}
             <span style="font-size:14px"><b style="color:#333">+/-</b>　<b style="color:#333">DEL</b>　<b style="color:#333">=</b></span>
         </label>
         <p style="font-size:11px;color:#888;margin-top:4px">設定會自動儲存，下次進入對戰時生效。</p>
+        <hr style="border:0;border-top:1px solid #ddd;margin:12px 0">
+        <p style="font-size:13px;font-weight:bold;margin-bottom:6px">遊戲資料備份／轉移</p>
+        <button class="btn btn-primary" style="width:100%" onclick="openDataExport()">📋 複製資料碼</button>
+        <button class="btn btn-accent" style="width:100%" onclick="openDataImport()">📥 輸入資料碼</button>
+        <p style="font-size:11px;color:#b33;line-height:1.5">複製資料碼後可把進度轉移到其他裝置。完成複製並確認後，本裝置的遊戲進度會被清除。</p>
         <div style="text-align:center;margin-top:8px">
             <button class="btn btn-primary" onclick="closeModal('settingsmodal')">返回</button>
         </div>
@@ -431,7 +460,40 @@ body.pvp-mode #header{display:none!important}
         </div>
     </section>
 
-    <button class="btn btn-danger" style="padding:8px;font-size:13px;margin:2px 0 0" onclick="pvSurrender()">🏳 投降（我方為 P1）</button>
+</div>
+
+<!-- 公告 -->
+<div class="modal" id="announcementmodal">
+    <div class="mbox">
+        <h3>📢 公告</h3>
+        <p style="font-size:15px;line-height:1.8;text-align:left;white-space:pre-line">iPhone 玩家：
+可在 Safari 瀏覽器點擊底部分享，然後選擇「加入至主畫面」，有更好的體驗。</p>
+        <button class="btn btn-primary" onclick="closeModal('announcementmodal')">知道了</button>
+    </div>
+</div>
+
+<!-- 匯出遊戲資料 -->
+<div class="modal" id="dataexportmodal">
+    <div class="mbox" style="max-width:380px;max-height:88%;overflow-y:auto">
+        <h3>📋 複製資料碼</h3>
+        <p style="font-size:12px;color:#b33;line-height:1.6;text-align:left">重要：請先成功複製下方完整資料碼，並妥善保存。按下「複製，清除本機進度」後，本裝置的遊戲進度會被清除，不能從本機還原。</p>
+        <textarea id="dataExportCode" readonly onclick="this.select()" style="width:100%;height:110px;border:1px solid #ddd;border-radius:6px;padding:8px;font-size:10px;user-select:text;word-break:break-all"></textarea>
+        <p id="dataExportStatus" style="font-size:11px;color:#666;margin:6px 0">正在準備資料碼…</p>
+        <button class="btn btn-danger" id="dataClearBtn" style="width:100%" disabled onclick="clearAfterDataExport()">🗑 複製，清除本機資料</button>
+        <button class="btn" style="width:100%" onclick="closeModal('dataexportmodal')">取消（保留進度）</button>
+    </div>
+</div>
+
+<!-- 匯入遊戲資料 -->
+<div class="modal" id="dataimportmodal">
+    <div class="mbox" style="max-width:380px;max-height:88%;overflow-y:auto">
+        <h3>📥 輸入資料碼</h3>
+        <p style="font-size:12px;color:#b33;line-height:1.6;text-align:left">輸入另一部裝置複製的完整資料碼。匯入後會覆蓋此裝置現有的全部遊戲進度，包括精靈、道具、金幣、訓練紀錄、成就、圖鑑及朋友資料。</p>
+        <textarea id="dataImportCode" oninput="importConfirmArmed=false;document.getElementById('dataImportBtn').textContent='確認並覆蓋本機資料'" style="width:100%;height:120px;border:1px solid #ddd;border-radius:6px;padding:8px;font-size:11px;user-select:text;word-break:break-all" placeholder="請在此貼上 MMD1 資料碼"></textarea>
+        <p id="dataImportStatus" style="font-size:11px;color:#666;margin:6px 0"></p>
+        <button class="btn btn-primary" id="dataImportBtn" style="width:100%" onclick="importDataCode()">確認並覆蓋本機資料</button>
+        <button class="btn" style="width:100%" onclick="closeModal('dataimportmodal')">取消</button>
+    </div>
 </div>
 
 <!-- PVP 題型選擇 -->
@@ -1140,6 +1202,121 @@ function applyKeypadOrder(){
     }
 }
 
+/* ===== 公告與完整遊戲資料轉移 ===== */
+function openAnnouncement(){document.getElementById('announcementmodal').classList.add('show')}
+const DATA_CODE_PREFIX='MMD1';
+let pendingDataCode='';
+let importConfirmArmed=false;
+function encodeDataCode(){
+    if(!S.init||!S.pid||!S.ps)throw new Error('尚未開始遊戲');
+    /* S 包含完整 v5 存檔：主精靈及能力、收集盒個體數據、道具、金幣、訓練／道場、成就、圖鑑、朋友與戰績、設定 */
+    const payload=JSON.stringify({kind:'MMRPG_FULL_SAVE',version:1,save:S});
+    const body=_b64urlEncode(payload);
+    return DATA_CODE_PREFIX+'.'+body+'.'+_shareSig('FULL_SAVE:'+body);
+}
+function decodeDataCode(raw){
+    try{
+        const code=String(raw||'').trim();
+        if(!code||code.length>2000000)return null;
+        const a=code.split('.');
+        if(a.length!==3||a[0]!==DATA_CODE_PREFIX||_shareSig('FULL_SAVE:'+a[1])!==a[2])return null;
+        const obj=JSON.parse(_b64urlDecode(a[1]));
+        const x=obj&&obj.save;
+        if(obj.kind!=='MMRPG_FULL_SAVE'||obj.version!==1||!x||x.v!==5||x.init!==true)return null;
+        if(!M[x.pid]||!x.ps||typeof x.ps!=='object')return null;
+        if(!STATS.every(k=>Number.isFinite(Number(x.ps[k]))))return null;
+        if(!x.inv||typeof x.inv!=='object'||!Array.isArray(x.dex)||!Array.isArray(x.friends))return null;
+        if(!x.gyms||typeof x.gyms!=='object'||!x.train||typeof x.train!=='object')return null;
+        if(!x.stats||typeof x.stats!=='object'||!x.ach||typeof x.ach!=='object'||!x.seen||typeof x.seen!=='object')return null;
+        if(!Number.isFinite(Number(x.coin))||!Number.isFinite(Number(x.php)))return null;
+        return x;
+    }catch(e){return null;}
+}
+function openDataExport(){
+    if(!S.init){showToast('請先開始遊戲');return}
+    try{
+        pendingDataCode=encodeDataCode();
+        document.getElementById('dataExportCode').value=pendingDataCode;
+        document.getElementById('dataClearBtn').disabled=true;
+        document.getElementById('dataExportStatus').textContent='請先複製並保存資料碼；未確認複製前不會清除進度。';
+        document.getElementById('dataexportmodal').classList.add('show');
+        retryCopyDataCode();
+    }catch(e){showToast('資料碼生成失敗：'+e.message)}
+}
+async function retryCopyDataCode(){
+    if(!pendingDataCode)return;
+    try{
+        if(navigator.clipboard&&navigator.clipboard.writeText){
+            await navigator.clipboard.writeText(pendingDataCode);
+            enableDataClear('資料碼已成功複製。請確認已妥善保存，再選擇是否清除本機進度。');
+            return;
+        }
+    }catch(e){}
+    const ta=document.getElementById('dataExportCode');
+    ta.focus();ta.select();
+    let ok=false;
+    try{ok=document.execCommand('copy')}catch(e){}
+    if(ok)enableDataClear('資料碼複製。請確認已妥善保存，再選擇是否清除本機進度。');
+    else document.getElementById('dataExportStatus').textContent='瀏覽器未能自動複製資料碼。請手動選取並複製上方完整資料碼；確認資料碼已成功複製前，清除功能會保持停用，以免遺失進度。';
+}
+function enableDataClear(msg){
+    document.getElementById('dataClearBtn').disabled=false;
+    document.getElementById('dataExportStatus').textContent=msg;
+}
+function clearAfterDataExport(){
+    if(!pendingDataCode||document.getElementById('dataClearBtn').disabled)return;
+    /* 只有生成資料碼並由玩家確認複製後，才清除所有版本的本機存檔 */
+    LS.del('mmrpg_v5');LS.del('mmrpg_v4');LS.del('mmrpg_v3');
+    pendingDataCode='';
+    document.getElementById('dataexportmodal').classList.remove('show');
+    closeModal('settingsmodal');
+    document.body.classList.remove('pvp-mode');
+    resetState();boot();applyKeypadOrder();
+    showToast('資料碼已保留；本機遊戲進度已清除');
+}
+function openDataImport(){
+    importConfirmArmed=false;
+    document.getElementById('dataImportCode').value='';
+    document.getElementById('dataImportBtn').textContent='確認並覆蓋本機資料';
+    document.getElementById('dataImportStatus').textContent='匯入會覆蓋此裝置現有的遊戲資料。請輸入資料碼後按兩次確認。';
+    document.getElementById('dataimportmodal').classList.add('show');
+}
+function importDataCode(){
+    const raw=document.getElementById('dataImportCode').value.trim();
+    const imported=decodeDataCode(raw);
+    if(!imported){importConfirmArmed=false;document.getElementById('dataImportBtn').textContent='確認並覆蓋本機資料';document.getElementById('dataImportStatus').textContent='資料碼無效、內容不完整或版本不相容；原有進度沒有更改。';return}
+    if(!importConfirmArmed){
+        importConfirmArmed=true;
+        document.getElementById('dataImportBtn').textContent='⚠️ 再按一次確認覆蓋';
+        document.getElementById('dataImportStatus').textContent='請再次確認：目前裝置的所有遊戲資料將被匯入資料碼完整取代。';
+        return;
+    }
+    importConfirmArmed=false;
+    const keys=['v','init','coin','pid','ps','php','max','inv','dex','uidn','gyms','train','stats','ach','seen','settings','playerName','friends'];
+    const clean={};
+    let oldS=null,oldSave=null;
+    try{
+        keys.forEach(k=>{clean[k]=imported[k]});
+        /* 只接受遊戲存檔已知欄位，避免匯入額外屬性 */
+        oldS=JSON.parse(JSON.stringify(S));
+        oldSave=LS.get('mmrpg_v5');
+        LS.set('mmrpg_v5',JSON.stringify(clean));
+        S=JSON.parse(JSON.stringify(oldS));
+        if(!loadGame())throw new Error('存檔驗證失敗');
+        saveGame();
+        document.getElementById('dataimportmodal').classList.remove('show');
+        closeModal('settingsmodal');
+        document.body.classList.remove('pvp-mode');
+        document.getElementById('header').classList.add('active');
+        showScreen('main');updMain();applyKeypadOrder();
+        showToast('遊戲資料匯入成功！');
+    }catch(e){
+        if(oldS)S=oldS;
+        if(typeof oldSave==='string')LS.set('mmrpg_v5',oldSave);else LS.del('mmrpg_v5');
+        document.getElementById('dataImportStatus').textContent='匯入失敗，原有進度已保留。請檢查資料碼。';
+    }
+}
+
 /* ===== 朋友（A+B+C+D） ===== */
 /* 分享碼 v2：帶簽名校驗的獨特碼
    格式：M2-<base64url(緊湊payload)>-<8位十六進制簽名>
@@ -1437,7 +1614,7 @@ const PV={on:false,topic:null,friendId:null,winner:null,raf:null,
     p1:null,p2:null,base:20};
 const PV_KEYS=[['7','8','9'],['4','5','6'],['1','2','3'],['.','0','┘'],['+/-','=','DEL']];
 const PV_BASE={ADD:20,SUB:20,MIX:25,MUL1:20,MUL2:20,MIXMUL:25,FADD:20,FSUB:20,FMUL:25,FMIX:20,FMULMIX:25,
-FRAC:30,FRACADD:30,FRACSUB:30,FRACMUL:35,FRACMIX:35,FRACMULMIX:40};
+FRACADD:30,FRACSUB:30,FRACMUL:35,FRACMIX:35,FRACMULMIX:40};
 function pvOpenTopic(fid){
     const f=(S.friends||[]).find(x=>x.id===fid);
     if(!f){showToast('朋友不存在');return}
@@ -1456,9 +1633,9 @@ function pvSide(pid,stats,name){
         inp:'0',q:null,due:0,limit:PV.base,busy:false,ptr:null};
 }
 function startPVP(fid,topic){
-    document.body.classList.add('pvp-mode');
     const f=(S.friends||[]).find(x=>x.id===fid);
     if(!f||!M[f.pid]||!S.ps||!M[S.pid]){showToast('資料不足，無法對戰');return}
+    document.body.classList.add('pvp-mode');
     PV.on=true;PV.winner=null;PV.topic=topic;PV.friendId=fid;PV.base=PV_BASE[topic]||20;
     PV.p1=pvSide(S.pid,S.ps,getDisplayName()+'（P1）');
     PV.p2=pvSide(f.pid,f.stats,esc(f.name)+'（P2）');
@@ -1566,11 +1743,11 @@ function pvTimeout(who){
 }
 let pvFxSeq=0;
 function pvFx(who,txt){
-    const col=document.querySelector('.pvkeyboard[data-who="'+who+'"]');
-    const hp=document.querySelector(who==='p1'?'#pvQ1':'#pvQ2').parentElement;
+    /* 傷害數字直接出現在該玩家頭像／HP 區域；P2 的父層已旋轉 180 度，效果會同步反轉 */
+    const host=document.querySelector(who==='p1'?'#pvAvatar1':'#pvAvatar2').parentElement;
+    if(!host)return;
     const s=document.createElement('div');s.className='pvpfx';s.textContent=txt;
-    s.style.left='40%';s.style.top='-4px';
-    (hp||col).appendChild(s);
+    host.appendChild(s);
     setTimeout(()=>s.remove(),900);
 }
 function pvRender(){
@@ -1596,16 +1773,14 @@ function pvTick(t){
     });
     if(PV.on&&!PV.winner)PV.raf=requestAnimationFrame(pvTick);
 }
-function pvSurrender(){
-    if(!PV.on||PV.winner)return;
-    pvEnd('p2','（P1 投降）');
-}
 function pvEnd(win,extra){
     PV.winner=win||'p2';
     cancelAnimationFrame(PV.raf);
     const f=(S.friends||[]).find(x=>x.id===PV.friendId);
     if(f){f.w=(f.w||0)+(win==='p1'?1:0);f.l=(f.l||0)+(win==='p2'?1:0);saveGame()}
-    document.getElementById('pvResTitle').innerText=win==='p1'?'🎉 P1 獲勝！':win==='p2'?'😢 P2 獲勝！':'⚔️ 對戰結束';
+    const resTitle=document.getElementById('pvResTitle');
+    resTitle.classList.toggle('p2-win',win==='p2');
+    resTitle.innerText=win==='p1'?'🎉 P1 獲勝！':win==='p2'?'😢 P2 獲勝！':'⚔️ 對戰結束';
     document.getElementById('pvResText').innerText=
         `勝方：${win==='p1'?PV.p1.name:PV.p2.name}${extra||''}\n戰績（你 vs ${PV.p2?PV.p2.name:''}）：${f?(f.w||0) : 0} 勝 ${f?(f.l||0):0} 負`;
     document.getElementById('pvresult').classList.add('show');
