@@ -661,7 +661,22 @@ monster_14_b:{id:'monster_14_b',num:14,tier:'b',name:'富豪豬',elem:'金',hp:1
 monster_14_c:{id:'monster_14_c',num:14,tier:'c',name:'貪婪豬',elem:'金',hp:140,atk:90,def:100,spd:100,cha:120,evo:null,evoReq:Infinity,emoji:'🐷'},
 monster_15_a:{id:'monster_15_a',num:15,tier:'a',name:'呆野豬',elem:'土',hp:100,atk:120,def:100,spd:60,cha:120,evo:'monster_15_b',evoReq:130,emoji:'🐗'},
 monster_15_b:{id:'monster_15_b',num:15,tier:'b',name:'野豬土豪',elem:'土',hp:110,atk:130,def:110,spd:70,cha:130,evo:'monster_15_c',evoReq:160,emoji:'🐗'},
-monster_15_c:{id:'monster_15_c',num:15,tier:'c',name:'野豬大王',elem:'土',hp:120,atk:140,def:120,spd:80,cha:140,evo:null,evoReq:Infinity,emoji:'🐗'}
+monster_15_c:{id:'monster_15_c',num:15,tier:'c',name:'野豬大王',elem:'土',hp:120,atk:140,def:120,spd:80,cha:140,evo:null,evoReq:Infinity,emoji:'🐗'},
+monster_16_a:{id:'monster_16_a',num:16,tier:'a',name:'生氣鳥',elem:'火',hp:140,atk:140,def:140,spd:140,cha:140,evo:'monster_16_b',evoReq:180,emoji:'🐦'},
+monster_16_b:{id:'monster_16_b',num:16,tier:'b',name:'激憤鳥',elem:'火',hp:150,atk:150,def:150,spd:150,cha:150,evo:'monster_16_c',evoReq:220,emoji:'🐦'},
+monster_16_c:{id:'monster_16_c',num:16,tier:'c',name:'狂怒鳥',elem:'火',hp:160,atk:160,def:160,spd:160,cha:160,evo:null,evoReq:Infinity,emoji:'🐦'},
+monster_17_a:{id:'monster_17_a',num:17,tier:'a',name:'流氓蟹',elem:'水',hp:120,atk:170,def:150,spd:120,cha:140,evo:'monster_17_b',evoReq:180,emoji:'🦀'},
+monster_17_b:{id:'monster_17_b',num:17,tier:'b',name:'霸王蟹',elem:'水',hp:130,atk:180,def:160,spd:130,cha:150,evo:'monster_17_c',evoReq:220,emoji:'🦀'},
+monster_17_c:{id:'monster_17_c',num:17,tier:'c',name:'帝王蟹',elem:'水',hp:140,atk:190,def:170,spd:140,cha:160,evo:null,evoReq:Infinity,emoji:'🦀'},
+monster_18_a:{id:'monster_18_a',num:18,tier:'a',name:'保安猴',elem:'木',hp:170,atk:150,def:120,spd:120,cha:140,evo:'monster_18_b',evoReq:180,emoji:'🐒'},
+monster_18_b:{id:'monster_18_b',num:18,tier:'b',name:'鎮安猴',elem:'木',hp:180,atk:160,def:130,spd:130,cha:150,evo:'monster_18_c',evoReq:220,emoji:'🐒'},
+monster_18_c:{id:'monster_18_c',num:18,tier:'c',name:'國安猴',elem:'木',hp:190,atk:170,def:140,spd:140,cha:160,evo:null,evoReq:Infinity,emoji:'🐒'},
+monster_19_a:{id:'monster_19_a',num:19,tier:'a',name:'銹毛駒',elem:'金',hp:130,atk:140,def:100,spd:180,cha:140,evo:'monster_19_b',evoReq:180,emoji:'🐎'},
+monster_19_b:{id:'monster_19_b',num:19,tier:'b',name:'合金駒',elem:'金',hp:140,atk:150,def:110,spd:190,cha:150,evo:'monster_19_c',evoReq:220,emoji:'🐎'},
+monster_19_c:{id:'monster_19_c',num:19,tier:'c',name:'天鋼神駒',elem:'金',hp:150,atk:160,def:120,spd:200,cha:160,evo:null,evoReq:Infinity,emoji:'🐎'},
+monster_20_a:{id:'monster_20_a',num:20,tier:'a',name:'沼泥鱷',elem:'土',hp:140,atk:180,def:140,spd:100,cha:140,evo:'monster_20_b',evoReq:180,emoji:'🐊'},
+monster_20_b:{id:'monster_20_b',num:20,tier:'b',name:'泥漿鱷',elem:'土',hp:150,atk:190,def:150,spd:110,cha:150,evo:'monster_20_c',evoReq:220,emoji:'🐊'},
+monster_20_c:{id:'monster_20_c',num:20,tier:'c',name:'熔岩鱷',elem:'土',hp:160,atk:200,def:160,spd:120,cha:160,evo:null,evoReq:Infinity,emoji:'🐊'}
 };
 const STATS=['hp','atk','def','spd','cha'];
 const STAT_LABEL={hp:'最大血量',atk:'攻擊力',def:'防禦力',spd:'速度',cha:'吸引力'};
@@ -700,6 +715,66 @@ t13:{id:'t13',name:'訓練場 13',type:'T',topic:'FRACSUB',base:35,spawns:{'mons
 t14:{id:'t14',name:'訓練場 14',type:'T',topic:'FRACMUL',base:40,spawns:{'monster_04_a':0.2,'monster_09_a':0.7,'monster_14_a':0.05,'monster_13_a':0.05}},
 t15:{id:'t15',name:'訓練場 15',type:'T',topic:'FRACMIX',base:40,spawns:{'monster_05_a':0.2,'monster_10_a':0.7,'monster_15_a':0.05,'monster_14_a':0.05}},
 t16:{id:'t16',name:'訓練場 16',type:'T',topic:'FRACMULMIX',base:45,spawns:{'monster_01_a':0.2,'monster_06_a':0.7,'monster_11_a':0.05,'monster_15_a':0.05}},
+t17:{id:'t17',name:'訓練場 17',type:'T',topic:'NADD',base:20,spawns:{
+    'monster_01_b':0.3,
+    'monster_06_a':0.2,
+    'monster_06_b':0.1,
+    'monster_11_a':0.1,
+    'monster_16_a':0.1,
+    'monster_17_a':0.05,
+    'monster_18_a':0.05,
+    'monster_19_a':0.05,
+    'monster_20_a':0.05
+}},
+t18:{id:'t18',name:'訓練場 18',type:'T',topic:'NMIX',base:25,spawns:{
+    'monster_02_b':0.3,
+    'monster_07_a':0.2,
+    'monster_07_b':0.1,
+    'monster_12_a':0.1,
+    'monster_17_a':0.1,
+    'monster_16_a':0.05,
+    'monster_18_a':0.05,
+    'monster_19_a':0.05,
+    'monster_20_a':0.05
+}},
+t19:{id:'t19',name:'訓練場 19',type:'T',topic:'NMUL',base:30,spawns:{
+    'monster_03_b':0.3,
+    'monster_08_a':0.2,
+    'monster_08_b':0.1,
+    'monster_13_a':0.1,
+    'monster_18_a':0.1,
+    'monster_16_a':0.05,
+    'monster_17_a':0.05,
+    'monster_19_a':0.05,
+    'monster_20_a':0.05
+}},
+t20:{id:'t20',name:'訓練場 20',type:'T',topic:'NFRACMUL',base:40,spawns:{
+    'monster_04_b':0.3,
+    'monster_09_a':0.2,
+    'monster_09_b':0.1,
+    'monster_14_a':0.1,
+    'monster_19_a':0.1,
+    'monster_16_a':0.05,
+    'monster_17_a':0.05,
+    'monster_18_a':0.05,
+    'monster_20_a':0.05
+}},
+t21:{id:'t21',name:'訓練場 21',type:'T',topic:'NFRACMIX',base:50,spawns:{
+    'monster_05_b':0.3,
+    'monster_10_a':0.2,
+    'monster_10_b':0.1,
+    'monster_15_a':0.1,
+    'monster_20_a':0.1,
+    'monster_16_a':0.05,
+    'monster_17_a':0.05,
+    'monster_18_a':0.05,
+    'monster_19_a':0.05
+}},
+
+
+
+
+
 
 g1:{id:'g1',name:'道場 1 (加法)',type:'G',topic:'ADD',base:15,enemy:'monster_04_a',
     override:{hp:120,atk:100,def:30,spd:40,cha:20},effect:'spdUp',effectTxt:'每回合完結：敵方速度 +10'},
@@ -732,12 +807,42 @@ g14:{id:'g14',name:'道場 14 (分數乘法)',type:'G',topic:'FRACMUL',base:35,e
 g15:{id:'g15',name:'道場 15 (分數加減混算)',type:'G',topic:'FRACMIX',base:35,enemy:'monster_14_c',
     override:{hp:320,atk:140,def:70,spd:120,cha:100},effect:'eDefUp50',effectTxt:'每回合完結：敵方防禦力 +50'},
 g16:{id:'g16',name:'道場 16 (分數乘除混算)',type:'G',topic:'FRACMULMIX',base:40,enemy:'monster_15_c',
-    override:{hp:300,atk:150,def:160,spd:60,cha:100},effect:'eSpdUp50',effectTxt:'每回合完結：敵方速度 +50'}
+    override:{hp:300,atk:150,def:160,spd:60,cha:100},effect:'eSpdUp50',effectTxt:'每回合完結：敵方速度 +50'},
+g17:{id:'g17',name:'道場 17 (正負數加減)',type:'G',topic:'NADD',base:15,enemy:'monster_16_b',
+    override:{hp:350,atk:200,def:200,spd:200,cha:200},
+    effect:'setHp1',effectTxt:'第一回合完結：我方血量降至 1'},
+g18:{id:'g18',name:'道場 18 (正負數混算加減)',type:'G',topic:'NMIX',base:20,enemy:'monster_17_b',
+    override:{hp:360,atk:190,def:240,spd:160,cha:200},
+    effect:'hpDrain50',effectTxt:'每回合完結：我方血量 −50'},
+g19:{id:'g19',name:'道場 19 (正負數乘法)',type:'G',topic:'NMUL',base:25,enemy:'monster_18_b',
+    override:{hp:350,atk:220,def:200,spd:180,cha:200},
+    effect:'eHeal50',effectTxt:'每回合完結：敵方回復血量 +50'},
+g20:{id:'g20',name:'道場 20 (正負數分數乘法)',type:'G',topic:'NFRACMUL',base:35,enemy:'monster_19_b',
+    override:{hp:380,atk:170,def:170,spd:230,cha:200},
+    effect:'pSpdDown50',effectTxt:'每回合完結：我方速度 −50'},
+g21:{id:'g21',name:'道場 21 (正負數分數加減乘法混算)',type:'G',topic:'NFRACMIX',base:45,enemy:'monster_20_b',
+    override:{hp:380,atk:270,def:150,spd:150,cha:200},
+    effect:'eDefUp50',effectTxt:'每回合完結：敵方防禦力 +50'}
 };
+
+
 const TOPIC_TXT={ADD:'兩位數加法',SUB:'兩位數減法',MIX:'兩位數加減混合',MUL1:'兩位數×一位數',MUL2:'兩位數×兩位數',MIXMUL:'乘法與加減混合',FADD:'一位小數加法',FSUB:'一位小數減法',FMUL:'一位小數乘法',FMIX:'一位小數加減混合',FMULMIX:'小數乘法與加減混合',
-FRACADD:'分數加法',FRACSUB:'分數減法',FRACMUL:'分數乘法',FRACMIX:'分數加減混算',FRACMULMIX:'分數乘除混算'};
-const GYM_IDS=['g1','g2','g3','g4','g5','g6','g7','g8','g9','g10','g11','g12','g13','g14','g15','g16'];
-const TRAIN_IDS=['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10','t11','t12','t13','t14','t15','t16'];
+FRACADD:'分數加法',FRACSUB:'分數減法',FRACMUL:'分數乘法',FRACMIX:'分數加減混算',FRACMULMIX:'分數乘除混算',NADD:'正負數加減', NMIX:'正負數混算加減',
+NMUL:'正負數乘法',
+NFRACMUL:'正負數分數乘法',
+NFRACMIX:'正負數分數加減乘法混算'};
+
+
+const GYM_IDS=[
+'g1','g2','g3','g4','g5','g6','g7','g8','g9','g10',
+'g11','g12','g13','g14','g15','g16','g17','g18','g19','g20','g21'
+];
+
+const TRAIN_IDS=[
+'t1','t2','t3','t4','t5','t6','t7','t8','t9','t10',
+'t11','t12','t13','t14','t15','t16','t17','t18','t19','t20','t21'
+];
+
 const zeroMap=ks=>ks.reduce((o,k)=>(o[k]=0,o),{});
 const GYM_CLEAR_BONUS=10; /* 每次成功完成道場的額外金幣獎勵 */
 
@@ -1931,7 +2036,25 @@ function genQ(){
 function makeQuestion(tp){
     const isFrac=(tp==='FRAC'||tp==='FRACADD'||tp==='FRACSUB'||tp==='FRACMUL'||tp==='FRACMIX'||tp==='FRACMULMIX');
     let qh='',a=0,n=0,d=1;
-    if(isFrac){const r=genQFracTopic(tp);qh=r.qh;a=r.a;n=r.n;d=r.d;qh+=' = ?'}
+
+    /* ===== 新增正負數整數題型 ===== */
+    if(tp==='NADD'||tp==='NMIX'||tp==='NMUL'){
+        const r=genQSignedInt(tp);
+        qh=esc(r.q)+' = ?';
+        a=r.a;
+        const rr=toRat(a);
+        n=rr.n;
+        d=rr.d;
+    }
+    /* ===== 新增正負數分數題型 ===== */
+    else if(tp==='NFRACMUL'||tp==='NFRACMIX'){
+        const r=genQSignedFrac(tp);
+        qh=r.qh+' = ?';
+        a=r.a;
+        n=r.n;
+        d=r.d;
+    }
+    else if(isFrac){const r=genQFracTopic(tp);qh=r.qh;a=r.a;n=r.n;d=r.d;qh+=' = ?'}
     else if(tp[0]==='F'){const r=genQFloat2(tp);a=r.a;n=toRat(a).n;d=toRat(a).d;qh=esc(r.q)+' = ?'}
     else{const r=genQInt(tp);a=r.a;n=toRat(a).n;d=toRat(a).d;qh=esc(r.q)+' = ?'}
     return {qh,a,n,d,frac:isFrac};
@@ -2079,6 +2202,143 @@ function genQInt(tp){
 /* 一位小数题型：加/减/乘/加减混合/乘加减混合。
    先生成数值并算出答案，再拼接算式，保证结果（及减法中间值）不为负。
    答案精度：含乘法取两位小数，其余一位小数。 */
+
+/* ===== 新增：正負數整數題目 ===== */
+
+/*
+NADD：一個加法或減法
+NMIX：兩個加減運算
+NMUL：正負整數乘法
+
+暫定所有整數範圍為 -20 至 20。
+*/
+
+function genQSignedInt(tp){
+
+    const riSigned=()=>ri(-20,20);
+
+    let x,y,z,q,a;
+
+    /* 正負數加減：只涉及一個運算 */
+    if(tp==='NADD'){
+
+        x=riSigned();
+        y=riSigned();
+
+        const op=Math.random()<0.5?'+':'−';
+
+        if(op==='+'){
+            a=x+y;
+        }else{
+            a=x-y;
+        }
+
+        q='('+x+') '+op+' ('+y+')';
+    }
+
+    /* 正負數混算加減：涉及兩個運算 */
+    else if(tp==='NMIX'){
+
+        x=riSigned();
+        y=riSigned();
+        z=riSigned();
+
+        const op1=Math.random()<0.5?'+':'−';
+        const op2=Math.random()<0.5?'+':'−';
+
+        a=x+(op1==='+'?y:-y)+(op2==='+'?z:-z);
+
+        q='('+x+') '+op1+' ('+y+') '+op2+' ('+z+')';
+    }
+
+    /* 正負數乘法 */
+    else if(tp==='NMUL'){
+
+        x=riSigned();
+        y=riSigned();
+
+        a=x*y;
+
+        q='('+x+') × ('+y+')';
+    }
+
+    return {q,a};
+}
+
+
+
+/* ===== 新增：正負數分數題目 ===== */
+
+/*
+NFRACMUL：兩個正負分數相乘
+NFRACMIX：四個正負分數，進行加、減、乘三個運算
+
+分子：-20 至 20
+分母：2 至 20
+答案使用最簡分數。
+*/
+
+function genQSignedFrac(tp){
+
+    /* 產生一個正負分數，分母固定為正數 */
+    function makeSignedFraction(){
+
+        let n=ri(-20,20);
+        const d=ri(2,20);
+
+        return {n,d};
+    }
+
+    const A=makeSignedFraction();
+    const B=makeSignedFraction();
+
+    /* 正負數分數乘法 */
+    if(tp==='NFRACMUL'){
+
+        const C=rMul(A,B);
+
+        return {
+            qh:fq(A.n,A.d)+' × '+fq(B.n,B.d),
+            a:C.n/C.d,
+            n:C.n,
+            d:C.d
+        };
+    }
+
+    /* 正負數分數加減乘法混算 */
+    if(tp==='NFRACMIX'){
+
+        const C=makeSignedFraction();
+        const D=makeSignedFraction();
+
+        /*
+        題目形式：
+        A + B × C - D
+
+        按照數學運算規則，先乘法，再加減。
+        一共有三個運算符號。
+        */
+
+        const BC=rMul(B,C);
+        const ANS=rSub(rAdd(A,BC),D);
+
+        return {
+            qh:
+                fq(A.n,A.d)+' + '+
+                fq(B.n,B.d)+' × '+
+                fq(C.n,C.d)+' − '+
+                fq(D.n,D.d),
+
+            a:ANS.n/ANS.d,
+            n:ANS.n,
+            d:ANS.d
+        };
+    }
+}
+
+
+
+
 const f1=()=>parseFloat(ri(10,99)/10); /* 1.0 ~ 9.9 */
 const s1=n=>n.toFixed(1);
 function genQFloat2(tp){
@@ -2170,33 +2430,98 @@ document.onkeydown=function(e){
     else if(e.key==='Enter'||e.key==='='){key('=');e.preventDefault();}
 };
 /* 十进制字符串 → 最简有理数（精确，不用浮点比对） */
+
+/* 十進制字串 → 最簡有理數（支援正數及負數） */
 function decRat(s){
-    if(!/^(\d+(\.\d+)?|\.\d+)$/.test(s))return null;
-    if(s.includes('.')){const ip=s.split('.')[0],fp=s.split('.')[1];
+
+    if(!/^-?(?:\d+(?:\.\d+)?|\.\d+)$/.test(s))return null;
+
+    const negative=s.startsWith('-');
+    const value=negative?s.slice(1):s;
+
+    if(value.includes('.')){
+
+        const ip=value.split('.')[0];
+        const fp=value.split('.')[1];
+
         const dn=Math.pow(10,fp.length);
-        return rat((parseInt(ip||'0',10))*dn+parseInt(fp,10),dn);}
-    return rat(parseInt(s,10),1);
+
+        let n=(parseInt(ip||'0',10))*dn+parseInt(fp,10);
+
+        if(negative)n=-n;
+
+        return rat(n,dn);
+    }
+
+    let n=parseInt(value,10);
+
+    if(negative)n=-n;
+
+    return rat(n,1);
 }
 /* 判定规则：值相等；用分数┘/带分数输入时必须是已化简的最简分数（小数0.5可直接输入） */
+
+/*
+判定答案：
+1. 支援正負整數
+2. 支援正負小數
+3. 支援正負最簡分數
+4. 支援正數帶分數
+5. 支援負數帶分數
+*/
+
 function checkAnswer(s,q){
+
+    /* 整數或小數 */
     if(!s.includes('┘')){
+
         const r=decRat(s);
+
         return !!r&&r.n===q.n&&r.d===q.d;
     }
+
     if(s.includes('.'))return false;
+
     const p=s.split('┘');
-    if(p.length===2){ /* 真分数或假分数 a┘b = b分之a */
-        if(!/^\d+$/.test(p[0])||!/^\d+$/.test(p[1]))return false;
-        const a=+p[0],b=+p[1];
+
+    /* 分數形式：分子┘分母 */
+    if(p.length===2){
+
+        if(!/^-?\d+$/.test(p[0])||! /^\d+$/.test(p[1]))return false;
+
+        const a=Number(p[0]);
+        const b=Number(p[1]);
+
         return b>0&&gcd(a,b)===1&&a===q.n&&b===q.d;
     }
-    if(p.length===3){ /* 带分数 a┘b┘c = a又c分之b */
-        if(!/^\d+$/.test(p[0])||!/^\d+$/.test(p[1])||!/^\d+$/.test(p[2]))return false;
-        const w=+p[0],fn=+p[1],fd=+p[2];
-        return fd>0&&fn<fd&&gcd(fn,fd)===1&&w*fd+fn===q.n&&fd===q.d;
+
+    /* 帶分數形式：整數┘分子┘分母 */
+    if(p.length===3){
+
+        if(!/^-?\d+$/.test(p[0])||
+           !/^\d+$/.test(p[1])||
+           !/^\d+$/.test(p[2]))return false;
+
+        const negative=p[0].startsWith('-');
+        const w=Math.abs(Number(p[0]));
+        const fn=Number(p[1]);
+        const fd=Number(p[2]);
+
+        const total=(negative?-1:1)*(w*fd+fn);
+
+        return fd>0&&
+               fn<fd&&
+               gcd(fn,fd)===1&&
+               total===q.n&&
+               fd===q.d;
     }
+
     return false;
 }
+
+
+
+
 function isCorrect(){return checkAnswer(inp,B.q)}
 
 /* ===== 戰鬥：結算 ===== */
@@ -2299,6 +2624,7 @@ function resolveRound(){
     if(v.effect==='eSpdUp50'){B.e.spd=clamp(B.e.spd+50);}
     if(v.effect==='eDefUp50'){B.e.def=clamp(B.e.def+50);}
     if(v.effect==='pSpdDown20'){B.p.spd=clamp(B.p.spd-20);}
+    if(v.effect==='pSpdDown50'){B.p.spd=clamp(B.p.spd-50);}
     if(v.effect==='setHp1'){if(!B.fx1){B.fx1=true;B.p.chp=Math.min(B.p.chp,1);showToast('道場效果：我方血量降至 1！')}}
     B.p.chp=Math.max(0,B.p.chp);
     updBat();
