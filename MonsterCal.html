@@ -487,7 +487,9 @@ body.pvp-mode #header{display:none!important}
     <div class="mbox">
         <h3>📢 公告</h3>
         <p style="font-size:15px;line-height:1.8;text-align:left;white-space:pre-line"><strong>iPhone 玩家</strong>
-可在 Safari 瀏覽器點擊底部分享，然後選擇「加入至主畫面」，有更好的體驗。</p><br></br>
+可在 Safari 瀏覽器點擊底部分享，然後選擇「加入至主畫面」，有更好的體驗。</p>
+<p style="font-size:15px;line-height:1.8;text-align:left;white-space:pre-line"><strong>新增</strong>
+增加了五隻精靈，五個訓練場及五個道場。</p>
         <p style="font-size:15px;line-height:1.8;text-align:left;white-space:pre-line"><strong>新增了單機雙玩家對戰</strong>
 在「朋友」，加其他玩家成為朋友。朋友的數據就會紀錄下來，再選擇對戰課題，即可對戰。</p>
         <button class="btn btn-primary" onclick="closeModal('announcementmodal')">知道了</button>
@@ -1260,6 +1262,7 @@ const ACHS=[{id:'first_win',n:'初出茅廬',d:'擊敗 1 隻精靈',f:()=>S.stat
 {id:'vet',n:'戰鬥高手',d:'擊敗 10 隻精靈',f:()=>S.stats.win>=10},
 {id:'win50',n:'心算高手',d:'擊敗 50 隻精靈',f:()=>S.stats.win>=50},
 {id:'win100',n:'百勝之王',d:'擊敗 100 隻精靈',f:()=>S.stats.win>=100},
+{id:'win200',n:'乘勝追擊',d:'擊敗 200 隻精靈',f:()=>S.stats.win>=200},
 {id:'gym1',n:'道場霸主',d:'通關道場 1',f:()=>(S.gyms.g1||0)>=1},
 {id:'gym2',n:'雙冠訓練師',d:'通關道場 2',f:()=>(S.gyms.g2||0)>=1},
 {id:'gym3',n:'三冠王',d:'通關道場 3',f:()=>(S.gyms.g3||0)>=1},
@@ -1276,10 +1279,16 @@ const ACHS=[{id:'first_win',n:'初出茅廬',d:'擊敗 1 隻精靈',f:()=>S.stat
 {id:'gym14',n:'冠軍就是你',d:'通過道場 14',f:()=>(S.gyms.g14||0)>=1},
 {id:'gym15',n:'神算之王',d:'通過道場 15',f:()=>(S.gyms.g15||0)>=1},
 {id:'gym16',n:'小學畢業',d:'通過道場 16',f:()=>(S.gyms.g16||0)>=1},
+{id:'gym17',n:'新的開始',d:'通過道場 17',f:()=>(S.gyms.g17||0)>=1},
+{id:'gym18',n:'更進一步',d:'通過道場 18',f:()=>(S.gyms.g18||0)>=1},
+{id:'gym19',n:'正負之王',d:'通過道場 19',f:()=>(S.gyms.g19||0)>=1},
+{id:'gym20',n:'只差一步',d:'通過道場 20',f:()=>(S.gyms.g20||0)>=1},
+{id:'gym21',n:'計數之王',d:'通過道場 21',f:()=>(S.gyms.g21||0)>=1},
 {id:'dex3',n:'收集新手',d:'累計收服 3 隻精靈',f:()=>S.stats.catch>=3},
 {id:'catch10',n:'捕捉達人',d:'累計收服 10 隻精靈',f:()=>S.stats.catch>=10},
 {id:'catch50',n:'精靈收集者',d:'累計收服 50 隻精靈',f:()=>S.stats.catch>=50},
-{id:'catch100',n:'精靈獵人',d:'累計收服 100 隻精靈',f:()=>S.stats.catch>=100}
+{id:'catch100',n:'精靈獵人',d:'累計收服 100 隻精靈',f:()=>S.stats.catch>=100},
+{id:'catch200',n:'精靈之友',d:'累計收服 200 隻精靈',f:()=>S.stats.catch>=200}
 ];
 function checkAch(){
     const un=[];
