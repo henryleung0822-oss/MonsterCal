@@ -256,7 +256,16 @@ body.pvp-mode #header{display:none!important}
         <div class="nav-btn" onclick="openScreen('friends')">👥 朋友</div>
         <div class="nav-btn" onclick="openSettings()">⚙️ 設定</div>
         <div class="nav-btn" onclick="openAnnouncement()">📢 公告</div>
+        <div class="nav-btn" onclick="openScreen('tutorial')">📚 教學</div>
     </div>
+</div>
+
+<!-- 教學分類 -->
+<div id="tutorial" class="screen">
+    <h2>📚 遊戲教學</h2>
+    <p style="text-align:center;font-size:12px;color:#666;margin-bottom:8px">選擇想了解的遊戲內容</p>
+    <div id="tutorialList" style="display:flex;flex-direction:column;gap:8px;margin-top:8px"></div>
+    <button class="btn" style="margin-top:12px" onclick="openScreen('main')">返回</button>
 </div>
 
 <!-- 訓練場 -->
@@ -387,6 +396,17 @@ body.pvp-mode #header{display:none!important}
             <button class="btn" onclick="closeModal('pause')">繼續</button>
             <button class="btn btn-accent" onclick="openHelp()">📖 說明</button>
             <button class="btn btn-danger" id="clearBtn" onclick="clearProgress(this)">🗑 清除遊戲進度</button>
+        </div>
+    </div>
+</div>
+
+<!-- 教學內容彈窗 -->
+<div class="modal" id="tutorialmodal">
+    <div class="mbox" style="max-width:370px;max-height:86%;overflow-y:auto;text-align:left">
+        <h3 id="tutorialTitle" style="text-align:center">教學</h3>
+        <div id="tutorialContent" style="font-size:13px;line-height:1.8;white-space:pre-line"></div>
+        <div style="text-align:center;margin-top:12px">
+            <button class="btn btn-primary" onclick="closeModal('tutorialmodal')">返回</button>
         </div>
     </div>
 </div>
@@ -717,7 +737,7 @@ t13:{id:'t13',name:'訓練場 13',type:'T',topic:'FRACSUB',base:35,spawns:{'mons
 t14:{id:'t14',name:'訓練場 14',type:'T',topic:'FRACMUL',base:40,spawns:{'monster_04_a':0.2,'monster_09_a':0.7,'monster_14_a':0.05,'monster_13_a':0.05}},
 t15:{id:'t15',name:'訓練場 15',type:'T',topic:'FRACMIX',base:40,spawns:{'monster_05_a':0.2,'monster_10_a':0.7,'monster_15_a':0.05,'monster_14_a':0.05}},
 t16:{id:'t16',name:'訓練場 16',type:'T',topic:'FRACMULMIX',base:45,spawns:{'monster_01_a':0.2,'monster_06_a':0.7,'monster_11_a':0.05,'monster_15_a':0.05}},
-t17:{id:'t17',name:'訓練場 17',type:'T',topic:'NADD',base:20,spawns:{
+t17:{id:'t17',name:'訓練場 17',type:'T',topic:'NADD',base:15,spawns:{
     'monster_01_b':0.3,
     'monster_06_a':0.2,
     'monster_06_b':0.1,
@@ -728,7 +748,7 @@ t17:{id:'t17',name:'訓練場 17',type:'T',topic:'NADD',base:20,spawns:{
     'monster_19_a':0.05,
     'monster_20_a':0.05
 }},
-t18:{id:'t18',name:'訓練場 18',type:'T',topic:'NMIX',base:25,spawns:{
+t18:{id:'t18',name:'訓練場 18',type:'T',topic:'NMIX',base:20,spawns:{
     'monster_02_b':0.3,
     'monster_07_a':0.2,
     'monster_07_b':0.1,
@@ -739,7 +759,7 @@ t18:{id:'t18',name:'訓練場 18',type:'T',topic:'NMIX',base:25,spawns:{
     'monster_19_a':0.05,
     'monster_20_a':0.05
 }},
-t19:{id:'t19',name:'訓練場 19',type:'T',topic:'NMUL',base:30,spawns:{
+t19:{id:'t19',name:'訓練場 19',type:'T',topic:'NMUL',base:20,spawns:{
     'monster_03_b':0.3,
     'monster_08_a':0.2,
     'monster_08_b':0.1,
@@ -750,8 +770,8 @@ t19:{id:'t19',name:'訓練場 19',type:'T',topic:'NMUL',base:30,spawns:{
     'monster_19_a':0.05,
     'monster_20_a':0.05
 }},
-t20:{id:'t20',name:'訓練場 20',type:'T',topic:'NFRACMUL',base:40,spawns:{
-    'monster_04_b':0.3,
+t20:{id:'t20',name:'訓練場 20',type:'T',topic:'NFRACMUL',base:35,spawns:{
+    'monster_04_a':0.3,
     'monster_09_a':0.2,
     'monster_09_b':0.1,
     'monster_14_a':0.1,
@@ -761,8 +781,8 @@ t20:{id:'t20',name:'訓練場 20',type:'T',topic:'NFRACMUL',base:40,spawns:{
     'monster_18_a':0.05,
     'monster_20_a':0.05
 }},
-t21:{id:'t21',name:'訓練場 21',type:'T',topic:'NFRACMIX',base:50,spawns:{
-    'monster_05_b':0.3,
+t21:{id:'t21',name:'訓練場 21',type:'T',topic:'NFRACMIX',base:45,spawns:{
+    'monster_05_a':0.3,
     'monster_10_a':0.2,
     'monster_10_b':0.1,
     'monster_15_a':0.1,
@@ -810,19 +830,19 @@ g15:{id:'g15',name:'道場 15 (分數加減混算)',type:'G',topic:'FRACMIX',bas
     override:{hp:320,atk:140,def:70,spd:120,cha:100},effect:'eDefUp50',effectTxt:'每回合完結：敵方防禦力 +50'},
 g16:{id:'g16',name:'道場 16 (分數乘除混算)',type:'G',topic:'FRACMULMIX',base:40,enemy:'monster_15_c',
     override:{hp:300,atk:150,def:160,spd:60,cha:100},effect:'eSpdUp50',effectTxt:'每回合完結：敵方速度 +50'},
-g17:{id:'g17',name:'道場 17 (正負數加減)',type:'G',topic:'NADD',base:15,enemy:'monster_16_b',
+g17:{id:'g17',name:'道場 17 (正負數加減)',type:'G',topic:'NADD',base:10,enemy:'monster_16_b',
     override:{hp:350,atk:200,def:200,spd:200,cha:200},
     effect:'setHp1',effectTxt:'第一回合完結：我方血量降至 1'},
-g18:{id:'g18',name:'道場 18 (正負數混算加減)',type:'G',topic:'NMIX',base:20,enemy:'monster_17_b',
+g18:{id:'g18',name:'道場 18 (正負數混算加減)',type:'G',topic:'NMIX',base:15,enemy:'monster_17_b',
     override:{hp:360,atk:190,def:240,spd:160,cha:200},
     effect:'hpDrain50',effectTxt:'每回合完結：我方血量 −50'},
-g19:{id:'g19',name:'道場 19 (正負數乘法)',type:'G',topic:'NMUL',base:25,enemy:'monster_18_b',
+g19:{id:'g19',name:'道場 19 (正負數乘法)',type:'G',topic:'NMUL',base:15,enemy:'monster_18_b',
     override:{hp:350,atk:220,def:200,spd:180,cha:200},
     effect:'eHeal50',effectTxt:'每回合完結：敵方回復血量 +50'},
-g20:{id:'g20',name:'道場 20 (正負數分數乘法)',type:'G',topic:'NFRACMUL',base:35,enemy:'monster_19_b',
+g20:{id:'g20',name:'道場 20 (正負數分數乘法)',type:'G',topic:'NFRACMUL',base:30,enemy:'monster_19_b',
     override:{hp:380,atk:170,def:170,spd:230,cha:200},
     effect:'pSpdDown50',effectTxt:'每回合完結：我方速度 −50'},
-g21:{id:'g21',name:'道場 21 (正負數分數加減乘法混算)',type:'G',topic:'NFRACMIX',base:45,enemy:'monster_20_b',
+g21:{id:'g21',name:'道場 21 (正負數分數加減乘法混算)',type:'G',topic:'NFRACMIX',base:40,enemy:'monster_20_b',
     override:{hp:380,atk:270,def:150,spd:150,cha:200},
     effect:'eDefUp50',effectTxt:'每回合完結：敵方防禦力 +50'}
 };
@@ -1004,6 +1024,7 @@ function showScreen(id){
     if(id==='ach')populateAch();
     if(id==='guide')populateGuide();
     if(id==='friends')renderFriends();
+    if(id==='tutorial')populateTutorial();
 }
 function openScreen(id){saveGame();showScreen(id);}
 
@@ -2528,9 +2549,6 @@ function checkAnswer(s,q){
     return false;
 }
 
-
-
-
 function isCorrect(){return checkAnswer(inp,B.q)}
 
 /* ===== 戰鬥：結算 ===== */
@@ -2733,6 +2751,150 @@ function toggleFS(){
         }
     }catch(e){showToast('此瀏覽器環境不支援全螢幕')}
 }
+/* ===== 遊戲教學：分類及內容 ===== */
+const TUTORIALS={
+    stats:{
+        title:'能力值',
+        content:`每隻精靈有五項能力值：
+
+最大血量(HP)：
+代表精靈可承受的血量。血量降至 0，該場戰鬥便會戰敗。
+
+攻擊力
+影響答對數學題後對敵方造成的傷害。攻擊力越高，一般造成的傷害越大。
+
+防禦力
+減低敵方反擊時造成的傷害。防禦力越高，受到的傷害一般越少。
+
+速度
+影響每回合的答題時限。我方速度比敵方高，可延長答題時間，反之亦然。
+
+吸引力
+影響使用收集卡捕捉野生精靈的成功機會。吸引力越高越有利。
+
+所有能力值最高為 500。可透過融合、道具及進化提升能力。`
+    },
+    elements:{
+        title:'屬性',
+        content:`遊戲共有五種屬性：火、水、木、金、土。
+
+屬性相剋循環：
+金剋木，木剋水，水剋火，火剋土，土剋金
+
+攻擊方屬性剋制對方時，傷害會增加；如果被對方剋制，傷害會減少；沒有相剋關係則維持正常傷害。
+
+開始戰鬥前，可以留意對手的屬性，再安排合適的拍檔。`
+    },
+    battle:{
+        title:'對戰',
+        content:`每回合開始時，先選擇行動：
+
+攻擊
+進入答題回合。限時內答對，拍檔便會攻擊敵方；答得越快，通常造成的傷害越高。
+
+道具／收集卡
+在訓練場可選擇收集卡。答對題目便會嘗試捕捉野生精靈；答錯或超時仍會消耗收集卡。道場不能使用收集卡。
+
+逃跑
+可以離開訓練場或道場戰鬥，但會扣除 10 金幣。
+
+答錯或超時
+敵方會反擊。訓練場連續超時，反擊會逐步加重；道場超時則會受到較強反擊。
+
+答題時限會按場地基本時限及雙方速度調整。請善用時間，並留意自己的血量。`
+    },
+    collection:{
+        title:'收集',
+        content:`在訓練場使用收集卡，成功捕捉野生精靈後，精靈會加入「收集盒」。
+
+收集盒會保存每一隻精靈的個別能力值，因此同一種類的精靈，能力值也可能不同。
+
+點擊收集盒中的精靈，可以查看能力值，並選擇：
+・出售：換取金幣。
+・更換拍檔：讓該精靈成為你的新拍檔。
+・融合：把該精靈作為材料，提升現有拍檔的一項能力。
+
+「圖鑑」會顯示曾收集的精靈種類。`
+    },
+    fusion:{
+        title:'融合及進化',
+        content:`融合
+在收集盒選擇一隻非現任拍檔的精靈，按「融合」，再選擇要提升的能力。
+
+融合後，作為材料的精靈會消失；拍檔所選能力會增加，增加值會按不同能力值的精靈而不同，能力值上限為 500。
+
+進化
+拍檔的平均能力值高於該進化階段的指定門檻時，便會進化。進化後五項能力值各增加，並轉變成下一形態。
+
+不同精靈的進化門檻可能不同。`
+    },
+    venues:{
+        title:'訓練場及道場',
+        content:`訓練場
+訓練場會按場地指定題型出題。成功擊敗野生精靈，可獲得金幣；使用收集卡亦有機會收服精靈。
+
+道場
+道場由首領精靈把關，並有特別場地效果，例如降低我方血量、改變速度或提升敵方防禦力。道場不能使用收集卡。
+
+建議先在訓練場練習題型、提升拍檔能力，再挑戰道場。`
+    },
+    friends:{
+        title:'朋友',
+        content:`新增朋友
+進入「朋友」，可以掃描對方的 QR Code，或貼上對方分享碼，將對方加入朋友列表。
+
+分享自己的資料
+在朋友頁面按「顯示 QR Code」或「複製分享碼」，讓朋友加入你。
+
+朋友對戰
+在朋友列表選擇朋友，再選擇對戰題型，即可進行同一裝置雙人對戰。畫面上方是 P2，下方是 P1；雙方各自使用自己的鍵盤作答。
+
+朋友列表會記錄對戰勝負。`
+    },
+    transfer:{
+        title:'遊戲資料轉移',
+        content:`把進度轉移到另一部裝置：
+
+第一部裝置
+1. 進入「設定」。
+2. 按「複製資料碼」。
+3. 確認完整資料碼已成功複製，並另外保存好。
+4. 只有在確認資料碼已妥善保存後，才按「複製，清除本機資料」。這個操作會清除本機遊戲進度。
+
+第二部裝置
+1. 開啟遊戲，進入「輸入資料碼」。
+2. 貼上完整資料碼。
+3. 按確認，並再次確認匯入。
+
+注意：匯入會以資料碼中的資料覆蓋第二部裝置現有的遊戲進度，包括精靈、道具、金幣、訓練及道場紀錄、成就、圖鑑和朋友資料。
+
+請妥善保存資料碼。未確認已保存資料碼前，不要清除原裝置進度。`
+    }
+};
+
+function populateTutorial(){
+    const list=document.getElementById('tutorialList');
+    if(!list)return;
+    list.innerHTML='';
+    Object.entries(TUTORIALS).forEach(([key,item])=>{
+        const btn=document.createElement('button');
+        btn.className='btn btn-accent';
+        btn.style.width='100%';
+        btn.style.margin='0';
+        btn.textContent=item.title;
+        btn.onclick=()=>openTutorialTopic(key);
+        list.appendChild(btn);
+    });
+}
+
+function openTutorialTopic(key){
+    const item=TUTORIALS[key];
+    if(!item)return;
+    document.getElementById('tutorialTitle').textContent=item.title;
+    document.getElementById('tutorialContent').textContent=item.content;
+    document.getElementById('tutorialmodal').classList.add('show');
+}
+
 function openHelp(){document.getElementById('helpmodal').classList.add('show')}
 function openPause(){
     document.getElementById('pstat').innerHTML=`勝場:${S.stats.win}　捕捉:${S.stats.catch}<br>金幣: ${S.coin}`;
