@@ -1032,10 +1032,10 @@ t21:{id:'t21',name:'訓練場 21',type:'T',topic:'NFRACMIX',base:45,spawns:{
     'monster_18_a':0.05,
     'monster_19_a':0.05
 }},
-t22:{id:'t22',name:'訓練場 22（一元一次方程1）',type:'T',topic:'LINEAR1',base:15,spawns:{'monster_01_b':0.2,'monster_06_b':0.3,'monster_11_a':0.3,'monster_16_a':0.1,'monster_16_b':0.1}},
-t23:{id:'t23',name:'訓練場 23（一元一次方程2）',type:'T',topic:'LINEAR2',base:25,spawns:{'monster_02_b':0.2,'monster_07_b':0.3,'monster_12_a':0.3,'monster_17_a':0.1,'monster_17_b':0.1}},
-t24:{id:'t24',name:'訓練場 24（一元一次方程3）',type:'T',topic:'LINEAR3',base:30,spawns:{'monster_03_b':0.2,'monster_08_b':0.3,'monster_13_a':0.3,'monster_18_a':0.1,'monster_18_b':0.1}},
-t25:{id:'t25',name:'訓練場 25（一元一次方程4）',type:'T',topic:'LINEAR4',base:50,spawns:{'monster_05_b':0.2,'monster_10_b':0.3,'monster_15_a':0.3,'monster_20_a':0.1,'monster_20_b':0.1}},
+t22:{id:'t22',name:'訓練場 22',type:'T',topic:'LINEAR1',base:15,spawns:{'monster_01_b':0.2,'monster_06_b':0.3,'monster_11_a':0.3,'monster_16_a':0.1,'monster_16_b':0.1}},
+t23:{id:'t23',name:'訓練場 23',type:'T',topic:'LINEAR2',base:25,spawns:{'monster_02_b':0.2,'monster_07_b':0.3,'monster_12_a':0.3,'monster_17_a':0.1,'monster_17_b':0.1}},
+t24:{id:'t24',name:'訓練場 24',type:'T',topic:'LINEAR3',base:30,spawns:{'monster_03_b':0.2,'monster_08_b':0.3,'monster_13_a':0.3,'monster_18_a':0.1,'monster_18_b':0.1}},
+t25:{id:'t25',name:'訓練場 25',type:'T',topic:'LINEAR4',base:50,spawns:{'monster_05_b':0.2,'monster_10_b':0.3,'monster_15_a':0.3,'monster_20_a':0.1,'monster_20_b':0.1}},
 
 g1:{id:'g1',name:'道場 1 (加法)',type:'G',topic:'ADD',base:15,enemy:'monster_04_a',
     override:{hp:120,atk:100,def:30,spd:40,cha:20},effect:'spdUp',effectTxt:'每回合完結：敵方速度 +10'},
@@ -1084,10 +1084,10 @@ g20:{id:'g20',name:'道場 20 (正負數分數乘法)',type:'G',topic:'NFRACMUL'
 g21:{id:'g21',name:'道場 21 (正負數分數加減乘法混算)',type:'G',topic:'NFRACMIX',base:40,enemy:'monster_20_b',
     override:{hp:380,atk:270,def:150,spd:150,cha:200},
     effect:'eDefUp50',effectTxt:'每回合完結：敵方防禦力 +50'},
-g22:{id:'g22',name:'道場 22（一元一次方程1）',type:'G',topic:'LINEAR1',base:10,enemy:'monster_06_c',override:{hp:400,atk:260,def:210,spd:280,cha:250},effect:'hpDrain70',effectTxt:'每回合完結：拍檔精靈血量 −70'},
-g23:{id:'g23',name:'道場 23（一元一次方程2）',type:'G',topic:'LINEAR2',base:20,enemy:'monster_07_c',override:{hp:420,atk:260,def:220,spd:250,cha:250},effect:'eHeal70',effectTxt:'每回合完結：首領精靈回復血量 +70'},
-g24:{id:'g24',name:'道場 24（一元一次方程3）',type:'G',topic:'LINEAR3',base:25,enemy:'monster_08_c',override:{hp:450,atk:240,def:200,spd:340,cha:250},effect:'pSpdDown70',effectTxt:'每回合完結：拍檔精靈速度 −70'},
-g25:{id:'g25',name:'道場 25（一元一次方程4）',type:'G',topic:'LINEAR4',base:45,enemy:'monster_10_c',override:{hp:420,atk:300,def:260,spd:220,cha:250},effect:'eDefUp50',effectTxt:'每回合完結：首領精靈防禦力 +50'}
+g22:{id:'g22',name:'道場 22（一元一次方程1）',type:'G',topic:'LINEAR1',base:10,enemy:'monster_06_c',override:{hp:400,atk:260,def:210,spd:280,cha:250},effect:'hpDrain70',effectTxt:'每回合完結：我方血量 −70'},
+g23:{id:'g23',name:'道場 23（一元一次方程2）',type:'G',topic:'LINEAR2',base:20,enemy:'monster_07_c',override:{hp:420,atk:260,def:220,spd:250,cha:250},effect:'eHeal70',effectTxt:'每回合完結：敵方回復血量 +70'},
+g24:{id:'g24',name:'道場 24（一元一次方程3）',type:'G',topic:'LINEAR3',base:25,enemy:'monster_08_c',override:{hp:450,atk:240,def:200,spd:340,cha:250},effect:'pSpdDown70',effectTxt:'每回合完結：我方速度 −70'},
+g25:{id:'g25',name:'道場 25（一元一次方程4）',type:'G',topic:'LINEAR4',base:45,enemy:'monster_10_c',override:{hp:420,atk:300,def:260,spd:220,cha:250},effect:'eDefUp50',effectTxt:'每回合完結：敵方防禦力 +50'}
 };
 
 
