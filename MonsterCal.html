@@ -218,6 +218,248 @@ body.pvp-mode #header{display:none!important}
         color:#000 !important;
         transform:scale(0.96);
     }
+
+/* ===== 一元一次方程模式專用戰鬥畫面 ===== */
+#battle.text-mode{
+    padding:10px 12px;
+    gap:6px;
+    overflow:hidden;
+}
+
+/* 戰鬥區域使用彈性高度；精靈區不被題目捲動影響 */
+#battle.text-mode .arena{
+    flex:1 1 0;
+    min-height:0;
+    padding:4px 0;
+    justify-content:space-between;
+    gap:6px;
+    overflow:hidden;
+}
+#battle.text-mode .f{
+    flex:0 0 auto;
+    min-height:62px;
+}
+#battle.text-mode .f .avatar{
+    width:66px;
+    height:66px;
+    min-width:66px;
+    font-size:38px;
+}
+#battle.text-mode .hpbox{width:100px;flex:0 1 100px}
+
+/* 題目區獨立捲動；時間 bar 固定在題目區底部 */
+#battle.text-mode .qbox{
+    flex:1 1 0;
+    min-height:96px;
+    max-height:none;
+    margin:2px 0;
+    padding:12px 10px 8px;
+    overflow-y:auto;
+    overflow-x:hidden;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+    touch-action:pan-y;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+#battle.text-mode .qtxt{
+    flex:1 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:23px;
+    line-height:1.6;
+    white-space:normal;
+    overflow-wrap:anywhere;
+}
+#battle.text-mode .tbar{
+    position:sticky;
+    bottom:0;
+    flex:0 0 5px;
+    width:100%;
+}
+#battle.text-mode > div[style*="grid-template-columns"]{
+    flex:0 0 auto;
+}
+#battle.text-mode #keys{
+    flex:0 0 auto;
+}
+@media(max-height:620px){
+    #battle.text-mode .f .avatar{width:54px;height:54px;min-width:54px;font-size:32px}
+    #battle.text-mode .f{min-height:52px}
+    #battle.text-mode .qbox{min-height:76px}
+    #battle.text-mode .qtxt{font-size:20px}
+}
+
+
+
+
+/* ===== LINEAR 文字題：上方雙精靈、中央題目、下方行動及計算機 ===== */
+#battle.text-mode{
+    /* Header 是獨立置頂列；預留高度，避免拍檔區被金幣／全螢幕／暫停列遮住 */
+    padding:64px 12px 10px;
+    gap:7px;
+    overflow:hidden;
+}
+
+/* 上半部：左方拍檔、右方野生精靈；第二列為題目 */
+#battle.text-mode .arena{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    grid-template-rows:auto minmax(90px,1fr);
+    align-content:stretch;
+    align-items:stretch;
+    flex:1 1 0;
+    min-height:0;
+    padding:0;
+    gap:7px 9px;
+    overflow:hidden;
+}
+
+#battle.text-mode .f{
+    width:100%;
+    min-width:0;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    gap:3px;
+    padding:6px 4px 4px;
+    border-radius:12px;
+    background:#ffffffa8;
+}
+#battle.text-mode .f.player{
+    grid-column:1;
+    grid-row:1;
+}
+#battle.text-mode .f.enemy{
+    grid-column:2;
+    grid-row:1;
+}
+
+/* 兩邊均以圖片、名稱、HP 的次序顯示 */
+#battle.text-mode .f .avatar{
+    order:0;
+    width:62px;
+    height:62px;
+    min-width:62px;
+    margin:0 auto 2px;
+    font-size:36px;
+}
+#battle.text-mode #pinfo,
+#battle.text-mode #enemyinfo{
+    order:1;
+    width:100%;
+    min-width:0;
+    text-align:center !important;
+    font-size:12px !important;
+    line-height:1.25;
+    overflow-wrap:anywhere;
+}
+#battle.text-mode .f .hpbox{
+    order:2;
+    width:90%;
+    max-width:145px;
+    min-width:0;
+    height:12px;
+    flex:0 0 12px;
+    margin:15px 0 0;
+}
+#battle.text-mode .f .hptxt{
+    top:-15px;
+    font-size:11px;
+}
+
+/* 題目在兩隻精靈下方，內容過長時只捲動題目區 */
+#battle.text-mode .qbox{
+    grid-column:1 / -1;
+    grid-row:2;
+    width:100%;
+    min-height:0;
+    max-height:none;
+    flex:initial;
+    margin:0;
+    padding:10px 10px 8px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    overflow-y:auto;
+    overflow-x:hidden;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+    touch-action:pan-y;
+}
+#battle.text-mode .qtxt{
+    flex:0 0 auto;
+    display:block;
+    font-size:22px;
+    line-height:1.5;
+    white-space:normal;
+    overflow-wrap:anywhere;
+}
+#battle.text-mode .tbar{
+    position:sticky;
+    bottom:0;
+    flex:0 0 5px;
+    width:100%;
+}
+
+/* 三個原有行動按鈕固定在題目與計算機之間 */
+#battle.text-mode > div[style*="grid-template-columns"]{
+    flex:0 0 auto;
+    gap:6px !important;
+}
+#battle.text-mode > div[style*="grid-template-columns"] .btn{
+    min-width:0;
+    margin:0;
+    padding:10px 4px;
+    font-size:14px;
+}
+
+/* 原有計算機保留在最下方，不參與題目捲動 */
+#battle.text-mode #keys{
+    flex:0 0 auto;
+    padding:7px;
+}
+#battle.text-mode .disp{
+    height:38px;
+    margin-bottom:6px;
+    font-size:22px;
+}
+#battle.text-mode .kp{gap:6px;}
+#battle.text-mode .key{min-height:36px;}
+
+@media(max-height:680px){
+    #battle.text-mode{padding-top:60px;gap:5px;}
+    #battle.text-mode .arena{grid-template-rows:auto minmax(76px,1fr);gap:5px 7px;}
+    #battle.text-mode .f{padding:4px 3px 3px;gap:2px;}
+    #battle.text-mode .f .avatar{width:50px;height:50px;min-width:50px;font-size:30px;}
+    #battle.text-mode .f .hpbox{margin-top:13px;height:10px;flex-basis:10px;}
+    #battle.text-mode .f .hptxt{top:-14px;font-size:10px;}
+    #battle.text-mode .qbox{padding:8px;}
+    #battle.text-mode .qtxt{font-size:19px;line-height:1.4;}
+    #battle.text-mode > div[style*="grid-template-columns"] .btn{padding:8px 3px;font-size:13px;}
+    #battle.text-mode #keys{padding:5px;}
+    #battle.text-mode .disp{height:32px;font-size:19px;margin-bottom:4px;}
+    #battle.text-mode .kp{gap:4px;}
+    #battle.text-mode .key{min-height:29px;font-size:17px;}
+}
+
+@media(max-height:560px){
+    #battle.text-mode{padding-top:56px;gap:4px;}
+    #battle.text-mode .arena{grid-template-rows:auto minmax(64px,1fr);gap:4px 6px;}
+    #battle.text-mode .f .avatar{width:42px;height:42px;min-width:42px;font-size:26px;}
+    #battle.text-mode .qtxt{font-size:17px;}
+    #battle.text-mode .key{min-height:25px;font-size:15px;}
+    #battle.text-mode .disp{height:28px;font-size:17px;}
+}
+
+
+
+
+
 </style>
 </head>
 <body>
@@ -506,13 +748,11 @@ body.pvp-mode #header{display:none!important}
 <div class="modal" id="announcementmodal">
     <div class="mbox">
         <h3>📢 公告</h3>
-        <p style="font-size:15px;line-height:1.8;text-align:left;white-space:pre-line"><strong>iPhone 玩家</strong>
-可在 Safari 瀏覽器點擊底部分享，然後選擇「加入至主畫面」，有更好的體驗。</p>
+        <p style="font-size:15px;line-height:1.8;text-align:left;white-space:pre-line"><strong>新增</strong>
+增加了四個訓練場及四個道場(簡易方程)，及對應成就。</p>
 <p style="font-size:15px;line-height:1.8;text-align:left;white-space:pre-line"><strong>新增</strong>
-增加了五隻精靈，五個訓練場及五個道場。</p>
-        <p style="font-size:15px;line-height:1.8;text-align:left;white-space:pre-line"><strong>新增了單機雙玩家對戰</strong>
-在「朋友」，加其他玩家成為朋友。朋友的數據就會紀錄下來，再選擇對戰課題，即可對戰。</p>
-        <button class="btn btn-primary" onclick="closeModal('announcementmodal')">知道了</button>
+增加了兩個道具：能量餅乾及能量飯糰，以增加精靈的能力。</p>
+       <button class="btn btn-primary" onclick="closeModal('announcementmodal')">知道了</button>
     </div>
 </div>
 
@@ -792,11 +1032,10 @@ t21:{id:'t21',name:'訓練場 21',type:'T',topic:'NFRACMIX',base:45,spawns:{
     'monster_18_a':0.05,
     'monster_19_a':0.05
 }},
-
-
-
-
-
+t22:{id:'t22',name:'訓練場 22（一元一次方程1）',type:'T',topic:'LINEAR1',base:15,spawns:{'monster_01_b':0.2,'monster_06_b':0.3,'monster_11_a':0.3,'monster_16_a':0.1,'monster_16_b':0.1}},
+t23:{id:'t23',name:'訓練場 23（一元一次方程2）',type:'T',topic:'LINEAR2',base:25,spawns:{'monster_02_b':0.2,'monster_07_b':0.3,'monster_12_a':0.3,'monster_17_a':0.1,'monster_17_b':0.1}},
+t24:{id:'t24',name:'訓練場 24（一元一次方程3）',type:'T',topic:'LINEAR3',base:30,spawns:{'monster_03_b':0.2,'monster_08_b':0.3,'monster_13_a':0.3,'monster_18_a':0.1,'monster_18_b':0.1}},
+t25:{id:'t25',name:'訓練場 25（一元一次方程4）',type:'T',topic:'LINEAR4',base:50,spawns:{'monster_05_b':0.2,'monster_10_b':0.3,'monster_15_a':0.3,'monster_20_a':0.1,'monster_20_b':0.1}},
 
 g1:{id:'g1',name:'道場 1 (加法)',type:'G',topic:'ADD',base:15,enemy:'monster_04_a',
     override:{hp:120,atk:100,def:30,spd:40,cha:20},effect:'spdUp',effectTxt:'每回合完結：敵方速度 +10'},
@@ -844,7 +1083,11 @@ g20:{id:'g20',name:'道場 20 (正負數分數乘法)',type:'G',topic:'NFRACMUL'
     effect:'pSpdDown50',effectTxt:'每回合完結：我方速度 −50'},
 g21:{id:'g21',name:'道場 21 (正負數分數加減乘法混算)',type:'G',topic:'NFRACMIX',base:40,enemy:'monster_20_b',
     override:{hp:380,atk:270,def:150,spd:150,cha:200},
-    effect:'eDefUp50',effectTxt:'每回合完結：敵方防禦力 +50'}
+    effect:'eDefUp50',effectTxt:'每回合完結：敵方防禦力 +50'},
+g22:{id:'g22',name:'道場 22（一元一次方程1）',type:'G',topic:'LINEAR1',base:10,enemy:'monster_06_c',override:{hp:400,atk:260,def:210,spd:280,cha:250},effect:'hpDrain70',effectTxt:'每回合完結：拍檔精靈血量 −70'},
+g23:{id:'g23',name:'道場 23（一元一次方程2）',type:'G',topic:'LINEAR2',base:20,enemy:'monster_07_c',override:{hp:420,atk:260,def:220,spd:250,cha:250},effect:'eHeal70',effectTxt:'每回合完結：首領精靈回復血量 +70'},
+g24:{id:'g24',name:'道場 24（一元一次方程3）',type:'G',topic:'LINEAR3',base:25,enemy:'monster_08_c',override:{hp:450,atk:240,def:200,spd:340,cha:250},effect:'pSpdDown70',effectTxt:'每回合完結：拍檔精靈速度 −70'},
+g25:{id:'g25',name:'道場 25（一元一次方程4）',type:'G',topic:'LINEAR4',base:45,enemy:'monster_10_c',override:{hp:420,atk:300,def:260,spd:220,cha:250},effect:'eDefUp50',effectTxt:'每回合完結：首領精靈防禦力 +50'}
 };
 
 
@@ -852,17 +1095,19 @@ const TOPIC_TXT={ADD:'兩位數加法',SUB:'兩位數減法',MIX:'兩位數加�
 FRACADD:'分數加法',FRACSUB:'分數減法',FRACMUL:'分數乘法',FRACMIX:'分數加減混算',FRACMULMIX:'分數乘除混算',NADD:'正負數加減', NMIX:'正負數混算加減',
 NMUL:'正負數乘法',
 NFRACMUL:'正負數分數乘法',
-NFRACMIX:'正負數分數加減乘法混算'};
+NFRACMIX:'正負數分數加減乘法混算',
+LINEAR:'一元一次方程1',LINEAR1:'一元一次方程1',LINEAR2:'一元一次方程2',LINEAR3:'一元一次方程3',LINEAR4:'一元一次方程4'
+};
 
 
 const GYM_IDS=[
 'g1','g2','g3','g4','g5','g6','g7','g8','g9','g10',
-'g11','g12','g13','g14','g15','g16','g17','g18','g19','g20','g21'
+'g11','g12','g13','g14','g15','g16','g17','g18','g19','g20','g21','g22','g23','g24','g25'
 ];
 
 const TRAIN_IDS=[
 't1','t2','t3','t4','t5','t6','t7','t8','t9','t10',
-'t11','t12','t13','t14','t15','t16','t17','t18','t19','t20','t21'
+'t11','t12','t13','t14','t15','t16','t17','t18','t19','t20','t21','t22','t23','t24','t25'
 ];
 
 const zeroMap=ks=>ks.reduce((o,k)=>(o[k]=0,o),{});
@@ -899,7 +1144,9 @@ card_01:{id:'card_01',name:'原始收集卡',m:0.8,price:50,emoji:'🎴'},
 card_02:{id:'card_02',name:'升級收集卡',m:0.9,price:100,emoji:'🃏'},
 card_03:{id:'card_03',name:'皇牌收集卡',m:1.1,price:200,emoji:'👑'},
 card_04:{id:'card_04',name:'究極收集卡',m:1.5,price:500,emoji:'💎'},
-drk_01:{id:'drk_01',name:'能量飲品',m:0,price:10,emoji:'⚡',use:true}
+drk_01:{id:'drk_01',name:'能量飲品',m:0,price:10,emoji:'⚡',use:true,boost:2},
+energy_01:{id:'energy_01',name:'能量餅乾',m:0,price:50,emoji:'🍪',use:true,boost:12},
+energy_02:{id:'energy_02',name:'能量飯糰',m:0,price:100,emoji:'🍙',use:true,boost:25}
 };
 
 /* ===== 狀態（schema v5） ===== */
@@ -1060,7 +1307,9 @@ function populateShop(){
     const el=document.getElementById('slist');el.innerHTML='';
     Object.values(CARDS).forEach(c=>{
         const d=document.createElement('div');d.className='list-item';
-        const desc=c.use?'拍檔能力值 +2（可選一項）':'捕捉倍率 ×'+c.m;
+        const desc=c.boost
+    ? `拍檔能力值 +${c.boost}（可選一項）`
+    : '捕捉倍率 ×'+c.m;
         d.innerHTML=`<div style="font-size:30px;margin-right:12px">${c.emoji}</div><div class="list-item-info"><strong>${c.name}</strong><small>${desc}</small></div><div><span style="color:#f39c12;font-weight:bold">🪙${c.price}</span> <button class="btn btn-primary" style="padding:6px 12px;font-size:12px" ${S.coin<c.price?'disabled':''} onclick="buyCard('${c.id}',${c.price})">購買(${S.inv[c.id]||0})</button></div>`;
         el.appendChild(d);
     });
@@ -1224,7 +1473,7 @@ function switchPartner(u){
 }
 
 /* ===== 道具背包：出售 / 使用 ===== */
-function sellItemPrice(id){return Math.floor(CARDS[id].price*0.8)}
+function sellItemPrice(id){return Math.floor(CARDS[id].price*0.8);}
 function populateBag(){
     const el=document.getElementById('baglist');el.innerHTML='';
     let has=false;
@@ -1234,7 +1483,7 @@ function populateBag(){
         const d=document.createElement('div');d.className='list-item';
         let btns=`<button class="btn btn-accent" style="padding:6px 12px;font-size:12px;margin-left:6px" onclick="sellItem('${c.id}')">出售(${sellItemPrice(c.id)}🪙)</button>`;
         if(c.use)btns+=`<button class="btn btn-primary" style="padding:6px 12px;font-size:12px;margin-left:6px" onclick="useItem('${c.id}')">使用</button>`;
-        d.innerHTML=`<div style="font-size:30px;margin-right:12px">${c.emoji}</div><div class="list-item-info"><strong>${c.name}</strong><small>持有 ${n} 個${c.use?' | 使用：拍檔能力 +2':' | 收集卡：限對戰中使用'}</small></div>${btns}`;
+        d.innerHTML=`<div style="font-size:30px;margin-right:12px">${c.emoji}</div><div class="list-item-info"><strong>${c.name}</strong><small>持有 ${n} 個${c.boost?' | 使用：拍檔能力 +'+c.boost:c.use?' | 可使用':' | 收集卡：限對戰中使用'}</small></div>${btns}`;
         el.appendChild(d);
     });
     if(!has)el.innerHTML='<p style="text-align:center;color:#666;padding:20px">背包空空如也，去商店購買道具吧！</p>';
@@ -1246,35 +1495,92 @@ function sellItem(id){
     populateBag();updMain();showToast('出售 '+CARDS[id].name+'，+'+g+' 金幣');
 }
 function useItem(id){
-    if(id!=='drk_01')return;
-    if(!S.inv.drk_01||S.inv.drk_01<=0)return;
-    if(S.coin<0)return;
-    if(S.ps.hp>=MAXSTAT&&S.ps.atk>=MAXSTAT&&S.ps.def>=MAXSTAT&&S.ps.spd>=MAXSTAT&&S.ps.cha>=MAXSTAT){showToast('所有能力值已達上限！');return}
-    chooseBoost();
+    const c=CARDS[id];
+
+    if(!c||!c.boost)return;
+    if(!S.inv[id]||S.inv[id]<=0)return;
+
+    if(STATS.every(k=>S.ps[k]>=MAXSTAT)){
+        showToast('所有能力值已達上限！');
+        return;
+    }
+
+    chooseBoost(id);
 }
+
 let boosting=false;
-function chooseBoost(){
+let boostingItemId=null;
+
+function chooseBoost(id){
+    const c=CARDS[id];
+    if(!c||!c.boost)return;
+
     boosting=true;
-    document.getElementById('mmTitle').innerText='使用能量飲品：選擇 +2 的能力';
+    boostingItemId=id;
+
+    document.getElementById('mmTitle').innerText=
+        '使用'+c.name+'：選擇 +'+c.boost+' 的能力';
+
     document.getElementById('mmStats').innerHTML=STATS.map(k=>
-        `<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 8px;font-size:13px"><span>${STAT_LABEL[k]}　<b>${S.ps[k]}</b>${S.ps[k]>=MAXSTAT?'<small style="color:#e74c3c">（已滿）</small>':''}</span><button class="btn btn-primary" style="padding:4px 14px;font-size:12px" ${S.ps[k]>=MAXSTAT?'disabled':''} onclick="applyBoost('${k}')">+2</button></div>`).join('');
-    const btns=document.getElementById('mmBtns');btns.innerHTML='';
-    const bc=document.createElement('button');bc.className='btn';bc.innerText='取消';bc.onclick=()=>{boosting=false;closeModal('monmodal');populateBag()};
+        `<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 8px;font-size:13px">
+            <span>${STAT_LABEL[k]}　<b>${S.ps[k]}</b>${S.ps[k]>=MAXSTAT?'<small style="color:#e74c3c">（已滿）</small>':''}</span>
+            <button class="btn btn-primary"
+                style="padding:4px 14px;font-size:12px"
+                ${S.ps[k]>=MAXSTAT?'disabled':''}
+                onclick="applyBoost('${k}')">+${c.boost}</button>
+        </div>`
+    ).join('');
+
+    const btns=document.getElementById('mmBtns');
+    btns.innerHTML='';
+
+    const bc=document.createElement('button');
+    bc.className='btn';
+    bc.innerText='取消';
+    bc.onclick=()=>{
+        boosting=false;
+        boostingItemId=null;
+        closeModal('monmodal');
+        populateBag();
+    };
+
     btns.appendChild(bc);
     document.getElementById('monmodal').classList.add('show');
 }
+
 function applyBoost(k){
-    if(!boosting)return;
+    if(!boosting||!boostingItemId)return;
+
+    const id=boostingItemId;
+    const c=CARDS[id];
+
+    if(!c||!c.boost)return;
+    if(!S.inv[id]||S.inv[id]<=0)return;
+    if(!STATS.includes(k))return;
     if(S.ps[k]>=MAXSTAT)return;
-    if(!S.inv.drk_01||S.inv.drk_01<=0)return;
-    S.inv.drk_01--;
-    S.ps[k]=clamp(S.ps[k]+2);
-    if(k==='hp'){const d=S.ps.hp-S.max;S.max=S.ps.hp;if(d>0)S.php=Math.min(S.max,S.php+d);}
+
+    const oldHp=S.ps.hp;
+
+    S.inv[id]--;
+    S.ps[k]=clamp(S.ps[k]+c.boost);
+
+    if(k==='hp'){
+        const d=S.ps.hp-oldHp;
+        S.max=S.ps.hp;
+        if(d>0)S.php=Math.min(S.max,S.php+d);
+    }
+
     checkEvolve();
     saveGame();
-    closeModal('monmodal');boosting=false;
-    populateBag();updMain();
-    showToast(STAT_LABEL[k]+' +2！');
+
+    closeModal('monmodal');
+    boosting=false;
+    boostingItemId=null;
+
+    populateBag();
+    updMain();
+
+    showToast(STAT_LABEL[k]+' +'+c.boost+'！');
 }
 
 /* ===== 成就（解鎖狀態持久化，完成即獲 +10 金幣） ===== */
@@ -1305,6 +1611,10 @@ const ACHS=[{id:'first_win',n:'初出茅廬',d:'擊敗 1 隻精靈',f:()=>S.stat
 {id:'gym19',n:'正負之王',d:'通過道場 19',f:()=>(S.gyms.g19||0)>=1},
 {id:'gym20',n:'只差一步',d:'通過道場 20',f:()=>(S.gyms.g20||0)>=1},
 {id:'gym21',n:'計數之王',d:'通過道場 21',f:()=>(S.gyms.g21||0)>=1},
+{id:'gym22',n:'方程能手',d:'通過道場 22',f:()=>(S.gyms.g22||0)>=1},
+{id:'gym23',n:'方程專家',d:'通過道場 23',f:()=>(S.gyms.g23||0)>=1},
+{id:'gym24',n:'解題高手',d:'通過道場 24',f:()=>(S.gyms.g24||0)>=1},
+{id:'gym25',n:'破解方程式',d:'通過道場 25',f:()=>(S.gyms.g25||0)>=1},
 {id:'dex3',n:'收集新手',d:'累計收服 3 隻精靈',f:()=>S.stats.catch>=3},
 {id:'catch10',n:'捕捉達人',d:'累計收服 10 隻精靈',f:()=>S.stats.catch>=10},
 {id:'catch50',n:'精靈收集者',d:'累計收服 50 隻精靈',f:()=>S.stats.catch>=50},
@@ -1984,6 +2294,8 @@ function startBattle(vid){
     B.on=true;B.act=null;B.card=null;B.fx1=false;B.tmo=0;B.venue=vid;B.base=v.base;
     B.p={mId:S.pid,name:M[S.pid].name,elem:M[S.pid].elem,emoji:M[S.pid].emoji,maxHp:S.max,chp:S.php,...clampStats(S.ps)};
     B.e=(v.type==='G')?makeMonster(v.enemy,v.override):makeMonster(pickRandom(v.spawns));
+    /* 只有 LINEAR 題型使用文字題版面；離開時自動移除 */
+    document.getElementById('battle').classList.toggle('text-mode',v.topic.startsWith('LINEAR'));
     applyKeypadOrder();
     showScreen('battle');
     setKeys(false);showIdle();
@@ -2067,8 +2379,13 @@ function makeQuestion(tp){
     const isFrac=(tp==='FRAC'||tp==='FRACADD'||tp==='FRACSUB'||tp==='FRACMUL'||tp==='FRACMIX'||tp==='FRACMULMIX');
     let qh='',a=0,n=0,d=1;
 
+    /* ===== 一元一次方程 1–4 ===== */
+    if(tp==='LINEAR'||tp==='LINEAR1'||tp==='LINEAR2'||tp==='LINEAR3'||tp==='LINEAR4'){
+        const r=genQLinear(tp==='LINEAR'?'LINEAR1':tp);
+        qh=r.qh; a=r.a; n=r.n; d=r.d;
+    }
     /* ===== 新增正負數整數題型 ===== */
-    if(tp==='NADD'||tp==='NMIX'||tp==='NMUL'){
+    else if(tp==='NADD'||tp==='NMIX'||tp==='NMUL'){
         const r=genQSignedInt(tp);
         qh=esc(r.q)+' = ?';
         a=r.a;
@@ -2089,6 +2406,65 @@ function makeQuestion(tp){
     else{const r=genQInt(tp);a=r.a;n=toRat(a).n;d=toRat(a).d;qh=esc(r.q)+' = ?'}
     return {qh,a,n,d,frac:isFrac};
 }
+/* ===== 一元一次方程 1–4：答案以最簡分數精確儲存 ===== */
+function signedIntTerm(k, variable='x', first=false){
+    const abs=Math.abs(k);
+    const body=(abs===1?variable:String(abs)+variable);
+    if(first)return (k<0?'−':'')+body;
+    return (k<0?' − ':' + ')+(abs===1?variable:String(abs)+variable);
+}
+function signedConst(k, first=false){
+    if(k===0)return '';
+    return (first?(k<0?'−':'')+Math.abs(k):(k<0?' − ':' + ')+Math.abs(k));
+}
+function fracObj(){
+    let den=ri(2,9), num=ri(1,den-1);
+    if(Math.random()<0.5)num=-num;
+    return rat(num,den);
+}
+function fracHtml(F){return F.d===1?String(F.n):fq(F.n,F.d)}
+function fracTerm(F, variable='x', first=true){
+    const abs=rat(Math.abs(F.n),F.d), body=(abs.n===abs.d?'':fracHtml(abs))+variable;
+    return (F.n<0?'−':(first?'':''))+body;
+}
+function fracSignedPart(F, body, first=false){
+    const sign=F.n<0?' − ':' + ';
+    const mag=rat(Math.abs(F.n),F.d);
+    const coeff=mag.n===mag.d?'':fracHtml(mag);
+    return (first?(F.n<0?'−':''):'')+coeff+body+(first?'':sign);
+}
+function genQLinear(type='LINEAR1'){
+    let q='', ans;
+    if(type==='LINEAR1'){
+        let a; do{a=ri(-20,20)}while(a===0);
+        const b=ri(-20,20), c=ri(-20,20);
+        ans=rat(c-b,a);
+        q='解 x：'+signedIntTerm(a,'x',true)+signedConst(b)+' = '+c;
+    }else if(type==='LINEAR2'){
+        let a,b,c,d,coef;
+        do{a=ri(-20,20);c=ri(-20,20);coef=a-c}while(coef===0);
+        b=ri(-20,20);d=ri(-20,20);
+        ans=rat(d-b,coef);
+        q='解 x：'+signedIntTerm(a,'x',true)+signedConst(b)+' = '+signedIntTerm(c,'x',true)+signedConst(d);
+    }else if(type==='LINEAR3'){
+        let a,b,c,d,e,f,coef;
+        do{a=ri(-20,20);b=ri(-20,20);d=ri(-20,20);e=ri(-20,20);coef=a*b-d*e}while(coef===0);
+        c=ri(-20,20);f=ri(-20,20);
+        ans=rat(d*f-a*c,coef);
+        q='解 x：'+a+'('+signedIntTerm(b,'x',true)+signedConst(c)+') = '+d+'('+signedIntTerm(e,'x',true)+signedConst(f)+')';
+    }else{
+        const A=fracObj(), B=fracObj(), C=fracObj(), D=fracObj(), E=fracObj();
+        const coef=rAdd(A,rMul(B,C));
+        /* 避免出現沒有唯一解的方程 */
+        if(coef.n===0)return genQLinear('LINEAR4');
+        ans=rDiv(rSub(E,rMul(B,D)),coef);
+        q='解 x：'+fracTerm(A,'x',true)+(B.n<0?' − ':' + ')+fracHtml(rat(Math.abs(B.n),B.d))+'('+fracTerm(C,'x',true)+(D.n<0?' − ':' + ')+fracHtml(rat(Math.abs(D.n),D.d))+') = '+fracHtml(E);
+    }
+    if(ans.n===0)ans.n=0;
+    return {qh:type==='LINEAR4'?q:esc(q),a:ans.n/ans.d,n:ans.n,d:ans.d};
+}
+
+
 const ri=(lo,hi)=>Math.floor(Math.random()*(hi-lo+1))+lo;
 const fix=(x,d)=>parseFloat(x.toFixed(d));
 /* ===== 有理数（分数）工具：以整数分子/分母精确比对，避免小数误差 ===== */
@@ -2100,6 +2476,7 @@ function toRat(x){return rat(Math.round(x*100),100)}
 function rAdd(A,B){return rat(A.n*B.d+B.n*A.d,A.d*B.d)}
 function rSub(A,B){return rat(A.n*B.d-B.n*A.d,A.d*B.d)}
 function rMul(A,B){return rat(A.n*B.n,A.d*B.d)}
+function rDiv(A,B){return B.n===0?rat(0,1):rat(A.n*B.d,A.d*B.n)}
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 /* 堆叠分数显示（方案A）：分子在上、横线、分母在下 */
 function fq(n,d){return `<span class="frf"><span class="fc"><b>${n}</b><i>${d}</i></span></span>`}
@@ -2405,10 +2782,15 @@ function startTimer(){
 /* 按键规则（单人/PVP共用）：返回新输入串 */
 function keyApply(s,v){
     if(v==='DEL')return s.slice(0,-1)||'0';
+
+    /* 正負號：可輸入負整數、負小數及負分數 */
     if(v==='+/-'){
-        if(s===''||s==='0'||s==='-')return s;
+        if(s==='0')return '-';
+        if(s===''||s==='-')return s;
         return s.startsWith('-')?s.slice(1):'-'+s;
     }
+
+    /* 分數符號 */
     if(v==='┘'){
         if(s==='0')return s;
         if(s.endsWith('┘')||s.endsWith('.'))return s;
@@ -2416,15 +2798,19 @@ function keyApply(s,v){
         if((s.match(/┘/g)||[]).length>=2)return s;
         return s.length<9?s+'┘':s;
     }
+
+    /* 小數點 */
     if(v==='.'){
         if(s.includes('┘'))return s;
         if(s==='0')s='';
         if(!s.includes('.'))s=(s===''?'0.':s+'.');
         return s;
     }
+
     s=(s==='0'?'':s);
     return s.length<9?s+v:s;
 }
+
 let inp='0';
 function key(v){
     if(!B.on||!B.act)return;
@@ -2643,15 +3029,18 @@ function resolveRound(){
     if(v.effect==='hpDrain'){B.p.chp-=10;}
     if(v.effect==='hpDrain20'){B.p.chp-=20;}
     if(v.effect==='hpDrain50'){B.p.chp-=50;}
+    if(v.effect==='hpDrain70'){B.p.chp-=70;}
     if(v.effect==='eHeal10'){B.e.chp=Math.min(B.e.maxHp,B.e.chp+10);}
     if(v.effect==='eHeal20'){B.e.chp=Math.min(B.e.maxHp,B.e.chp+20);}
     if(v.effect==='eHeal30'){B.e.chp=Math.min(B.e.maxHp,B.e.chp+30);}
     if(v.effect==='eHeal50'){B.e.chp=Math.min(B.e.maxHp,B.e.chp+50);}
+    if(v.effect==='eHeal70'){B.e.chp=Math.min(B.e.maxHp,B.e.chp+70);}
     if(v.effect==='eSpdUp30'){B.e.spd=clamp(B.e.spd+30);}
     if(v.effect==='eSpdUp50'){B.e.spd=clamp(B.e.spd+50);}
     if(v.effect==='eDefUp50'){B.e.def=clamp(B.e.def+50);}
     if(v.effect==='pSpdDown20'){B.p.spd=clamp(B.p.spd-20);}
     if(v.effect==='pSpdDown50'){B.p.spd=clamp(B.p.spd-50);}
+    if(v.effect==='pSpdDown70'){B.p.spd=clamp(B.p.spd-70);}
     if(v.effect==='setHp1'){if(!B.fx1){B.fx1=true;B.p.chp=Math.min(B.p.chp,1);showToast('道場效果：我方血量降至 1！')}}
     B.p.chp=Math.max(0,B.p.chp);
     updBat();
